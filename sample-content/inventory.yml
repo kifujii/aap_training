@@ -1,0 +1,23 @@
+---
+# AAPのInventory Source（Sourced from a Project）で読み込むYAML形式インベントリ。
+# ホスト名・IPアドレスは演習環境の実際の値に置き換えてください（事前準備ドキュメント参照）。
+all:
+  vars:
+    ansible_user: ansible
+    ansible_port: 22
+  children:
+    web:
+      hosts:
+        web1:
+          ansible_host: 192.0.2.11
+          nginx_listen_port: 8080
+        web2:
+          ansible_host: 192.0.2.12
+          nginx_listen_port: 8080
+        web3:
+          ansible_host: 192.0.2.13
+          nginx_listen_port: 8080
+    loadbalancer:
+      hosts:
+        lb:
+          ansible_host: 192.0.2.14

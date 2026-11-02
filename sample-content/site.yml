@@ -1,0 +1,14 @@
+---
+# AAPのJob Templateから実行するメインPlaybook。
+# hosts: web / loadbalancer は inventory.yml のグループに対応する。
+- name: Deploy nginx web servers
+  hosts: web
+  become: true
+  roles:
+    - nginx
+
+- name: Deploy haproxy load balancer
+  hosts: loadbalancer
+  become: true
+  roles:
+    - haproxy
