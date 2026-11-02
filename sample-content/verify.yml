@@ -1,0 +1,13 @@
+---
+# 応用演習（Workflow / API / CLI / EDA）で使う軽量な確認用Playbook。
+# デプロイ後にホストの到達性と現在のバージョン情報を報告する。
+- name: Post deployment verification
+  hosts: all
+  gather_facts: true
+  tasks:
+    - name: Report host reachability
+      debug:
+        msg: >-
+          {{ inventory_hostname }}
+          ({{ ansible_default_ipv4.address | default('n/a') }})
+          is reachable at {{ ansible_date_time.iso8601 }}
