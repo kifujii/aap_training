@@ -82,15 +82,25 @@ EOF
 
 ### Step 3: GitLabへpushする
 
+**方法A: git CLIで行う場合（基本）**
+
 ```bash
 $ git add rulebooks/
 $ git commit -m "Add sample rulebook for EDA training"
 $ git push
 ```
 
+**方法B: GitLab Web IDEで行う場合（代替）**
+
+1. GitLab Project画面で「Web IDE」を開く
+2. `rulebooks/notify_on_webhook.yml` を新規作成し、Step 2で作成した内容を貼り付ける
+3. 「Source Control」アイコンからコミットメッセージ（例: `Add sample rulebook for EDA training`）を入力し、「Commit to main」をクリックする
+
 ## Section 4: ローカルでの動作確認（任意）
 
 AAPに登録する前に、`ansible-rulebook` コマンドでローカル動作を確認できます（EEビルド用サーバ等、`ansible-rulebook` が導入済みの環境で実施）。
+
+> **Note:** このSectionはコマンド実行が前提のため、**GitLab Web IDEでは代替できません**。Web IDEのみで進めている場合は、このSectionは読み物として確認し、[応用演習10](./ex10.md)でAAP上のRulebook Activationとして動作確認してください。
 
 ### Step 1: 導入する
 

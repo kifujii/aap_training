@@ -28,7 +28,9 @@ GitLabで新規Project（リポジトリ）を作成します。
 
 ### Step 3: サンプルコンテンツをpushする
 
-この研修資料リポジトリに含まれる [sample-content/](../sample-content/) の内容を、作成したGitLab Projectにpushします。
+この研修資料リポジトリに含まれる [sample-content/](../sample-content/) の内容を、作成したGitLab Projectにpushします。基本はgit CLIでの操作ですが、CLIが使えない場合はGitLab Web IDEでも代替できます（詳細手順は[sample-content/README.md](../sample-content/README.md)を参照）。
+
+**方法A: git CLIで行う場合（基本）**
 
 ```bash
 $ git clone <この研修資料リポジトリのURL>
@@ -41,7 +43,11 @@ $ git branch -M main
 $ git push -u origin main
 ```
 
-**Note:** push前に、`inventory.yml` 内のホスト名・IPアドレスを、実際の管理対象ノードの値に書き換えてください（[基礎演習3](../basic-intro/ex3.md)で登録したホストと揃えておくと、後続の演習がわかりやすくなります）。
+**方法B: GitLab Web IDEで行う場合（代替）**
+
+ブラウザだけで完結させたい場合は、GitLab Project画面の「Web IDE」を開き、[sample-content/README.md](../sample-content/README.md)の「方法B」の手順に従ってファイルを作成・コミットしてください。
+
+**Note:** push前（またはWeb IDEでのコミット前）に、`inventory.yml` 内のホスト名・IPアドレスを、実際の管理対象ノードの値に書き換えてください（[基礎演習3](../basic-intro/ex3.md)で登録したホストと揃えておくと、後続の演習がわかりやすくなります）。
 
 ### Step 4: Personal Access Tokenの発行
 
