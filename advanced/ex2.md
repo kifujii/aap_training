@@ -12,6 +12,8 @@
 
 この手順は、GitLabリポジトリをcloneしたローカル環境（自分のPCやEEビルド用サーバ等、`ansible-vault` コマンドが使える環境）で行います。
 
+> **Note:** `ansible-vault encrypt` はコマンド実行が必要なため、**GitLab Web IDEでは代替できません**（Web IDEはブラウザ上のエディタであり、ターミナル・コマンド実行機能を持ちません）。Step 1〜2（ファイル作成・暗号化）は必ずCLIが使える環境で行ってください。Step 3（role修正）やStep 4（push）は、暗号化済みファイルをテキストとして貼り付けるだけなので、Web IDEでも代替可能です。
+
 ### Step 1: 暗号化する変数ファイルを作成する
 
 ```bash
@@ -53,11 +55,20 @@ Encryption successful
 
 ### Step 4: GitLabへpushする
 
+**方法A: git CLIで行う場合（基本）**
+
 ```bash
 $ git add secrets.yml roles/haproxy/
 $ git commit -m "Add vault-encrypted haproxy stats credentials"
 $ git push
 ```
+
+**方法B: GitLab Web IDEで行う場合（代替）**
+
+1. Step 2で暗号化された `secrets.yml` の内容（`$ANSIBLE_VAULT;1.1;AES256` から始まる暗号文）を、ローカルのテキストエディタ等で開いてコピーする
+2. GitLab Project画面で「Web IDE」を開き、`secrets.yml` を新規作成してその暗号文を貼り付ける
+3. Step 3で修正した `roles/haproxy/tasks/main.yml`・`defaults/main.yml` の内容も同様にWeb IDE上で書き換える
+4. 「Source Control」アイコンからコミットメッセージ（例: `Add vault-encrypted haproxy stats credentials`）を入力し、「Commit to main」をクリックする
 
 **Note:** 暗号化済みの `secrets.yml` はリポジトリにpushしても問題ありません（内容が暗号化されているため）。**平文のVaultパスワード自体をリポジトリにコミットしないよう注意してください。**
 
