@@ -12,7 +12,7 @@
 
 ### Step 1: Schedulesタブを開く
 
-`deploy-web-stack` の詳細画面 → **スケジュール** タブから、スケジュールの作成を開きます。左メニューの **スケジュール** からも同じ一覧に入れます。
+`apply-baseline` の詳細画面 → **スケジュール** タブから、スケジュールの作成を開きます。左メニューの **スケジュール** からも同じ一覧に入れます。
 
 ### Step 2: 入力する
 
@@ -31,7 +31,7 @@ AAPの画面では、Cron形式（`rrule`）を直接意識せずGUIで繰り返
 
 Schedule一覧に `daily-config-check` が表示され、「Next Run」に次回実行予定時刻が表示されていることを確認してください。
 
-**Note:** 研修中に実際の定期実行を待つ必要はありません。「Next Run」が正しく計算されていることと、一覧に表示されることを確認できれば十分です。確認後は、誤って本番稼働させないよう、Scheduleを一時的に無効化（Toggle OFF）しておきましょう。
+**Note:** 研修中に実際の定期実行を待つ必要はありません。「Next Run」が正しく計算されていることと、一覧に表示されることを確認できれば十分です。確認後は、誤って本番稼働させないよう、Scheduleを一時的に無効化（Toggle OFF）しておきましょう。`apply-baseline` は設定を合わせるPlaybookです。変更を伴わない点検だけを定期実行するなら、[応用演習4](./ex4.md) の `verify-hosts` にScheduleを付け替えます。
 
 ## Section 2: Notification Templateの作成
 
@@ -61,7 +61,7 @@ Notification Templateは作成しただけでは何も起こりません。ど�
 
 ### Step 1: Job Templateへの割り当て
 
-`deploy-web-stack` の詳細画面 →「Notifications」タブを開きます。`job-failure-webhook` の「Error」列のトグルを有効化します。
+`apply-baseline` の詳細画面 →「Notifications」タブを開きます。`job-failure-webhook` の「Error」列のトグルを有効化します。
 
 | イベント | 説明 |
 |---|---|
@@ -77,7 +77,7 @@ Organizationの詳細画面でも同様にNotificationを割り当てること�
 
 ### Step 1: 意図的に失敗させる
 
-`deploy-web-stack` のCredentialを一時的に誤った値（存在しないCredential、または無効化したCredential）に変更し、「Launch」してJobを失敗させます。
+`apply-baseline` のCredentialを一時的に誤った値（存在しないCredential、または無効化したCredential）に変更し、「Launch」してJobを失敗させます。
 
 ### Step 2: 通知を確認する
 

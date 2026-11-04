@@ -119,13 +119,13 @@ $ ansible-rulebook --rulebook rulebooks/notify_on_webhook.yml -i inventory.yml -
 ```bash
 $ curl -X POST http://localhost:5000/endpoint \
     -H "Content-Type: application/json" \
-    -d '{"status": "success", "host": "web1"}'
+    -d '{"status": "success", "host": "srv1"}'
 ```
 
 Rulebookを起動したターミナルに、`debug` アクションで出力したメッセージが表示されることを確認してください。
 
 ```
-{"msg": "イベントを受信しました: {'status': 'success', 'host': 'web1'}"}
+{"msg": "イベントを受信しました: {'status': 'success', 'host': 'srv1'}"}
 ```
 
 確認が終わったら、`ansible-rulebook` プロセスを `Ctrl+C` で停止してください。

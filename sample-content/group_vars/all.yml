@@ -1,0 +1,24 @@
+---
+# site.yml / verify.yml / patch.yml が参照する既定値。
+# 環境ごとに変える値は Extra variables または Survey で上書きする。
+host_timezone: Asia/Tokyo
+baseline_packages:
+  - chrony
+  - rsync
+  - tar
+baseline_admin_user: infra
+baseline_create_admin_user: false
+sshd_max_auth_tries: 4
+sshd_client_alive_interval: 300
+# 経路Aだけが使う。プレースホルダのまま provision_ec2.yml を実行すると停止する。
+ec2_region: ap-northeast-1
+ec2_vpc_id: vpc-xxxxxxxx
+ec2_subnet_id: subnet-xxxxxxxx
+ec2_ami_id: ami-xxxxxxxx
+ec2_key_name: aap-training
+ec2_ssh_ingress_cidr: 10.0.0.0/16
+ec2_instance_type: t3.micro
+ec2_assign_public_ip: false
+ec2_instance_names:
+  - srv1
+  - srv2

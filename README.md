@@ -35,6 +35,8 @@
 
 → [sample-content/](./sample-content/) — 演習で使うサンプルPlaybook/Role。GitLabのProjectにpushして使用します。
 
+操作対象のLinuxサーバは、AWSで新規作成するか、既存サーバをインベントリに書きます。→ [操作対象サーバ（AWS）](./aws_targets.md)
+
 ## カリキュラム
 
 ### 基礎演習 — AAPの基本操作 (basic-intro/)
@@ -80,12 +82,12 @@ basic修了後、目的に応じて選択してください。
 
 → [宿題](./homework/hm1.md)
 
-全課題がひとつのシナリオ（Web基盤の構築→運用）として繋がっています。前の課題から継続して機能を追加していく形式です。
+全課題がひとつのシナリオ（Linuxサーバの初期設定→運用）として繋がっています。前の課題から継続して機能を追加していく形式です。
 
 | 課題 | シナリオ | 使うテクニック |
 |------|------|-----------|
-| 1 | Web基盤の構築 | Credential, Inventory Source, Project, Job Template |
-| 2 | サーバー増設 | Inventoryの変更のみで対応 |
-| 3 | Workflow化と自動テスト | Workflow Job Template, Survey, デプロイ後テスト |
+| 1 | 初期設定の適用 | Credential, Inventory Source, Project, Job Template |
+| 2 | サーバ増設 | Inventoryの変更のみで対応 |
+| 3 | Workflow化と点検 | Workflow Job Template, Survey, 適用後の点検 |
 | 4 | セキュリティ対応 | RBAC設計, Vault Credential, Notification |
 | 5 | 本番運用に向けた仕上げ | Schedule, EDAによる自動対応 |

@@ -1,13 +1,38 @@
 ---
-# 応用演習（Workflow / API / CLI / EDA）で使う軽量な確認用Playbook。
-# デプロイ後にホストの到達性と現在のバージョン情報を報告する。
-- name: Post deployment verification
-  hosts: all
+# 適用後の点検。変更はしない。
+- name: Check managed host health
+  hosts: managed
   gather_facts: true
   tasks:
-    - name: Report host reachability
-      debug:
-        msg: >-
-          {{ inventory_hostname }}
-          ({{ ansible_default_ipv4.address | default('n/a') }})
-          is reachable at {{ ansible_date_time.iso8601 }}
+    - name: Read the configured timezone
+      command: timedatectl show -p Timezone --value
+      register: timezone_result
+      changed_when: false
+
+    - name: Timezone matches the requested value
+      assert:
+        that:
+          - timezone_result.stdout == host_timezone
+        success_msg: "{{ inventory_hostname }} timezone is {{ timezone_result.stdout }}"
+        fail_msg: >-
+          {{ inventory_hostname }} timezone is {{ timezone_result.stdout }},
+          expected {{ host_timezone }}
+
+    - name: chronyd is active
+      command: systemctl is-active chronyd
+      register: chronyd_result
+      changed_when: false
+
+    - name: chronyd reports active
+      assert:
+        that:
+          - chronyd_result.stdout == "active"
+        success_msg: "chronyd is active on {{ inventory_hostname }}"
+
+    - name: Root filesystem has free space
+      assert:
+        that:
+          - item.size_available | int > (item.size_total | int * 0.1)
+        success_msg: "{{ item.mount }} has more than 10% free"
+      loop: "{{ ansible_mounts }}"
+      when: item.mount == "/"

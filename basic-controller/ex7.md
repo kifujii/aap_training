@@ -8,37 +8,39 @@
 
 ## Section 1: Extra Variablesによる変数の上書き
 
-[sample-content/roles/nginx/defaults/main.yml](../sample-content/roles/nginx/defaults/main.yml) で定義されている `nginx_site_version`（デフォルト値 `v1.0`）を、Job Template側から上書きしてみましょう。
+[sample-content/group_vars/all.yml](../sample-content/group_vars/all.yml) の `host_timezone`（既定値 `Asia/Tokyo`）を、Job Template側から上書きしてみましょう。
 
 ### Step 1: Job Templateの編集画面を開く
 
-`deploy-web-stack` の編集画面を開きます。
+`apply-baseline` の編集画面を開きます。
 
 ### Step 2: Variablesに入力する
 
 「Variables」欄に、YAML形式で以下のように入力します。
 
 ```yaml
-nginx_site_version: "v1.1"
+host_timezone: UTC
 ```
 
 「Save」をクリックします。
 
 ### Step 3: 実行して確認する
 
-**テンプレートの起動** で実行し、PLAY RECAPで `web1`〜`web3` の `copy index.html` タスクが `changed` になることを確認してください（`nginx_site_version` の値が変わったため）。
+**テンプレートの起動** で実行し、`srv1` と `srv2` の `Set the timezone` と `Write the login banner` が `changed` になることを確認してください。MOTDに書かれるタイムゾーンが `UTC` に変わります。
 
-**Note:** これはOSS版Ansibleの `ansible-playbook site.yml -e "nginx_site_version=v1.1"` に相当する操作です。Job Template画面の「Variables」欄は、Extra Variables（`-e`）として渡されます。[用語集 - 変数の優先順位の考え方](../aap_glossary.md)も参照してください。
+確認が終わったら、Variablesを `host_timezone: Asia/Tokyo` に戻してもう一度実行し、タイムゾーンを研修の既定値に戻してください。
+
+**Note:** これはOSS版Ansibleの `ansible-playbook site.yml -e "host_timezone=UTC"` に相当する操作です。Job Template画面の「Variables」欄は、Extra Variables（`-e`）として渡されます。[用語集 - 変数の優先順位の考え方](../aap_glossary.md)も参照してください。
 
 ## Section 2: Limitによる対象ホストの絞り込み
 
 ### Step 1: Limitを指定して実行する
 
-**テンプレートの編集** の **制限** に `web1` と入力して実行してみましょう。起動プロンプトを有効にしている場合は、起動画面で入力します。
+**テンプレートの編集** の **制限** に `srv1` と入力して実行してみましょう。起動プロンプトを有効にしている場合は、起動画面で入力します。
 
 ### Step 2: 結果を確認する
 
-PLAY RECAPに `web1` のみが表示され、`web2`・`web3`・`lb` は実行対象外になっていることを確認してください。OSS版Ansibleの `--limit` オプションに相当します。
+PLAY RECAPに `srv1` のみが表示され、`srv2` は実行対象外になっていることを確認してください。OSS版Ansibleの `--limit` オプションに相当します。
 
 ## Section 3: Verbosityの変更
 
@@ -59,7 +61,7 @@ PLAY RECAPに `web1` のみが表示され、`web2`・`web3`・`lb` は実行対
 
 ### Step 2: 起動時の挙動を確認する
 
-**テンプレートの起動** をクリックすると、実行前に入力画面が表示され、Extra variables と制限をその場で指定できることを確認してください。空欄のまま起動すれば、デフォルト値（role側のdefaults）が使われます。
+**テンプレートの起動** をクリックすると、実行前に入力画面が表示され、Extra variables と制限をその場で指定できることを確認してください。Extra variables を空欄のまま起動すれば、`group_vars/all.yml` の `host_timezone`（`Asia/Tokyo`）が使われます。
 
 **Note:** 起動プロンプトは、「どの項目を固定値にするか」「どの項目を実行者に委ねるか」を設計するための仕組みです。権限が低いユーザーにJob Templateの実行だけを許可しつつ、設定の詳細は起動時に入力させる、といった運用に使えます。
 
@@ -77,21 +79,23 @@ Job Templateの **Survey** タブを開きます。質問がまだないとき�
 
 | 項目 | 入力値 |
 |---|---|
-| Question | `Webサイトのバージョンを入力してください` |
-| Answer variable name | `nginx_site_version` |
+| Question | `タイムゾーンを入力してください` |
+| Answer variable name | `host_timezone` |
 | Answer type | `Text` |
-| Default answer | `v1.0` |
+| Default answer | `Asia/Tokyo` |
 | Required | 有効 |
 
 「Save」をクリックして質問を保存し、Surveyタブ自体も保存します。
 
 ### Step 3: Surveyを使って実行する
 
-`deploy-web-stack` の **テンプレートの起動** をクリックすると、今度はSurveyの入力フォームが表示されます。`v1.2` など任意の値を入力して実行してみましょう。
+Section 1の Variables に `host_timezone: UTC` が残っていると、Surveyの入力と重なります。Surveyを試す前に、Variablesは空にしてください。
+
+`apply-baseline` の **テンプレートの起動** をクリックすると、今度はSurveyの入力フォームが表示されます。`UTC` など、現在と違うタイムゾーンを入力して実行してみましょう。
 
 ### Step 4: 結果を確認する
 
-PLAY RECAPで `web1`〜`web3` の `copy index.html` タスクが `changed` になることを確認してください。Surveyで入力した値が `nginx_site_version` としてExtra Variablesに渡され、[sample-content/roles/nginx/templates/index.html.j2](../sample-content/roles/nginx/templates/index.html.j2) に反映されています。
+`Set the timezone` と `Write the login banner` が `changed` になることを確認してください。Surveyの値が `host_timezone` としてExtra Variablesに渡り、`/etc/motd` に反映されています。確認後は `Asia/Tokyo` を入力してもう一度実行し、既定のタイムゾーンに戻してください。
 
 **Note:** SurveyはJob Template単位で設定するため、「Prompt on Launch + Variables（YAML直接入力）」と比べて、実行者がYAMLの書式を知らなくても安全に値を入力できるという利点があります。[宿題 課題3](../homework/hm1.md)以降でも活用します。
 

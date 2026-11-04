@@ -1,6 +1,6 @@
 # 応用演習 2 - Vault Credentialと秘密情報管理
 
-この演習では、`ansible-vault` で暗号化した機密情報を、AAPの **Vault Credential** と組み合わせて安全に利用する方法を学びます。HAProxyのstats画面に認証を追加するシナリオを例に進めます。
+この演習では、`ansible-vault` で暗号化した機密情報を、AAPの **Vault Credential** と組み合わせて安全に利用する方法を学びます。管理対象にローカルの管理ユーザーを追加し、そのパスワードを暗号化して渡すシナリオで進めます。
 
 **前提条件:** 応用演習1を完了していること
 
@@ -12,17 +12,18 @@
 
 この手順は、GitLabリポジトリをcloneしたローカル環境（自分のPCやEEビルド用サーバ等、`ansible-vault` コマンドが使える環境）で行います。
 
-> **Note:** `ansible-vault encrypt` はコマンド実行が必要なため、**GitLab Web IDEでは代替できません**（Web IDEはブラウザ上のエディタであり、ターミナル・コマンド実行機能を持ちません）。Step 1〜2（ファイル作成・暗号化）は必ずCLIが使える環境で行ってください。Step 3（role修正）やStep 4（push）は、暗号化済みファイルをテキストとして貼り付けるだけなので、Web IDEでも代替可能です。
+> **Note:** `ansible-vault encrypt` はコマンド実行が必要なため、**GitLab Web IDEでは代替できません**（Web IDEはブラウザ上のエディタであり、ターミナル・コマンド実行機能を持ちません）。Step 1〜2（ファイル作成・暗号化）は必ずCLIが使える環境で行ってください。Step 4のpushは、暗号化済みファイルをテキストとして貼り付けるだけなので、Web IDEでも代替できます。
 
 ### Step 1: 暗号化する変数ファイルを作成する
 
 ```bash
 $ cd aap-training-content   # sample-contentをpushしたリポジトリ
 $ cat << 'EOF' > secrets.yml
-haproxy_stats_user: admin
-haproxy_stats_password: ChangeMe123!
+baseline_admin_password: ChangeMe123!
 EOF
 ```
+
+パスワードは演習用の例です。実際の値に置き換えてください。平文のまま push しません。
 
 ### Step 2: ansible-vaultで暗号化する
 
@@ -35,31 +36,23 @@ Encryption successful
 
 暗号化後、`secrets.yml` の内容はテキストエディタで開いても判読できない暗号文になります。設定したVaultパスワードは忘れずに控えておいてください。
 
-### Step 3: haproxy roleでVault変数を読み込むように変更する
+### Step 3: baseline roleが暗号化ファイルを読む条件を確認する
 
-`roles/haproxy/tasks/main.yml` の先頭に、暗号化ファイルを読み込むタスクを追加します。
+[sample-content/roles/baseline/tasks/main.yml](../sample-content/roles/baseline/tasks/main.yml) は、`baseline_create_admin_user` が true のときだけ `secrets.yml` を読み、ユーザー `infra` を `wheel` グループに作ります。既定の `group_vars/all.yml` ではこのフラグは false なので、基礎演習の実行ではスキップされています。
+
+Job Template `apply-baseline` の Extra variables に、次を追加します。フラグを `secrets.yml` の中だけに書くと、ファイルを読む前に条件が false のままになり、パスワードが読まれません。
 
 ```yaml
----
-- name: include encrypted secrets
-  include_vars: "{{ playbook_dir }}/../secrets.yml"
-
-- name: install haproxy package
-  package:
-    name: haproxy
-    state: present
-# ...以下省略（既存のタスクはそのまま）
+baseline_create_admin_user: true
 ```
-
-また、`defaults/main.yml` に `haproxy_stats_enabled: true` を追加し、`haproxy.cfg.j2` のstats認証部分（`haproxy_stats_user` / `haproxy_stats_password`）が機能する状態にします。
 
 ### Step 4: GitLabへpushする
 
 **方法A: git CLIで行う場合（基本）**
 
 ```bash
-$ git add secrets.yml roles/haproxy/
-$ git commit -m "Add vault-encrypted haproxy stats credentials"
+$ git add secrets.yml
+$ git commit -m "Add vault-encrypted local admin password"
 $ git push
 ```
 
@@ -67,8 +60,7 @@ $ git push
 
 1. Step 2で暗号化された `secrets.yml` の内容（`$ANSIBLE_VAULT;1.1;AES256` から始まる暗号文）を、ローカルのテキストエディタ等で開いてコピーする
 2. GitLab Project画面で「Web IDE」を開き、`secrets.yml` を新規作成してその暗号文を貼り付ける
-3. Step 3で修正した `roles/haproxy/tasks/main.yml`・`defaults/main.yml` の内容も同様にWeb IDE上で書き換える
-4. 「Source Control」アイコンからコミットメッセージ（例: `Add vault-encrypted haproxy stats credentials`）を入力し、「Commit to main」をクリックする
+3. 「Source Control」アイコンからコミットメッセージ（例: `Add vault-encrypted local admin password`）を入力し、「Commit to main」をクリックする
 
 **Note:** 暗号化済みの `secrets.yml` はリポジトリにpushしても問題ありません（内容が暗号化されているため）。**平文のVaultパスワード自体をリポジトリにコミットしないよう注意してください。**
 
@@ -96,7 +88,7 @@ $ git push
 
 ### Step 1: Job Template編集画面を開く
 
-`deploy-web-stack` の編集画面を開きます。
+`apply-baseline` の編集画面を開きます。
 
 ### Step 2: Credentialsを追加する
 
@@ -111,33 +103,22 @@ $ git push
 
 ### Step 3: Projectを再Syncする
 
-Section 1で変更した `secrets.yml` とrole修正を取得するため、`aap-training-content` ProjectのSyncを実行します（[基礎演習4](../basic-controller/ex4.md)参照）。
+Section 1で追加した `secrets.yml` を取得するため、`aap-training-content` ProjectのSyncを実行します（[基礎演習4](../basic-controller/ex4.md)参照）。
 
 ## Section 4: 実行して確認する
 
 ### Step 1: Job Templateを実行する
 
-`deploy-web-stack` を「Launch」します。
+`apply-baseline` を「Launch」します。
 
 ### Step 2: 結果を確認する
 
-PLAY RECAPで `lb` ホストの `include encrypted secrets` タスクと `copy haproxy.cfg` タスクが実行され、エラーなく完了することを確認してください。
+`srv1` と `srv2` で `Load the encrypted admin password` が失敗せず、`Create the local admin user` が `changed` になることを確認してください。パスワード本体は `no_log` によりログへ出ません。同じJobをもう一度実行すると、ユーザー作成タスクは `ok` になります。
+
+Vault Credentialを割り当てずに実行すると、`include_vars` が復号に失敗します。次のようなエラーになることを確認しておくと、Credentialの役割が分かります（任意）。
 
 ```
-TASK [haproxy : include encrypted secrets] **************************************
-ok: [lb]
-
-TASK [haproxy : install haproxy package] *****************************************
-ok: [lb]
-
-TASK [haproxy : copy haproxy.cfg] *************************************************
-changed: [lb]
-```
-
-Vault Credentialを割り当てずに実行すると、`include_vars` タスクが復号に失敗し、以下のようなエラーになることも確認しておくとよいでしょう（任意）。
-
-```
-fatal: [lb]: FAILED! => {"message": "Attempting to decrypt but no vault secrets found"}
+fatal: [srv1]: FAILED! => {"message": "Attempting to decrypt but no vault secrets found"}
 ```
 
 ---

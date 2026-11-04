@@ -28,7 +28,7 @@
 | **SCM Sync** | Projectに紐付いたSCMリポジトリの内容を、AAP側に取得・反映する操作。Webhookで自動実行することも可能（[応用演習11](./advanced/ex11.md)）。 |
 | **Revision** | SCM Sync時に取得したリポジトリのコミットハッシュ。Job実行時にどのリビジョンのPlaybookが使われたかを追跡できる。 |
 | **Inventory** | Job実行対象のホストとグループを定義する単位。手動でHost/Groupを登録する方法と、**Inventory Source**を使って外部（SCM上のYAMLファイル、クラウドAPI等）から取り込む方法がある。 |
-| **Inventory Source** | Inventoryにホスト情報を取り込む方法を定義する設定。本資料では「Sourced from a Project」（SCM上のYAML形式インベントリファイルを読み込む方式）を扱う（[基礎演習5](./basic-controller/ex5.md)）。 |
+| **Inventory Source** | Inventoryにホスト情報を取り込む方法を定義する設定。本資料の基本は「Sourced from a Project」（SCM上のYAML形式インベントリファイルを読み込む方式）です（[基礎演習5](./basic-controller/ex5.md)）。EC2をタグで取り込む方式は [操作対象サーバ（AWS）](./aws_targets.md) を参照。 |
 | **Smart Inventory** | 既存Inventoryのホストを、検索条件（ホスト変数など）に基づいて動的にグルーピングした仮想的なInventory。 |
 | **Job Template** | 「どのProjectのどのPlaybookを」「どのInventoryに対して」「どのCredentialを使って」実行するかを定義した、実行可能なテンプレート。AAPにおける最も基本的な実行単位。 |
 | **Job** | Job Templateを実際に実行した1回分の記録。実行ログ・PLAY RECAP・ステータス（successful/failed等）を持つ。 |

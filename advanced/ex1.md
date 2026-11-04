@@ -54,7 +54,7 @@ AAPでは、UserまたはTeamに対して「どのオブジェクトに」「ど
 
 ### Step 1: Job Templateへの実行権限を付与する
 
-`deploy-web-stack` Job Templateの詳細画面 →「Access」（または「Team Access」）タブ →「Add」をクリックします。
+`apply-baseline` Job Templateの詳細画面 →「Access」（または「Team Access」）タブ →「Add」をクリックします。
 
 | 項目 | 入力値 |
 |---|---|
@@ -77,7 +77,7 @@ AAPでは、UserまたはTeamに対して「どのオブジェクトに」「ど
 
 ### Step 2: 権限の範囲を確認する
 
-* **Automation Execution > テンプレート** に `deploy-web-stack` が表示され、**テンプレートの起動** が実行できることを確認します。
+* **Automation Execution > テンプレート** に `apply-baseline` が表示され、**テンプレートの起動** が実行できることを確認します。
 * Job Templateの編集画面（Playbook、Credentials等の変更）にアクセスしようとすると、編集操作が許可されないことを確認します。
 * `aap-training-content` Projectは閲覧できますが、Syncや設定変更はできないことを確認します。
 

@@ -13,7 +13,7 @@
 | **手動登録**（基礎演習3） | AAPの画面からHost/Groupを1件ずつ入力する | 台数が少ない、頻繁に変わらない環境 |
 | **Inventory Source: Sourced from a Project** | SCM上のYAML/INIインベントリファイルをAAPが読み込み、Host/Groupを自動的に構築する | OSS版Ansibleのインベントリをそのまま使い回したい、台数が多い、Gitで変更履歴を管理したい |
 
-Inventory SourceはSCM以外にも、クラウドAPI（AWS/Azure/GCP等）から動的にホストを取得する方式もありますが、本資料ではGitLab連携を前提に **Sourced from a Project** のみを扱います。
+Inventory SourceはSCM以外にも、クラウドAPIからホストを取得する方式があります。EC2のタグで取り込む手順は [操作対象サーバ（AWS）](../aws_targets.md) の任意節です。この演習は、GitLab上のYAMLを読む **Sourced from a Project** を作ります。経路Bの既存サーバも、EC2作成後にIPを書き戻した経路Aも、ここは同じです。
 
 ## Section 2: Inventory Sourceの作成
 
@@ -35,7 +35,7 @@ Inventory SourceはSCM以外にも、クラウドAPI（AWS/Azure/GCP等）から
 | Inventory File | `inventory.yml`（Projectの同期後にドロップダウンから選択可能） |
 | Update Options | `Overwrite`、`Overwrite Variables`、`Update on Launch` を有効化 |
 
-**Note:** `Overwrite` を有効にすると、Sync時にSource由来でないHost/Groupが削除されます。[基礎演習3](../basic-intro/ex3.md)で手動登録したHost（`web1`, `web2`, `lb`）は `inventory.yml` にも同名で定義されているため、Sync後は自動的にSource由来の情報（`web3` を含む）に揃います。
+**Note:** `Overwrite` を有効にすると、Sync時にSource由来でないHost/Groupが削除されます。[基礎演習3](../basic-intro/ex3.md)で手動登録したホストは、`inventory.yml` に同名で書いてあれば同期後も残ります。YAMLに無いホストは消えます。経路AでまだプライベートIPを書き戻していない場合は、サンプルの `10.0.1.11` などの仮アドレスのまま同期されます。構築Jobのあとで `ansible_host` を直して、もう一度同期してください。
 
 画面下部の作成ボタンをクリックして保存します。項目名が英語のままの環境では、Source は `Sourced from a Project`、更新オプションは `Overwrite` / `Overwrite variables` / `Update on launch` です。
 
@@ -49,18 +49,17 @@ Inventory SourceはSCM以外にも、クラウドAPI（AWS/Azure/GCP等）から
 
 `training-inventory` の「Hosts」タブを開き、以下のホストが存在することを確認してください。
 
-* `web1`（`ansible_host: 192.0.2.11`, `nginx_listen_port: 8080`）
-* `web2`（`ansible_host: 192.0.2.12`, `nginx_listen_port: 8080`）
-* `web3`（`ansible_host: 192.0.2.13`, `nginx_listen_port: 8080`）※ `sample-content/inventory.yml` に新たに定義されているホスト
-* `lb`（`ansible_host: 192.0.2.14`）
+* `srv1`（`ansible_host` は `inventory.yml` に書いたアドレス）
+* `srv2`（同様）
+* `localhost`（`ansible_connection: local`。`provision_ec2.yml` 用）
 
 ### Step 2: Group一覧を確認する
 
-「Groups」タブで `web`・`loadbalancer` の2グループが、`inventory.yml` の `children:` 定義通りに構成されていることを確認してください。
+「Groups」タブで `managed` と `automation` が、`inventory.yml` の `children:` 定義通りに構成されていることを確認してください。
 
 ### Step 3: ホスト変数を確認する
 
-`web1` の詳細を開き、「Variables」に `ansible_host` や `nginx_listen_port` が、`inventory.yml` に記載した値と一致していることを確認してください。
+`srv1` の詳細を開き、「Variables」の `ansible_host` が、`inventory.yml` に記載した値と一致していることを確認してください。
 
 **Note:** これらはOSS版Ansibleのホスト変数とまったく同じ扱いです。[基礎演習6](./ex6.md)でPlaybook実行時にこれらの変数が使われます。
 

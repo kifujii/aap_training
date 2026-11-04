@@ -37,7 +37,7 @@ AAPでは、Job実行に必要なAnsible本体・Python依存パッケージ・C
 
 ### Step 1: Job Template編集画面を開く
 
-`deploy-web-stack` の編集画面を開き、「Execution Environment」欄を確認します。
+`apply-baseline` の編集画面を開き、「Execution Environment」欄を確認します。
 
 ### Step 2: 割当を確認する
 

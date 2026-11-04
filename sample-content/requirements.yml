@@ -1,0 +1,5 @@
+---
+collections:
+  # provision_ec2.yml だけで使用する。既定のEEに無い場合は応用演習6を参照。
+  - name: amazon.aws
+    version: ">=9.0.0"

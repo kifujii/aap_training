@@ -1,0 +1,69 @@
+---
+# 経路A専用。既存サーバを使う場合は実行しない。
+# Job Template の認証情報には Amazon Web Services を割り当てる。
+# amazon.aws を含む Execution Environment が必要。
+- name: Provision training instances on EC2
+  hosts: localhost
+  connection: local
+  gather_facts: false
+
+  tasks:
+    - name: EC2 settings are still placeholders
+      assert:
+        that:
+          - ec2_vpc_id is match('^vpc-[0-9a-f]{8,17}$')
+          - ec2_subnet_id is match('^subnet-[0-9a-f]{8,17}$')
+          - ec2_ami_id is match('^ami-[0-9a-f]{8,17}$')
+          - ec2_key_name | length > 0
+          - ec2_ssh_ingress_cidr | length > 0
+        fail_msg: >-
+          ec2_vpc_id、ec2_subnet_id、ec2_ami_id、ec2_key_name、
+          ec2_ssh_ingress_cidr を実環境の値にしてから再実行してください。
+          既存サーバを使う場合はこの Playbook を実行しません。
+
+    - name: Allow SSH from the AAP execution nodes
+      amazon.aws.ec2_security_group:
+        name: aap-training-ssh
+        description: SSH from AAP execution nodes for aap_training
+        vpc_id: "{{ ec2_vpc_id }}"
+        region: "{{ ec2_region }}"
+        rules:
+          - proto: tcp
+            ports:
+              - 22
+            cidr_ip: "{{ ec2_ssh_ingress_cidr }}"
+            rule_desc: ssh from AAP
+        rules_egress:
+          - proto: all
+            cidr_ip: 0.0.0.0/0
+
+    - name: Ensure tagged EC2 instances exist
+      amazon.aws.ec2_instance:
+        name: "{{ item }}"
+        state: running
+        region: "{{ ec2_region }}"
+        image_id: "{{ ec2_ami_id }}"
+        instance_type: "{{ ec2_instance_type }}"
+        key_name: "{{ ec2_key_name }}"
+        network_interfaces:
+          - device_index: 0
+            subnet_id: "{{ ec2_subnet_id }}"
+            assign_public_ip: "{{ ec2_assign_public_ip | bool }}"
+            groups:
+              - aap-training-ssh
+        tags:
+          Project: aap-training
+          Role: managed
+        wait: true
+      loop: "{{ ec2_instance_names }}"
+      register: ec2_created
+
+    - name: Show addresses to copy into inventory.yml
+      debug:
+        msg: >-
+          {{ item.item }}
+          id={{ item.instances[0].instance_id }}
+          private_ip={{ item.instances[0].private_ip_address }}
+      loop: "{{ ec2_created.results }}"
+      loop_control:
+        label: "{{ item.item }}"

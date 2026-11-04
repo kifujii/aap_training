@@ -42,6 +42,8 @@ collections:
   - name: community.general
     version: ">=8.0.0"
   - name: ansible.posix
+  - name: amazon.aws
+    version: ">=9.0.0"
 EOF
 ```
 
@@ -144,7 +146,7 @@ $ podman push <レジストリのホスト名>/aap-training/custom-ee:1.0
 
 ### Step 1: Job Templateに割り当てる
 
-`deploy-web-stack` の編集画面で「Execution Environment」欄に `custom-ee` を選択し、保存します。
+`apply-baseline` の編集画面で「Execution Environment」欄に `custom-ee` を選択し、保存します。経路Aの `provision-ec2` も、同じ `custom-ee` を割り当てます。`provision_ec2.yml` は `amazon.aws` が無いEEでは実行できません。基礎演習の時点で構築を飛ばした場合は、ここで `provision-ec2` を実行し、ログのプライベートIPを `inventory.yml` に書き戻します。
 
 ### Step 2: 実行して確認する
 
