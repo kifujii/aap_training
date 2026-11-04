@@ -4,7 +4,7 @@
 
 * **目的:** Ansible Automation Platform (AAP) の基本操作から応用機能まで実践的に学ぶ
 * **対象:** AAPを使ったことがない方〜運用担当者
-* **前提環境:** AAP 2.5 以降（構築済み・ユーザ作成済み）、GitLab（既存ユーザ利用可）
+* **前提環境:** AAP 2.5 以降（画面確認は 2.7 の日本語UI）、GitLab（画面確認は 19 の英語UI）。いずれも構築済み・ユーザ作成済み
 
 本資料は [konono/ansible_training_2026](https://github.com/konono/ansible_training_2026)（OSS Ansibleのハンズオン教材）の構成を参考に、AAPの機能を使う前提で再構成したものです。Ansible Playbook自体の書き方（loop, when, role化など）を学びたい場合は、まず参考元のOSS版教材で基礎を身につけてから本資料に進むことを推奨します。
 
@@ -20,6 +20,12 @@
 * SCM連携: GitLab（既存ユーザ利用可）
 * Execution Environment作成: `ansible-builder` が使える、インターネット接続可能な別Linuxサーバを想定
 * Private Automation Hubは本資料の対象外
+
+## 画面の見方
+
+→ [画面ラベル対応表](./ui-labels.md)
+
+ボタン名やメニュー名は、ここを見ながら読み替えてください。主要画面のスクリーンショットも各演習に入れています。
 
 ## 用語集
 

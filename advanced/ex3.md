@@ -12,7 +12,7 @@
 
 ### Step 1: Schedulesタブを開く
 
-`deploy-web-stack` Job Templateの詳細画面 →「Schedules」タブ →「Add」をクリックします。
+`deploy-web-stack` の詳細画面 → **スケジュール** タブから、スケジュールの作成を開きます。左メニューの **スケジュール** からも同じ一覧に入れます。
 
 ### Step 2: 入力する
 
@@ -39,7 +39,7 @@ AAPは、Jobの開始・成功・失敗、Workflow Approvalの承認待ちなど
 
 ### Step 1: Notification Template作成画面を開く
 
-**Access Management > Administration > Notifications**（配置はバージョンにより異なる場合があります）を開き、「Add」をクリックします。
+**Automation Execution > 管理 > Notifiers** を開き、通知の作成を開始します。Job Templateに割り当てる操作そのものは、対象テンプレートの **通知** タブでも行えます。
 
 ### Step 2: 入力する（Webhookの例）
 

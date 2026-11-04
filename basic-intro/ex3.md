@@ -12,24 +12,26 @@
 
 ### Step 1: Inventory作成画面を開く
 
-**Automation Execution > Inventories** を開き、「Add」→「Add inventory」をクリックします。
+**Automation Execution > Infrastructure > インベントリー** を開き、**インベントリーの作成** のドロップダウンから、もう一度 **インベントリーの作成** を選びます。スマートインベントリーや構築済みインベントリーは選びません。
+
+![インベントリーの作成画面。名前と組織が必須](../images/aap/inventory-create.png)
 
 ### Step 2: 基本情報を入力する
 
 | 項目 | 入力値 |
 |---|---|
-| Name | `training-inventory` |
-| Organization | [演習1](./ex1.md)で確認したOrganization |
+| 名前 | `training-inventory` |
+| 組織 | [演習1](./ex1.md)で確認した組織。この項目は必須です |
 
-「Save」をクリックして保存します。
+**インベントリーの作成** をクリックして保存します。
 
 ## Section 2: Groupの作成
 
-作成した `training-inventory` の詳細画面に移動すると、「Groups」タブがあります。[事前準備](../prepare_training_environment.md)で確認した管理対象ノードの構成に合わせて、2つのGroupを作成します。
+作成した `training-inventory` の詳細画面に移動すると、**グループ** タブがあります。[事前準備](../prepare_training_environment.md)で確認した管理対象ノードの構成に合わせて、2つのグループを作成します。管理対象ノードがまだない場合は、到達確認できるホストが1台でもあれば、そのホストだけで画面操作の確認を先に進めてください。`web1` などの名前は例です。
 
 ### Step 1: webグループの作成
 
-「Groups」タブ→「Add」をクリックし、以下を入力します。
+**グループ** タブからグループの作成を開き、以下を入力します。
 
 | 項目 | 入力値 |
 |---|---|
@@ -49,7 +51,7 @@
 
 ### Step 1: webグループへホストを追加する
 
-`web` グループの詳細画面を開き、「Hosts」タブ→「Add」→「Add new host」をクリックします。[事前準備](../prepare_training_environment.md)で確認した実際のホスト名・IPアドレスに置き換えて、以下のように追加してください。
+`web` グループの詳細画面を開き、**ホスト** タブからホストの作成を開きます。[事前準備](../prepare_training_environment.md)で確認した実際のホスト名・IPアドレスに置き換えて、以下のように追加してください。
 
 | Host名 | Variables (YAML) |
 |---|---|
@@ -79,7 +81,7 @@ Inventoryとホストの登録が終わったら、Playbookを作らずにモジ
 
 ### Step 1: Run Commandを起動する
 
-`training-inventory` の「Hosts」タブ（または全ホスト一覧）で、対象ホストにチェックを入れ、「Run Command」ボタンをクリックします。
+`training-inventory` の **ホスト** タブで、対象ホストにチェックを入れ、**Run command** をクリックします。
 
 ### Step 2: 実行内容を入力する
 
@@ -90,7 +92,7 @@ Inventoryとホストの登録が終わったら、Playbookを作らずにモジ
 | Limit | 対象ホストが自動的に設定されていることを確認 |
 | Credential | [演習2](./ex2.md)で作成した `managed-nodes-ssh` を選択 |
 
-「Launch」（または「Next」→「Launch」）をクリックして実行します。
+最後の実行ボタン（**Launch** または **Next** のあとに出る実行）をクリックします。
 
 ### Step 3: 実行結果を確認する
 

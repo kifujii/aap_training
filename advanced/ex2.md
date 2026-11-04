@@ -76,7 +76,7 @@ $ git push
 
 ### Step 1: Credential作成画面を開く
 
-**Automation Execution > Credentials** →「Add」をクリックします。
+**Automation Execution > Infrastructure > 認証情報** を開き、**認証情報の作成** をクリックします。認証情報タイプは `Vault` です。
 
 ### Step 2: 入力する
 

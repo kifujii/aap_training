@@ -26,7 +26,7 @@ nginx_site_version: "v1.1"
 
 ### Step 3: 実行して確認する
 
-「Launch」で実行し、PLAY RECAPで `web1`〜`web3` の `copy index.html` タスクが `changed` になることを確認してください（`nginx_site_version` の値が変わったため）。
+**テンプレートの起動** で実行し、PLAY RECAPで `web1`〜`web3` の `copy index.html` タスクが `changed` になることを確認してください（`nginx_site_version` の値が変わったため）。
 
 **Note:** これはOSS版Ansibleの `ansible-playbook site.yml -e "nginx_site_version=v1.1"` に相当する操作です。Job Template画面の「Variables」欄は、Extra Variables（`-e`）として渡されます。[用語集 - 変数の優先順位の考え方](../aap_glossary.md)も参照してください。
 
@@ -34,7 +34,7 @@ nginx_site_version: "v1.1"
 
 ### Step 1: Limitを指定して実行する
 
-「Launch」ボタンの横にあるオプション（または編集画面の「Limit」欄）に `web1` と入力して実行してみましょう。
+**テンプレートの編集** の **制限** に `web1` と入力して実行してみましょう。起動プロンプトを有効にしている場合は、起動画面で入力します。
 
 ### Step 2: 結果を確認する
 
@@ -42,26 +42,26 @@ PLAY RECAPに `web1` のみが表示され、`web2`・`web3`・`lb` は実行対
 
 ## Section 3: Verbosityの変更
 
-Job Templateの編集画面で「Verbosity」を `3 (Debug)` 程度に上げて実行してみましょう。SSH接続の詳細や、各タスクの内部的なモジュール呼び出し情報など、より詳細なログが出力されることを確認してください。確認後は `0 (Normal)` に戻しておきます。
+**テンプレートの編集** を開き、**詳細** を `3 (Debug)` 程度に上げて実行してみましょう。SSH接続の詳細や、各タスクの内部的なモジュール呼び出し情報など、より詳細なログが出力されることを確認してください。確認後は `0 (正常)` に戻しておきます。
 
-## Section 4: Prompt on Launch
+## Section 4: 起動プロンプト
 
-毎回同じExtra Variablesを固定するのではなく、実行時に都度値を選べるようにしたい場合は「Prompt on Launch」を使います。
+毎回同じ Extra variables を固定するのではなく、実行時に都度値を選べるようにしたい場合は **起動プロンプト** を使います。英語UIの Prompt on launch です。
 
-### Step 1: Prompt on Launchを有効化する
+### Step 1: 起動プロンプトを有効化する
 
-Job Templateの編集画面で、以下の項目の「Prompt on Launch」チェックボックスを有効にします。
+**テンプレートの編集** で、以下の項目の **起動プロンプト** にチェックを入れます。
 
-* Variables
-* Limit
+* Extra variables
+* 制限
 
-保存すると、Variables/Limitに入力していた固定値は、起動時の入力を促すプレースホルダーとして扱われるようになります。
+保存すると、それらの固定値は、起動時の入力を促すプレースホルダーとして扱われるようになります。
 
-### Step 2: Launch時の挙動を確認する
+### Step 2: 起動時の挙動を確認する
 
-「Launch」をクリックすると、実行前に入力画面が表示され、Variables・Limitをその場で指定できることを確認してください。空欄のまま「Launch」すればデフォルト値（role側のdefaults）が使われます。
+**テンプレートの起動** をクリックすると、実行前に入力画面が表示され、Extra variables と制限をその場で指定できることを確認してください。空欄のまま起動すれば、デフォルト値（role側のdefaults）が使われます。
 
-**Note:** Prompt on Launchは、「どの項目を固定値にするか」「どの項目を実行者に委ねるか」を柔軟に設計するための仕組みです。権限が低いユーザーにJob Templateの実行だけを許可しつつ、設定の詳細はLaunch時に入力させる、といった運用に使えます。
+**Note:** 起動プロンプトは、「どの項目を固定値にするか」「どの項目を実行者に委ねるか」を設計するための仕組みです。権限が低いユーザーにJob Templateの実行だけを許可しつつ、設定の詳細は起動時に入力させる、といった運用に使えます。
 
 ## Section 5: Surveyの作成
 
@@ -69,11 +69,11 @@ Surveyを使うと、Extra Variablesを直接YAMLで書かせるのではなく�
 
 ### Step 1: Surveyを有効化する
 
-Job Templateの編集画面で「Survey」タブを開き、「Survey Enabled」を有効にします。
+Job Templateの **Survey** タブを開きます。質問がまだないときは **Create survey question** が表示されます。
 
 ### Step 2: 質問を追加する
 
-「Add」をクリックし、以下のように入力します。
+**Create survey question** をクリックし、以下のように入力します。
 
 | 項目 | 入力値 |
 |---|---|
@@ -87,7 +87,7 @@ Job Templateの編集画面で「Survey」タブを開き、「Survey Enabled」
 
 ### Step 3: Surveyを使って実行する
 
-`deploy-web-stack` の「Launch」をクリックすると、今度はSurveyの入力フォームが表示されます。`v1.2` など任意の値を入力して実行してみましょう。
+`deploy-web-stack` の **テンプレートの起動** をクリックすると、今度はSurveyの入力フォームが表示されます。`v1.2` など任意の値を入力して実行してみましょう。
 
 ### Step 4: 結果を確認する
 

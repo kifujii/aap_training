@@ -19,11 +19,11 @@ Inventory SourceはSCM以外にも、クラウドAPI（AWS/Azure/GCP等）から
 
 ### Step 1: Inventoryの詳細画面を開く
 
-**Automation Execution > Inventories** から、[基礎演習3](../basic-intro/ex3.md)で作成した `training-inventory` を開きます。
+**Automation Execution > Infrastructure > インベントリー** から、[基礎演習3](../basic-intro/ex3.md)で作成した `training-inventory` を開きます。
 
-### Step 2: Sourcesタブで新規Sourceを追加する
+### Step 2: ソースタブで新規Sourceを追加する
 
-「Sources」タブ → 「Add」をクリックします。
+**ソース** タブからソースの追加を開きます。
 
 ### Step 3: 入力する
 
@@ -37,7 +37,7 @@ Inventory SourceはSCM以外にも、クラウドAPI（AWS/Azure/GCP等）から
 
 **Note:** `Overwrite` を有効にすると、Sync時にSource由来でないHost/Groupが削除されます。[基礎演習3](../basic-intro/ex3.md)で手動登録したHost（`web1`, `web2`, `lb`）は `inventory.yml` にも同名で定義されているため、Sync後は自動的にSource由来の情報（`web3` を含む）に揃います。
 
-「Save」をクリックして保存します。
+画面下部の作成ボタンをクリックして保存します。項目名が英語のままの環境では、Source は `Sourced from a Project`、更新オプションは `Overwrite` / `Overwrite variables` / `Update on launch` です。
 
 ### Step 4: Syncの実行
 

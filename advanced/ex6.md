@@ -118,7 +118,7 @@ $ podman push <レジストリのホスト名>/aap-training/custom-ee:1.0
 
 ### Step 1: Container Registry Credentialを作成する
 
-**Automation Execution > Credentials** →「Add」で、以下を入力します。
+**Automation Execution > Infrastructure > 認証情報** を開き、**認証情報の作成** で以下を入力します。認証情報タイプは `Container Registry` です。
 
 | 項目 | 入力値 |
 |---|---|
@@ -129,7 +129,7 @@ $ podman push <レジストリのホスト名>/aap-training/custom-ee:1.0
 
 ### Step 2: Execution Environmentを登録する
 
-**Automation Execution > Infrastructure > Execution Environments** →「Add」で、以下を入力します。
+**Automation Execution > Infrastructure > 実行環境** を開き、実行環境の作成で以下を入力します。
 
 | 項目 | 入力値 |
 |---|---|

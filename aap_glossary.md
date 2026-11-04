@@ -9,7 +9,7 @@
 | **Ansible Automation Platform (AAP)** | Red Hatが提供する自動化の統合プラットフォーム。OSS版Ansibleの実行エンジンに、Web UI・RBAC・API・スケジューリング・イベント駆動自動化（EDA）などのエンタープライズ機能を加えたもの。 |
 | **Automation Controller** | AAPの中核コンポーネント。Playbookの実行管理（Job Template、Workflow、Inventory、Credential等）を担う。旧称 Ansible Tower。2.5以降のUIでは「**Automation Execution**」メニュー配下に相当する機能が集約されている。 |
 | **Event-Driven Ansible (EDA)** | イベント（監視アラート、Webhook等）を検知し、条件に応じて自動的にアクション（Job Template起動等）を実行する仕組み。2.5以降のUIでは「**Automation Decisions**」メニュー配下に相当する。 |
-| **統合UI** | AAP 2.5以降で採用された、Controller・EDAを1つのナビゲーションに統合したWeb UI。大きく **Automation Execution**（Templates/Projects/Inventories/Infrastructure等）、**Automation Decisions**（Rulebook Activations/Decision Environments等）、**Access Management**（Organizations/Teams/Users）に分かれる。 |
+| **統合UI** | AAP 2.5以降で採用された、Controller・EDAを1つのナビゲーションに統合したWeb UI。大きく **Automation Execution**（ジョブ / テンプレート / プロジェクト / Infrastructure 配下のインベントリー・認証情報・実行環境）、**Automation Decisions**（ルールブックのアクティベーション / 決定環境 / Event Streams）、**Access Management**（組織 / チーム / ユーザー）に分かれる。日本語UIでの項目名は [画面ラベル対応表](./ui-labels.md) を参照。 |
 | **Automation Hub** | Red Hat公式/社内で管理するCollectionの配布基盤。本資料では対象外（社内PAH未使用の前提）。 |
 | **Automation Mesh** | 複数のExecution Nodeを束ねて、大規模・分散環境でJobを実行するためのネットワーク構成。本資料では深く扱わない。 |
 
