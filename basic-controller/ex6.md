@@ -10,28 +10,30 @@
 
 ### Step 1: Job Template作成画面を開く
 
-**Automation Execution > Templates** を開き、「Add」→「Add job template」をクリックします。
+**Automation Execution > テンプレート** を開き、**テンプレートの作成** > **ジョブテンプレートの作成** をクリックします。
+
+![ジョブテンプレートの作成。ジョブタイプの既定は「実行」で、インベントリー、プロジェクト、Playbook が必須](../images/aap/job-template-create.png)
 
 ### Step 2: 入力する
 
 | 項目 | 入力値 |
 |---|---|
-| Name | `deploy-web-stack` |
-| Job Type | `Run` |
-| Inventory | `training-inventory` |
-| Project | `aap-training-content` |
+| 名前 | `deploy-web-stack` |
+| ジョブタイプ | `実行`（英語UIでは Run） |
+| インベントリー | `training-inventory` |
+| プロジェクト | `aap-training-content` |
 | Playbook | `site.yml`（Projectが同期済みであればドロップダウンに表示される） |
-| Credentials | `managed-nodes-ssh`（Machine Credential） |
+| 認証情報 | `managed-nodes-ssh`（Machine Credential） |
 
-他の項目（Extra Variables、Limit、Verbosityなど）は、いったんデフォルトのままで構いません。これらは[演習7](./ex7.md)で扱います。
+他の項目（Extra variables、制限、詳細）は、いったんデフォルトのままで構いません。これらは[演習7](./ex7.md)で扱います。
 
-「Save」をクリックして保存します。
+**ジョブテンプレートの作成** をクリックして保存します。
 
 ## Section 2: Job Templateの実行
 
 ### Step 1: Launchする
 
-Job Template一覧（または詳細画面）から、`deploy-web-stack` の「Launch」（ロケットアイコン）をクリックします。
+Job Template一覧、または詳細画面から、`deploy-web-stack` の **テンプレートの起動** をクリックします。詳細画面の見え方は [演習1のスクリーンショット](../basic-intro/ex1.md) と同じ配置です。
 
 ### Step 2: 実行結果を確認する
 
@@ -105,7 +107,7 @@ Job実行画面の「Details」タブで、以下の情報を確認してくだ�
 
 ### Step 4: 再実行して冪等性を確認する
 
-もう一度「Launch」をクリックし、同じJob Templateを再実行してみましょう。すべてのタスクが `changed` ではなく `ok`（変更なし）になることを確認してください。OSS版Ansibleと同じ「冪等性」の原則がAAP上でも適用されます。
+もう一度 **テンプレートの起動** をクリックし、同じJob Templateを再実行してみましょう。すべてのタスクが `changed` ではなく `ok`（変更なし）になることを確認してください。OSS版Ansibleと同じ「冪等性」の原則がAAP上でも適用されます。
 
 ```
 PLAY RECAP ***********************************************************************
@@ -123,7 +125,7 @@ lb     : ok=4  changed=0  unreachable=0  failed=0  skipped=0  rescued=0  ignored
 
 ### Step 2: 実行する
 
-再度「Launch」をクリックします。実際にはホストへ変更を加えず、変更が発生するかどうかだけをシミュレーションします。OSS版Ansibleの `--check` オプションに相当します。
+再度 **テンプレートの起動** をクリックします。実際にはホストへ変更を加えず、変更が発生するかどうかだけをシミュレーションします。OSS版Ansibleの `--check` オプションに相当します。
 
 ### Step 3: 設定を元に戻す
 

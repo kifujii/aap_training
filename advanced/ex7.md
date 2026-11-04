@@ -20,9 +20,9 @@ $ curl -sk https://<AAPのURL>/api/ | python3 -m json.tool
 
 | パス例 | 内容 |
 |---|---|
-| `/api/controller/v2/` | AAP 2.5以降の統合UIにおけるController API |
-| `/api/v2/` | 従来からのController API（多くの環境で後方互換として利用可） |
-| `/api/gateway/v1/` | AAPゲートウェイ（認証・ユーザー管理等）のAPI |
+| `/api/controller/v2/` | AAP 2.5以降のController API。2.7のゲートウェイ構成ではこちらを使う |
+| `/api/v2/` | 旧Controller単体のパス。ゲートウェイ構成では 404 になる |
+| `/api/gateway/v1/` | AAPゲートウェイ（認証・ユーザー管理等）のAPI。`/api/gateway/v1/ping/` でプラットフォームのバージョンを確認できる |
 
 本資料では、以降 `<API_ROOT>` という表記で、お使いの環境に合わせたAPIベースパスを表すことにします（例: `https://aap.example.local/api/controller/v2`）。
 
@@ -30,7 +30,7 @@ $ curl -sk https://<AAPのURL>/api/ | python3 -m json.tool
 
 ### Step 1: UIからトークンを発行する
 
-AAPにログインした状態で、自分のUserアイコン →「User Details」→「Tokens」タブを開き、「Add」をクリックします。
+**Access Management > API Tokens** を開き、**Create API token** をクリックします。
 
 | 項目 | 入力値 |
 |---|---|

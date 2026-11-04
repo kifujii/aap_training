@@ -23,7 +23,9 @@ AAPのCredentialは、**Credential Type** ごとに入力項目（スキーマ�
 
 ### Step 1: Credential作成画面を開く
 
-**Automation Execution > Infrastructure > Credentials**（またはトップレベルの **Credentials**）を開き、「Add」ボタンをクリックします。
+**Automation Execution > Infrastructure > 認証情報** を開き、**認証情報の作成** をクリックします。
+
+![認証情報の作成画面。タイプに Machine を選ぶとユーザ名、パスワード、SSH Private Key、Privilege Escalation Method が出る](../images/aap/credential-machine.png)
 
 ### Step 2: 基本情報を入力する
 
@@ -31,9 +33,9 @@ AAPのCredentialは、**Credential Type** ごとに入力項目（スキーマ�
 
 | 項目 | 入力値 |
 |---|---|
-| Name | `managed-nodes-ssh` |
-| Organization | [演習1](./ex1.md)で確認したOrganization |
-| Credential Type | `Machine` |
+| 名前 | `managed-nodes-ssh` |
+| 組織 | [演習1](./ex1.md)で確認した組織。**組織の選択** から選ぶ |
+| 認証情報タイプ | `Machine`。一覧が長いので、選択欄の検索に `Machine` と入力する |
 
 ### Step 3: 認証方式を入力する
 
@@ -43,7 +45,7 @@ Credential Typeに `Machine` を選択すると、以下の入力項目が表示
 
 | 項目 | 入力値 |
 |---|---|
-| Username | 管理対象ノードへの接続ユーザー名（例: `ansible`） |
+| ユーザ名 | 管理対象ノードへの接続ユーザー名（例: `ansible`） |
 | SSH Private Key | 秘密鍵の内容を貼り付け（`-----BEGIN OPENSSH PRIVATE KEY-----` から `-----END OPENSSH PRIVATE KEY-----` まで全文） |
 | Private Key Passphrase | 秘密鍵にパスフレーズが設定されている場合のみ入力 |
 
@@ -51,8 +53,8 @@ Credential Typeに `Machine` を選択すると、以下の入力項目が表示
 
 | 項目 | 入力値 |
 |---|---|
-| Username | 管理対象ノードへの接続ユーザー名 |
-| Password | 接続パスワード |
+| ユーザ名 | 管理対象ノードへの接続ユーザー名 |
+| パスワード | 接続パスワード |
 
 ### Step 4: 権限昇格（Privilege Escalation）の設定
 
@@ -68,13 +70,13 @@ Credential Typeに `Machine` を選択すると、以下の入力項目が表示
 
 ### Step 5: 保存
 
-「Save」をクリックして、Credentialを保存します。
+**認証情報の作成** をクリックして保存します。
 
 ## Section 3: 作成したCredentialの確認
 
 ### Step 1: Credential一覧に表示されることを確認
 
-**Automation Execution > Credentials** の一覧に `managed-nodes-ssh` が表示されていることを確認してください。
+**認証情報** の一覧に `managed-nodes-ssh` が表示されていることを確認してください。
 
 ### Step 2: 秘密情報が表示されないことを確認
 

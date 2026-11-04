@@ -35,7 +35,7 @@ AAPでは、UserまたはTeamに対して「どのオブジェクトに」「ど
 
 ### Step 1: Team作成画面を開く
 
-**Access Management > Teams** を開き、「Add」をクリックします。
+**Access Management > チーム** を開き、チームの作成を開始します。
 
 ### Step 2: 入力する
 
@@ -77,7 +77,7 @@ AAPでは、UserまたはTeamに対して「どのオブジェクトに」「ど
 
 ### Step 2: 権限の範囲を確認する
 
-* **Automation Execution > Templates** に `deploy-web-stack` が表示され、「Launch」が実行できることを確認します。
+* **Automation Execution > テンプレート** に `deploy-web-stack` が表示され、**テンプレートの起動** が実行できることを確認します。
 * Job Templateの編集画面（Playbook、Credentials等の変更）にアクセスしようとすると、編集操作が許可されないことを確認します。
 * `aap-training-content` Projectは閲覧できますが、Syncや設定変更はできないことを確認します。
 

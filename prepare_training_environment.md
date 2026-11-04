@@ -11,12 +11,12 @@
 | AAPのURL | `https://aap.example.local/` |
 | ログインユーザー名 / パスワード | （各受講者に配布されたもの） |
 | 対象バージョン | 2.5 以降（統合UI） |
-| ログイン後に使用するOrganization名 | 例: `Default` または研修用に用意された専用Organization名 |
+| ログイン後に使用する組織名 | 多くの環境では `Default`。研修用の専用組織がある場合はその名前 |
 
 ### 動作確認
 
 1. ブラウザでAAPのURLにアクセスし、ログインできることを確認してください。
-2. ログイン後、画面左側のナビゲーションに **Automation Execution** / **Automation Decisions** / **Access Management** のメニューが表示されていることを確認してください（[基礎演習1](./basic-intro/ex1.md)で詳しく扱います）。
+2. ログイン後、画面左側のナビゲーションに **Automation Execution** / **Automation Decisions** / **Access Management** のメニューが表示されていることを確認してください（[基礎演習1](./basic-intro/ex1.md)で詳しく扱います）。日本語UIの項目名は [画面ラベル対応表](./ui-labels.md) を見てください。一覧に Demo で始まるサンプルがあっても、演習では別名で新規作成します。
 
 > AAP自体の構築（インストーラ実行、ライセンス登録等）やユーザー作成は本資料の対象外です。未構築の場合は、環境管理者に事前構築を依頼してください。
 

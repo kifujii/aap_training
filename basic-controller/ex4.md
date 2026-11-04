@@ -16,15 +16,19 @@
 
 ### Step 2: 新規Projectの作成
 
-GitLabで新規Project（リポジトリ）を作成します。
+GitLabの右上 **Create new…** > **New project/repository** > **Create blank project** を開きます。表示言語が日本語の場合は「新規作成」から同じ画面に進んでください。
+
+![Create blank project。README初期化は、既存のsample-contentをpushするときは外す](../images/gitlab/blank-project.png)
 
 | 項目 | 入力値 |
 |---|---|
 | Project name | `aap-training-content` |
+| Project URL | [事前準備](../prepare_training_environment.md)で確認した演習用Namespace |
 | Visibility Level | `Private`（研修用。社内ポリシーに応じて調整） |
-| Namespace | [事前準備](../prepare_training_environment.md)で確認した演習用Namespace |
+| Initialize repository with a README | **外す**。`sample-content` を git push するため。Web IDEだけでファイルを置く場合は付けたままでよい |
+| Enable SAST / Enable Secret Detection | オフのままでよい |
 
-作成後、リポジトリのクローンURL（例: `https://gitlab.example.local/aap-training/aap-training-content.git`）を控えておきます。
+**Create project** をクリックします。作成後、リポジトリのクローンURL（例: `https://gitlab.example.local/aap-training/aap-training-content.git`）を控えておきます。Clone ボタンの表示が HTTPS になっていることを確認してください。
 
 ### Step 3: サンプルコンテンツをpushする
 
@@ -53,28 +57,28 @@ $ git push -u origin main
 
 AAPがこのリポジトリを読み取るための認証情報として、GitLabのPersonal Access Token（PAT）を発行します。
 
-1. GitLabの自分のアバター → **Edit profile** → **Access Tokens** を開く
+1. 右上のユーザーメニューから User Settings を開き、左メニュー **Personal access tokens** を開く（URLの末尾は `/-/user_settings/personal_access_tokens`）
 2. Token name: `aap-training-pat`
 3. Scopes: `read_repository`（PushやAPI操作が不要であれば最小権限でよい）
-4. 「Create personal access token」をクリックし、表示されたトークン文字列を**その場でコピーして控える**（再表示はできません）
+4. **Create personal access token** をクリックし、表示されたトークン文字列を**その場でコピーして控える**（再表示はできません）
 
 ## Section 2: AAP側でSource Control Credentialを作成
 
 ### Step 1: Credential作成画面を開く
 
-**Automation Execution > Credentials** を開き、「Add」をクリックします。
+**Automation Execution > Infrastructure > 認証情報** を開き、**認証情報の作成** をクリックします。
 
 ### Step 2: 入力する
 
 | 項目 | 入力値 |
 |---|---|
-| Name | `gitlab-scm-credential` |
-| Organization | 基礎演習1で確認したOrganization |
-| Credential Type | `Source Control` |
-| Username | GitLabのユーザー名 |
-| Password | Section 1 Step 4で発行したPersonal Access Token |
+| 名前 | `gitlab-scm-credential` |
+| 組織 | 基礎演習1で確認した組織 |
+| 認証情報タイプ | `Source Control` |
+| ユーザ名 | GitLabのユーザー名 |
+| パスワード | Section 1 Step 4で発行したPersonal Access Token |
 
-「Save」をクリックして保存します。
+**認証情報の作成** をクリックして保存します。
 
 **Note:** Credential Typeは[基礎演習2](../basic-intro/ex2.md)で説明した通り、種類ごとに入力項目が異なります。`Source Control` Credentialの「Password」欄には、GitLabのログインパスワードではなくPersonal Access Tokenを入力する点に注意してください。
 
@@ -82,21 +86,25 @@ AAPがこのリポジトリを読み取るための認証情報として、GitLa
 
 ### Step 1: Project作成画面を開く
 
-**Automation Execution > Projects** を開き、「Add」をクリックします。
+**Automation Execution > プロジェクト** を開き、**プロジェクトの作成** をクリックします。
 
 ### Step 2: 入力する
 
 | 項目 | 入力値 |
 |---|---|
-| Name | `aap-training-content` |
-| Organization | 基礎演習1で確認したOrganization |
-| Source Control Type | `Git` |
-| Source Control URL | GitLabプロジェクトのクローンURL（例: `https://gitlab.example.local/aap-training/aap-training-content.git`） |
-| Source Control Branch/Tag/Commit | `main` |
-| Source Control Credential | `gitlab-scm-credential`（Section 2で作成） |
-| Options | `Update Revision on Launch` を有効化（Job Template実行の都度、最新リビジョンを取得する） |
+![ソースコントロールのタイプに Git を選んだあとの入力欄](../images/aap/project-create-git.png)
 
-「Save」をクリックして保存します。
+| 画面上の項目 | 入力値 |
+|---|---|
+| 名前 | `aap-training-content` |
+| 組織 | 基礎演習1で確認した組織 |
+| ソースコントロールのタイプ | `Git` |
+| ソースコントロールの URL | GitLabプロジェクトのクローンURL（例: `https://gitlab.example.local/aap-training/aap-training-content.git`） |
+| Source control branch/tag/commit | `main` |
+| ソースコントロール認証情報 | `gitlab-scm-credential`（Section 2で作成） |
+| オプション | `Update revision on launch` を有効化（Job Template実行の都度、最新リビジョンを取得する） |
+
+**プロジェクトの作成** をクリックして保存します。
 
 ### Step 3: SCM Syncの実行
 

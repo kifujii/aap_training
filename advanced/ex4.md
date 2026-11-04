@@ -14,7 +14,7 @@ Workflowの中で「デプロイ後の確認」を行うため、[sample-content
 
 ### Step 1: Job Templateを作成する
 
-**Automation Execution > Templates** →「Add」→「Add job template」で、以下を入力します。
+**Automation Execution > テンプレート** → **テンプレートの作成** → **ジョブテンプレートの作成** で、以下を入力します。
 
 | 項目 | 入力値 |
 |---|---|
@@ -31,7 +31,7 @@ Workflowの中で「デプロイ後の確認」を行うため、[sample-content
 
 ### Step 1: Workflow Job Template作成画面を開く
 
-**Automation Execution > Templates** →「Add」→「Add workflow template」をクリックします。
+**Automation Execution > テンプレート** → **テンプレートの作成** → **ワークフロージョブテンプレートの作成** をクリックします。
 
 ### Step 2: 入力する
 
@@ -95,7 +95,7 @@ deploy-web-stack --(成功)--> [承認: 本番反映前の承認] --(承認)--> 
 
 ### Step 3: 承認する
 
-Workflow実行画面（または **Automation Execution > Jobs** の該当ジョブ）から、Approvalノードの詳細を開き、「Approve」をクリックします。
+Workflow実行画面、または **Automation Execution > ジョブ** と **管理 > Workflow Approvals** から、Approvalノードの詳細を開き、承認します。
 
 ### Step 4: 残りのノードが実行されることを確認する
 

@@ -21,7 +21,7 @@ AAPでは、Job実行に必要なAnsible本体・Python依存パッケージ・C
 
 ### Step 1: Execution Environments一覧を開く
 
-**Automation Execution > Infrastructure > Execution Environments** を開きます。
+**Automation Execution > Infrastructure > 実行環境** を開きます。
 
 ### Step 2: デフォルトEEの詳細を確認する
 
