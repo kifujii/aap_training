@@ -51,7 +51,7 @@ $ git push -u origin main
 
 ブラウザだけで完結させたい場合は、GitLab Project画面の「Web IDE」を開き、[sample-content/README.md](../sample-content/README.md)の「方法B」の手順に従ってファイルを作成・コミットしてください。
 
-**Note:** push前（またはWeb IDEでのコミット前）に、`inventory.yml` 内のホスト名・IPアドレスを、実際の管理対象ノードの値に書き換えてください（[基礎演習3](../basic-intro/ex3.md)で登録したホストと揃えておくと、後続の演習がわかりやすくなります）。
+**Note:** 経路B（既存サーバ）では、push前に `inventory.yml` の `ansible_host` を実サーバのIPまたはDNS名へ書き換えてください。経路A（EC2を新規作成）では、[操作対象サーバ（AWS）](../aws_targets.md) の構築Jobが返すプライベートIPに、構築後もう一度書き換えてpushします。`ec2_ami_id` などのプレースホルダは `group_vars/all.yml` にあり、構築JobのExtra variablesで上書きできます。
 
 ### Step 4: Personal Access Tokenの発行
 

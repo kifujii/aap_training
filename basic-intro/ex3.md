@@ -27,53 +27,60 @@
 
 ## Section 2: Groupの作成
 
-作成した `training-inventory` の詳細画面に移動すると、**グループ** タブがあります。[事前準備](../prepare_training_environment.md)で確認した管理対象ノードの構成に合わせて、2つのグループを作成します。管理対象ノードがまだない場合は、到達確認できるホストが1台でもあれば、そのホストだけで画面操作の確認を先に進めてください。`web1` などの名前は例です。
+作成した `training-inventory` の詳細画面に移動すると、**グループ** タブがあります。操作対象は `managed`、EC2作成Job専用の実行元は `automation` です。サーバの用意は [操作対象サーバ（AWS）](../aws_targets.md) の経路Aまたは経路Bです。
 
-### Step 1: webグループの作成
+### Step 1: managedグループの作成
 
 **グループ** タブからグループの作成を開き、以下を入力します。
 
 | 項目 | 入力値 |
 |---|---|
-| Name | `web` |
+| Name | `managed` |
 
-### Step 2: loadbalancerグループの作成
+### Step 2: automationグループの作成
 
 同様に、以下を入力してもう1つGroupを作成します。
 
 | 項目 | 入力値 |
 |---|---|
-| Name | `loadbalancer` |
+| Name | `automation` |
 
-**Note:** OSS版Ansibleのインベントリにおける `children:` のグループ分けと同じ考え方です。グループ単位でJob Templateの実行対象を指定したり、Playbook内の `hosts: web` で参照したりできます。
+**Note:** OSS版Ansibleのインベントリにおける `children:` のグループ分けと同じ考え方です。`site.yml` は `hosts: managed` だけを変更します。`automation` は `provision_ec2.yml` が `localhost` でAWS APIを呼ぶためのグループです。
 
 ## Section 3: Hostの追加
 
-### Step 1: webグループへホストを追加する
+### Step 1: managedグループへホストを追加する
 
-`web` グループの詳細画面を開き、**ホスト** タブからホストの作成を開きます。[事前準備](../prepare_training_environment.md)で確認した実際のホスト名・IPアドレスに置き換えて、以下のように追加してください。
+`managed` グループの詳細画面を開き、**ホスト** タブからホストの作成を開きます。
+
+**経路B（既存サーバ）:** 実サーバのIPまたはDNS名を `ansible_host` に書きます。台数が1台なら `srv1` だけで構いません。
+
+**経路A（これからEC2を作る）:** プライベートIPは [基礎演習6](../basic-controller/ex6.md) の構築Jobのあとで分かります。この時点ではホスト名だけ登録し、`ansible_host` は仮の値で構いません。疎通確認は構築Jobのあとに行います。
 
 | Host名 | Variables (YAML) |
 |---|---|
-| `web1` | `ansible_host: 192.0.2.11`<br>`nginx_listen_port: 8080` |
-| `web2` | `ansible_host: 192.0.2.12`<br>`nginx_listen_port: 8080` |
+| `srv1` | `ansible_host: 10.0.1.11` |
+| `srv2` | `ansible_host: 10.0.1.12` |
 
-Variablesの入力欄には、以下のようなYAML形式で入力します。
+Variablesの入力欄には、以下のようなYAML形式で入力します。アドレスは環境の値に置き換えてください。
 
 ```yaml
-ansible_host: 192.0.2.11
-nginx_listen_port: 8080
+ansible_host: 10.0.1.11
 ```
 
-### Step 2: loadbalancerグループへホストを追加する
+### Step 2: automationグループへホストを追加する
 
-同様に、`loadbalancer` グループに以下のホストを追加します。
+経路AでEC2を作る場合だけ、`automation` グループに次のホストを追加します。経路Bでは不要です。
 
 | Host名 | Variables (YAML) |
 |---|---|
-| `lb` | `ansible_host: 192.0.2.14` |
+| `localhost` | `ansible_connection: local` |
 
-**Note:** `nginx_listen_port` のようなホスト変数は、後の演習（[基礎演習6](../basic-controller/ex6.md)、[応用演習4](../advanced/ex4.md)）でPlaybook/テンプレートから `hostvars` 経由で参照します。OSS版Ansibleのホスト変数と同じ考え方です。
+```yaml
+ansible_connection: local
+```
+
+**Note:** `ansible_host` は、AAPがSSHするときの接続先です。後の演習では、この値を `hostvars` から参照して、管理対象の一覧ファイルを作ります（[sample-content/roles/baseline/templates/peers.txt.j2](../sample-content/roles/baseline/templates/peers.txt.j2)）。OSS版Ansibleのホスト変数と同じ考え方です。
 
 ## Section 4: Ad Hoc Commandによる疎通確認
 
@@ -99,25 +106,21 @@ Inventoryとホストの登録が終わったら、Playbookを作らずにモジ
 実行が完了すると、Job詳細画面に以下のような結果が表示されます。
 
 ```
-web1 | SUCCESS => {
+srv1 | SUCCESS => {
     "changed": false,
     "ping": "pong"
 }
-web2 | SUCCESS => {
-    "changed": false,
-    "ping": "pong"
-}
-lb | SUCCESS => {
+srv2 | SUCCESS => {
     "changed": false,
     "ping": "pong"
 }
 ```
 
-すべてのホストが `SUCCESS` と表示されれば、CredentialとInventoryの設定が正しく、AAPから管理対象ノードへ接続できることが確認できました。
+`managed` のホストが `SUCCESS` と表示されれば、CredentialとInventoryの設定が正しく、AAPから管理対象ノードへ接続できることが確認できました。経路Aでインスタンスがまだ無い場合は、ここを飛ばして [基礎演習6](../basic-controller/ex6.md) の構築Jobのあとで戻ってきてください。`localhost` はSSHしないので、この確認の対象にしません。
 
 ### Step 4: グループ単位での疎通確認
 
-同様の手順で、「Limit」を `web` グループのみに絞って再実行してみましょう。`web1`・`web2` のみが対象になることを確認してください。
+同様の手順で、「Limit」を `managed` グループのみに絞って再実行してみましょう。`srv1` と `srv2` が対象になることを確認してください。
 
 ## Section 5: トラブルシューティング
 

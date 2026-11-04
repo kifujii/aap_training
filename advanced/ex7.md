@@ -53,12 +53,12 @@ $ curl -sk -H "Authorization: Bearer ${AAP_TOKEN}" \
     "${AAP_API_ROOT}/job_templates/" | python3 -m json.tool
 ```
 
-レスポンス中の `results` 配列から、[基礎演習6](../basic-controller/ex6.md)で作成した `deploy-web-stack` の `id` を確認してください。
+レスポンス中の `results` 配列から、[基礎演習6](../basic-controller/ex6.md)で作成した `apply-baseline` の `id` を確認してください。
 
 ```json
 {
   "id": 7,
-  "name": "deploy-web-stack",
+  "name": "apply-baseline",
   "...": "..."
 }
 ```
@@ -93,8 +93,8 @@ $ curl -sk -X POST \
     -H "Authorization: Bearer ${AAP_TOKEN}" \
     -H "Content-Type: application/json" \
     -d '{
-          "extra_vars": {"nginx_site_version": "v1.3-api"},
-          "limit": "web"
+          "extra_vars": {"host_timezone": "UTC"},
+          "limit": "srv1"
         }' \
     "${AAP_API_ROOT}/job_templates/7/launch/" | python3 -m json.tool
 ```

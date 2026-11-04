@@ -1,0 +1,22 @@
+---
+# 定期実行用。既定は更新一覧の確認だけで、パッケージは変更しない。
+# 適用するときは Extra variables で patch_apply=true にする。
+- name: Review or apply package updates
+  hosts: managed
+  become: true
+  tasks:
+    - name: List available updates
+      command: dnf check-update
+      register: update_list
+      changed_when: false
+      failed_when: update_list.rc not in [0, 100]
+
+    - name: Show update list
+      debug:
+        msg: "{{ update_list.stdout_lines | default([]) }}"
+
+    - name: Apply updates when requested
+      dnf:
+        name: "*"
+        state: latest
+      when: patch_apply | default(false) | bool

@@ -47,14 +47,14 @@ $ cat << 'EOF' > launch_via_collection.yml
     - controller_auth.yml
 
   tasks:
-    - name: deploy-web-stackを起動する
+    - name: apply-baselineを起動する
       ansible.controller.job_launch:
-        name: deploy-web-stack
+        name: apply-baseline
         controller_host: "{{ controller_host }}"
         controller_oauthtoken: "{{ controller_oauthtoken }}"
         validate_certs: "{{ controller_validate_certs }}"
         extra_vars:
-          nginx_site_version: "v1.4-cli"
+          host_timezone: UTC
       register: launch_result
 
     - name: 起動結果を表示

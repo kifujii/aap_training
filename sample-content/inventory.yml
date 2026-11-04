@@ -1,23 +1,19 @@
 ---
-# AAPのInventory Source（Sourced from a Project）で読み込むYAML形式インベントリ。
-# ホスト名・IPアドレスは演習環境の実際の値に置き換えてください（事前準備ドキュメント参照）。
+# 経路B（既存サーバ）では managed.hosts の ansible_host を実サーバに書き換える。
+# 経路A（EC2新規作成）では、provision_ec2.yml のログに出たプライベートIPを同じ場所へ書く。
+# automation グループは provision_ec2.yml を localhost で実行するためだけに使う。
 all:
   vars:
-    ansible_user: ansible
+    ansible_user: ec2-user
     ansible_port: 22
   children:
-    web:
+    managed:
       hosts:
-        web1:
-          ansible_host: 192.0.2.11
-          nginx_listen_port: 8080
-        web2:
-          ansible_host: 192.0.2.12
-          nginx_listen_port: 8080
-        web3:
-          ansible_host: 192.0.2.13
-          nginx_listen_port: 8080
-    loadbalancer:
+        srv1:
+          ansible_host: 10.0.1.11
+        srv2:
+          ansible_host: 10.0.1.12
+    automation:
       hosts:
-        lb:
-          ansible_host: 192.0.2.14
+        localhost:
+          ansible_connection: local

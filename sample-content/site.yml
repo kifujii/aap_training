@@ -1,14 +1,8 @@
 ---
-# AAPのJob Templateから実行するメインPlaybook。
-# hosts: web / loadbalancer は inventory.yml のグループに対応する。
-- name: Deploy nginx web servers
-  hosts: web
+# 登録済みの managed ホストへ、初期設定を適用する。サーバの作成はしない。
+- name: Apply Linux baseline
+  hosts: managed
   become: true
   roles:
-    - nginx
-
-- name: Deploy haproxy load balancer
-  hosts: loadbalancer
-  become: true
-  roles:
-    - haproxy
+    - baseline
+    - access
