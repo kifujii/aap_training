@@ -1,5 +1,7 @@
 ---
 collections:
-  # provision_ec2.yml だけで使用する。既定のEEに無い場合は応用演習6を参照。
+  # AAP 2.7 の既定EEは ansible-core 2.16 で、同梱の amazon.aws は 10.3.0。
+  # これより新しい版を書くと Project 同期時にEE内の版より優先され、
+  # 2.16 ではモジュールがサポート外になる。
   - name: amazon.aws
-    version: ">=9.0.0"
+    version: "10.3.0"
