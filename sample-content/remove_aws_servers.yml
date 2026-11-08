@@ -1,0 +1,101 @@
+---
+# create_aws_servers.yml で作ったリソースを、同じ resource_prefix で削除する。
+- name: Remove the training network and servers
+  hosts: localhost
+  connection: local
+  gather_facts: false
+
+  tasks:
+    - name: resource_prefix is set
+      ansible.builtin.assert:
+        that:
+          - resource_prefix is defined
+          - resource_prefix is match('^[a-z][a-z0-9-]{0,12}$')
+          - resource_prefix is not match('-$')
+        fail_msg: Extra variables に、作成時と同じ resource_prefix を指定してください。
+
+    - name: Find the VPC
+      amazon.aws.ec2_vpc_net_info:
+        region: "{{ ec2_region }}"
+        filters:
+          "tag:Name": "{{ resource_prefix }}-vpc"
+      register: vpc_info
+
+    - name: Remember the VPC id
+      ansible.builtin.set_fact:
+        vpc_id: "{{ vpc_info.vpcs[0].vpc_id }}"
+      when: vpc_info.vpcs | length > 0
+
+    - name: Remove the Linux server
+      amazon.aws.ec2_instance:
+        state: absent
+        region: "{{ ec2_region }}"
+        filters:
+          "tag:Name": "{{ resource_prefix }}-linux"
+        wait: true
+
+    - name: Remove the Windows server
+      amazon.aws.ec2_instance:
+        state: absent
+        region: "{{ ec2_region }}"
+        filters:
+          "tag:Name": "{{ resource_prefix }}-windows"
+        wait: true
+
+    - name: Wait for network interfaces to detach
+      ansible.builtin.pause:
+        seconds: 20
+      when: vpc_id is defined
+
+    - name: Remove the security group
+      amazon.aws.ec2_security_group:
+        name: "{{ resource_prefix }}-aap"
+        vpc_id: "{{ vpc_id }}"
+        region: "{{ ec2_region }}"
+        state: absent
+      when: vpc_id is defined
+
+    - name: Remove the route table
+      amazon.aws.ec2_vpc_route_table:
+        vpc_id: "{{ vpc_id }}"
+        region: "{{ ec2_region }}"
+        lookup: tag
+        state: absent
+        tags:
+          Name: "{{ resource_prefix }}-rt"
+      when: vpc_id is defined
+
+    - name: Remove the subnet
+      amazon.aws.ec2_vpc_subnet:
+        vpc_id: "{{ vpc_id }}"
+        cidr: "{{ subnet_cidr }}"
+        region: "{{ ec2_region }}"
+        state: absent
+      when: vpc_id is defined
+
+    - name: Remove the internet gateway
+      amazon.aws.ec2_vpc_igw:
+        vpc_id: "{{ vpc_id }}"
+        region: "{{ ec2_region }}"
+        state: absent
+      when: vpc_id is defined
+
+    - name: Remove the VPC
+      amazon.aws.ec2_vpc_net:
+        name: "{{ resource_prefix }}-vpc"
+        cidr_block:
+          - "{{ vpc_cidr }}"
+        region: "{{ ec2_region }}"
+        state: absent
+      when: vpc_id is defined
+
+    - name: Read the AWS account id
+      amazon.aws.aws_caller_info:
+      register: caller
+
+    - name: Remove the notification bucket
+      amazon.aws.s3_bucket:
+        name: "{{ resource_prefix }}-aap-notify-{{ caller.account }}"
+        state: absent
+        force: true
+        region: "{{ ec2_region }}"

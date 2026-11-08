@@ -1,0 +1,17 @@
+# ドメインに参加している Windows へ Kerberos で接続するとき、
+# このファイルを krb5.conf という名前でコピーし、レルムと KDC を自分の環境の値に書き換える。
+# 参加していない Windows（AWSで作るサーバを含む）では使わない。
+[libdefaults]
+    default_realm = EXAMPLE.COM
+    dns_lookup_realm = false
+    dns_lookup_kdc = false
+
+[realms]
+    EXAMPLE.COM = {
+        kdc = dc.example.com
+        admin_server = dc.example.com
+    }
+
+[domain_realm]
+    .example.com = EXAMPLE.COM
+    example.com = EXAMPLE.COM

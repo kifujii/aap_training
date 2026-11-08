@@ -1,139 +1,136 @@
-# 演習 3 - Inventoryとホスト/グループの作成、疎通確認
+# 演習 3 - インベントリと疎通確認
 
-[前に戻る](./ex2.md)
+[演習2](./ex2.md) | [演習4へ](./ex4.md)
 
----
+AAP から Linux と Windows へ接続するための一覧を作ります。
 
-この演習では、AAPの管理対象ホストを定義する **Inventory** を作成し、[演習2](./ex2.md)で作成したCredentialを使って実際にホストへ疎通確認を行います。
+| 自分の状況 | この演習で今やる Section | その次 |
+|---|---|---|
+| サーバがすでにある | 1、2、4、5。Section 3 は飛ばす | [演習4](./ex4.md) は飛ばして [演習5](../basic-controller/ex5.md) |
+| サーバが無い | 1、2、3 だけ。アドレスはまだ無い | [演習4](./ex4.md)。サーバができたら、このページの Section 4 に戻る |
 
-今回はホスト情報を手動で入力する「静的Inventory」の方法を扱います。GitLab上のYAMLファイルから自動的にホスト情報を取り込む方法（Inventory Source）は[基礎演習5](../basic-controller/ex5.md)で扱います。
+## Section 1: インベントリーを作る
 
-## Section 1: Inventoryの作成
+**Automation Execution > Infrastructure > インベントリー** を開き、**インベントリーの作成** > **インベントリーの作成** をクリックします。
 
-### Step 1: Inventory作成画面を開く
-
-**Automation Execution > Infrastructure > インベントリー** を開き、**インベントリーの作成** のドロップダウンから、もう一度 **インベントリーの作成** を選びます。スマートインベントリーや構築済みインベントリーは選びません。
-
-![インベントリーの作成画面。名前と組織が必須](../images/aap/inventory-create.png)
-
-### Step 2: 基本情報を入力する
+![インベントリーの作成。名前と組織の位置](../images/aap/inventory-create.png)
 
 | 項目 | 入力値 |
 |---|---|
 | 名前 | `training-inventory` |
-| 組織 | [演習1](./ex1.md)で確認した組織。この項目は必須です |
+| 組織 | 演習1で確認した組織 |
 
-**インベントリーの作成** をクリックして保存します。
+保存します。
 
-## Section 2: Groupの作成
+## Section 2: グループを作る
 
-作成した `training-inventory` の詳細画面に移動すると、**グループ** タブがあります。操作対象は `managed`、EC2作成Job専用の実行元は `automation` です。サーバの用意は [操作対象サーバ（AWS）](../aws_targets.md) の経路Aまたは経路Bです。
+`training-inventory` の **グループ** タブで、次の2つを作ります。
 
-### Step 1: managedグループの作成
-
-**グループ** タブからグループの作成を開き、以下を入力します。
-
-| 項目 | 入力値 |
+| グループ | 入れるホスト |
 |---|---|
-| Name | `managed` |
+| `linux` | Linux |
+| `windows` | Windows |
 
-### Step 2: automationグループの作成
+## Section 3: AWS用の実行場所（サーバが無い場合だけ）
 
-同様に、以下を入力してもう1つGroupを作成します。
+サーバがすでにある場合は、この Section を飛ばして Section 4 へ進みます。
 
-| 項目 | 入力値 |
-|---|---|
-| Name | `automation` |
+[演習4](./ex4.md) の作成ジョブは、これから作るサーバの中ではなく、AAP の実行環境の中で動きます。そのための一覧を、ここで先に作ります。Linux と Windows は入れません。ソースも追加しません。
 
-**Note:** OSS版Ansibleのインベントリにおける `children:` のグループ分けと同じ考え方です。`site.yml` は `hosts: managed` だけを変更します。`automation` は `provision_ec2.yml` が `localhost` でAWS APIを呼ぶためのグループです。
-
-## Section 3: Hostの追加
-
-### Step 1: managedグループへホストを追加する
-
-`managed` グループの詳細画面を開き、**ホスト** タブからホストの作成を開きます。
-
-**経路B（既存サーバ）:** 実サーバのIPまたはDNS名を `ansible_host` に書きます。台数が1台なら `srv1` だけで構いません。
-
-**経路A（これからEC2を作る）:** プライベートIPは [基礎演習6](../basic-controller/ex6.md) の構築Jobのあとで分かります。この時点ではホスト名だけ登録し、`ansible_host` は仮の値で構いません。疎通確認は構築Jobのあとに行います。
-
-| Host名 | Variables (YAML) |
-|---|---|
-| `srv1` | `ansible_host: 10.0.1.11` |
-| `srv2` | `ansible_host: 10.0.1.12` |
-
-Variablesの入力欄には、以下のようなYAML形式で入力します。アドレスは環境の値に置き換えてください。
-
-```yaml
-ansible_host: 10.0.1.11
-```
-
-### Step 2: automationグループへホストを追加する
-
-経路AでEC2を作る場合だけ、`automation` グループに次のホストを追加します。経路Bでは不要です。
-
-| Host名 | Variables (YAML) |
-|---|---|
-| `localhost` | `ansible_connection: local` |
+1. **インベントリーの作成** で、名前 `aws-runner`、組織は演習1と同じ、で保存する
+2. **ホスト** タブでホストを追加する。名前は `localhost`
+3. ホストの変数に次を入れる
 
 ```yaml
 ansible_connection: local
 ```
 
-**Note:** `ansible_host` は、AAPがSSHするときの接続先です。後の演習では、この値を `hostvars` から参照して、管理対象の一覧ファイルを作ります（[sample-content/roles/baseline/templates/peers.txt.j2](../sample-content/roles/baseline/templates/peers.txt.j2)）。OSS版Ansibleのホスト変数と同じ考え方です。
+`aws-runner` は演習4のジョブテンプレートで選びます。`training-inventory` には足しません。
 
-## Section 4: Ad Hoc Commandによる疎通確認
+ここまで終わったら、Section 4 には進まず [演習4](./ex4.md) を実施してください。演習4が終わったあと、下の Section 4 に戻ります。
 
-Inventoryとホストの登録が終わったら、Playbookを作らずにモジュールを1回だけ実行する **Ad Hoc Command** 機能で疎通確認を行います。OSS版Ansibleの `ansible all -m ping` に相当する操作です。
+## Section 4: ホストを追加する
 
-### Step 1: Run Commandを起動する
+<a id="add-hosts"></a>
 
-`training-inventory` の **ホスト** タブで、対象ホストにチェックを入れ、**Run command** をクリックします。
+サーバが無く、演習4のログにアドレスがまだ無い場合は、ここで止めます。アドレスを控えてから戻ってきてください。
 
-### Step 2: 実行内容を入力する
+**ホスト** タブでホストを追加します。
+
+![ホストの追加。名前、変数の位置](../images/aap/host-add.png)
+
+Linux:
 
 | 項目 | 入力値 |
 |---|---|
-| Module | `ping` |
-| Arguments | （空欄でよい） |
-| Limit | 対象ホストが自動的に設定されていることを確認 |
-| Credential | [演習2](./ex2.md)で作成した `managed-nodes-ssh` を選択 |
+| 名前 | `lin1` |
+| 変数 | 下の YAML |
 
-最後の実行ボタン（**Launch** または **Next** のあとに出る実行）をクリックします。
-
-### Step 3: 実行結果を確認する
-
-実行が完了すると、Job詳細画面に以下のような結果が表示されます。
-
-```
-srv1 | SUCCESS => {
-    "changed": false,
-    "ping": "pong"
-}
-srv2 | SUCCESS => {
-    "changed": false,
-    "ping": "pong"
-}
+```yaml
+ansible_host: 203.0.113.10
 ```
 
-`managed` のホストが `SUCCESS` と表示されれば、CredentialとInventoryの設定が正しく、AAPから管理対象ノードへ接続できることが確認できました。経路Aでインスタンスがまだ無い場合は、ここを飛ばして [基礎演習6](../basic-controller/ex6.md) の構築Jobのあとで戻ってきてください。`localhost` はSSHしないので、この確認の対象にしません。
+`203.0.113.10` は例です。自分の Linux のアドレスに置き換えてから保存し、グループ `linux` に入れます。AWS で作った場合は、演習4のログの「Linuxの接続先」です。
 
-### Step 4: グループ単位での疎通確認
+Windows（ドメインに参加していない場合。AWS で作ったサーバはこちら）:
 
-同様の手順で、「Limit」を `managed` グループのみに絞って再実行してみましょう。`srv1` と `srv2` が対象になることを確認してください。
+| 項目 | 入力値 |
+|---|---|
+| 名前 | `win1` |
+| 変数 | 下の YAML |
 
-## Section 5: トラブルシューティング
+```yaml
+ansible_host: 203.0.113.11
+ansible_connection: psrp
+ansible_psrp_auth: ntlm
+ansible_psrp_protocol: http
+ansible_psrp_port: 5985
+ansible_psrp_cert_validation: ignore
+```
 
-Ad Hoc Commandが失敗する場合は、以下を確認してください。
+アドレスを自分の値に置き換え、グループ `windows` に入れます。認証は NTLM です。接続プラグインは `psrp` にします。AWS で作った場合のアドレスは、ログの「Windowsの接続先」です。
 
-* Host変数の `ansible_host`（IPアドレス）が正しいか
-* Credentialのユーザー名・パスワード（またはSSH秘密鍵）が正しいか
-* AAPの実行環境（Execution Node）から管理対象ノードへネットワーク的に到達可能か（ファイアウォール、セキュリティグループ等）
-* 管理対象ノードのSSHサービスが起動しているか
-* Jobの詳細ログ（Output）にエラーメッセージが出ていないか
+### ドメインに参加している Windows の場合
 
----
+上の変数の代わりに、次を使います。認証は Kerberos です。ユーザー名は演習2の `windows-psrp` に入れた `ユーザー@レルム` です。AWS で作った Windows は、この節ではなく NTLM の変数を使います。
 
-ここまでで、AAPの基本操作（ログイン、Credential、Inventory、疎通確認）が完了しました。次は、GitLabと連携したProjectの作成に進みます。
+```yaml
+ansible_host: 203.0.113.11
+ansible_connection: psrp
+ansible_psrp_auth: kerberos
+ansible_psrp_protocol: https
+ansible_psrp_port: 5986
+ansible_psrp_cert_validation: ignore
+```
 
-[基礎演習（Project・Job Template）へ進む](../basic-controller/ex4.md)
+レルムと KDC は、[sample-content/krb5.conf.example](../sample-content/krb5.conf.example) を `krb5.conf` という名前で後の演習のプロジェクトに置きます。置き方は [演習5](../basic-controller/ex5.md) でファイルを追加するときで構いません。中の `EXAMPLE.COM` と `dc.example.com` は、自分の環境の値に書き換えます。
+
+Kerberos の場合、アドホック実行では `krb5.conf` を渡せません。`win_ping` は飛ばし、[演習5](../basic-controller/ex5.md) で `krb5.conf` を置いたあと、[演習7](../basic-controller/ex7.md) の `write-note-windows` が成功すれば接続できています。NTLM の場合は、このまま Section 5 で `win_ping` を実行します。
+
+## Section 5: 疎通確認
+
+ジョブテンプレートに認証情報を付けるのは [演習7](../basic-controller/ex7.md) です。この演習の疎通確認では、実行時に認証情報を選びます。
+
+`training-inventory` の **ホスト** タブを開き、`lin1` にチェックを入れます。**Run command** をクリックします。
+
+![Run command。モジュール名、認証情報、起動ボタンの位置。制限の欄は、選んだホスト名になる](../images/aap/run-command.png)
+
+| 項目 | Linux | Windows |
+|---|---|---|
+| モジュール | `ping` | `ansible.windows.win_ping` |
+| 認証情報 | `linux-ssh` | `windows-psrp` |
+
+起動し、`SUCCESS` と表示されることを確認します。Windows を NTLM で接続する場合は、`lin1` のチェックを外し、`win1` だけを選んでから実行します。1つの実行に付けられる Machine 認証情報は1つなので、Linux と Windows は別々に確認します。Kerberos の場合は、ここでの `win_ping` は飛ばします。
+
+`ping` が `SUCCESS` なら、SSH のユーザー名とパスワード、アドレスが合っています。`win_ping` が `SUCCESS` なら、PSRP の認証とポートが合っています。
+
+失敗したときの確認箇所:
+
+* `ansible_host` が、控えたアドレスと一致しているか
+* 認証情報のユーザー名とパスワード
+* Windows の `ansible_psrp_auth` が、参加状況（NTLM か Kerberos か）と一致しているか
+* ファイアウォールが、AAP から TCP 22（Linux）または 5985（NTLM）または 5986（Kerberos）を許可しているか
+
+## 次
+
+Section 5 まで終わったら、[演習5](../basic-controller/ex5.md) へ進みます。サーバが無い人で Section 3 で止まっている場合は、先に [演習4](./ex4.md) です。

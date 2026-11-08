@@ -3,5 +3,7 @@ collections:
   # AAP 2.7 の既定EEは ansible-core 2.16 で、同梱の amazon.aws は 10.3.0。
   # これより新しい版を書くと Project 同期時にEE内の版より優先され、
   # 2.16 ではモジュールがサポート外になる。
+  # このファイルは、AWSでサーバを作る場合だけ GitLab に置く。
+  # インターネットへ出ない環境で同期すると、コレクションの取得に失敗する。
   - name: amazon.aws
     version: "10.3.0"

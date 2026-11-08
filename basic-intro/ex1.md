@@ -39,7 +39,7 @@ AAP 2.5以降では、従来個別に提供されていたAutomation Controller�
 | ナビゲーショングループ | 主なメニュー | 役割 |
 |---|---|---|
 | **Automation Execution** | ジョブ、テンプレート、スケジュール、プロジェクト、Infrastructure（インベントリー、実行環境、認証情報）、管理（Notifiers） | Playbookの実行管理。本資料の中心となる機能群（旧 Automation Controller 相当） |
-| **Automation Decisions** | ルールブックのアクティベーション、決定環境、Event Streams | イベント駆動自動化（EDA）。[応用演習9](../advanced/ex9.md)以降で扱う |
+| **Automation Decisions** | ルールブックのアクティベーション、決定環境、Event Streams | イベント駆動自動化（EDA）。[応用演習7](../advanced/ex7.md)以降で扱う |
 | **Access Management** | 組織、チーム、ユーザー、API Tokens | RBACとAPIトークン。[応用演習1](../advanced/ex1.md)で詳しく扱う |
 
 **Note:** AAP 2.4以前では、Automation ControllerとEDA Controllerが別々のURL・別々のUIで提供されていました。2.5以降はこれらが統合され、同一画面内でシームレスに切り替えられるようになっています。バージョンによって画面構成が異なる場合がありますが、本資料ではオブジェクトの名称（Project、Inventory、Job Templateなど）を軸に説明するため、多少メニューの配置が異なっても読み替えて進めてください。

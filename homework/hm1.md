@@ -1,239 +1,173 @@
 # 宿題
 
-今までの基礎演習・応用演習で学んだことを使って、Linuxサーバの初期設定から定常運用までの流れをAAP上に組み立ててもらいます。
+基礎演習と応用演習で作ったものを、1台の Linux（`lin1`）と1台の Windows（`win1`）に対して、課題1から順に足していきます。各課題の「完了」を全部満たしたら次へ進みます。
 
-みなさんに構築してもらったAAP構成（Organization/Credential/Inventory/Project/Job Template/Workflow等）とGitLabリポジトリの内容をレビューさせていただいて、研修が全て終了となります。
+サーバがすでにある場合は [演習4](../basic-intro/ex4.md) を使わず、手元のアドレスを `inventory.yml` に書きます。サーバが無い場合は演習4を済ませ、ログに出たアドレスを使います。`requirements.yml` を置くのは、AWS で作る場合だけです。
 
-## シナリオ
+ファイルの編集は GitLab の Web IDE で行い、AAP のプロジェクトを同期してからジョブを起動します。
 
-あなたはインフラエンジニアとして、社内のLinuxサーバをAAPで初期設定し、増設・点検・権限分離・定期確認までを同じ仕組みに載せることになりました。
+## 課題1 - note.txt を両方のOSに書く
 
-最初は時刻同期、基本パッケージ、ログインバナー、SSHの接続制限から始めます。その後、台数増加、適用前の承認、管理ユーザーのパスワード保護、失敗通知、定期点検、ディスク逼迫を想定した再適用へ広げます。Webサイトの公開やロードバランサーは対象にしません。
+### やること
 
-各課題は前の課題で作ったAAP構成・GitLabリポジトリの内容に機能を追加していく形式です。Project/Job Templateの構成は**壊さず・増やしすぎず**、必要な機能を既存のオブジェクトに組み込んでいってください。
+1. `inventory.yml` の `lin1.ansible_host` と `win1.ansible_host` を、自分のアドレスにする。サンプルの `203.0.113.10` と `203.0.113.11` のままでは完了にしない
+2. Windows の接続変数を、自分の環境に合わせる
+   * ドメインに参加していない、または AWS で作った: `ansible_psrp_auth: ntlm`、ポート `5985`、プロトコル `http`
+   * ドメインに参加している: `ansible_psrp_auth: kerberos`、ポート `5986`、プロトコル `https`。`krb5.conf` のレルムと KDC を自分の値にする
+3. 認証情報 `linux-ssh` と `windows-psrp`、プロジェクト `aap-training-content`、インベントリー `training-inventory`、ソース `gitlab-inventory` を作る
+4. ジョブテンプレート `write-note-linux` と `write-note-windows` を作り、それぞれ1回起動する
+5. もう一度ずつ起動する
 
-サーバがまだ無い場合は [操作対象サーバ（AWS）](../aws_targets.md) の経路AでEC2を作成します。すでにサーバがある場合は経路Bで、`inventory.yml` の `ansible_host` にそのIPまたはDNS名を書きます。
+### 完了
 
-## 成果物の構成
-
-最終的に以下の構成で提出してください。課題を進めるごとに、GitLabリポジトリのファイルとAAP上のオブジェクトが増えていきます。
-
-### GitLabリポジトリ（`aap-training-content`、[基礎演習4](../basic-controller/ex4.md)で作成したもの）
-
-```
-aap-training-content/
-├── inventory.yml                  # 課題1〜2で更新
-├── group_vars/all.yml
-├── site.yml                       # 課題1の初期設定
-├── verify.yml                     # 課題3で点検項目を追加
-├── patch.yml                      # 課題5の更新確認に使ってよい
-├── provision_ec2.yml              # 経路Aを選んだ場合
-├── secrets.yml                    # vault暗号化済み（課題4で追加）
-├── rulebooks/
-│   └── auto_recovery.yml          # 課題5で追加
-└── roles/
-    ├── baseline/
-    └── access/
-```
-
-### AAP上のオブジェクト
+* `lin1` の `/var/tmp/aap-training/note.txt` が、次の3行である。アドレスの行は、inventory に書いた値と一致する
 
 ```
-Organization: （研修用に指定されたもの）
-Credentials: managed-nodes-ssh, gitlab-scm-credential, vault-credential
-             （経路Aを実施した場合は aws-training も）
-Project: aap-training-content
-Inventory: training-inventory（Inventory Source経由）
-Job Templates: apply-baseline, verify-hosts
-               （経路Aを実施した場合は provision-ec2 も）
-Workflow Job Templates: baseline-workflow
-Teams: infra-ops-team（課題4で作成）
-Notification Templates: job-failure-webhook
-Rulebook Activations: auto-recovery-activation（課題5で作成）
+hostname: lin1
+address: <lin1 の ansible_host>
+note: managed by AAP
 ```
 
-## 宿題のルール
+* `win1` の `C:\Users\Public\aap-training\note.txt` が、同じ形で1行目だけ `hostname: win1` である
+* 2回目のジョブで、note.txt を書くタスクの `changed` が `0` である
+* `verify-note-linux` と `verify-note-windows` が成功する
 
-* **生成AI（ChatGPT、GitHub Copilot、Claude等）の使用は禁止です。** 自分の手でAAPの設定を行い、自分の頭で考えてください。公式ドキュメントの参照はもちろんOKです。
-* 本資料で扱っていない**OSS版Ansibleのモジュール・構文**（`assert`, `command`, `wait_for` など）を使う課題があります。これらの文法自体は[konono/ansible_training_2026](https://github.com/konono/ansible_training_2026)（参考元のOSS版教材）の応用演習で解説されているので、必要に応じて参照してください。
+## 課題2 - ホストを1台増やす
 
-## コーディング規約
+増えたホストにも、同じ `note.txt` が書かれることを確認します。
 
-本宿題では以下の規約に従ってください。
+### サーバがすでにある場合
 
-* `site.yml` の各Playには `become: true` を明示的に指定すること
-* roleの適用は `roles:` ディレクティブを使うこと
-* AAPのCredential名は、種類がひと目でわかるように命名すること（例: `<用途>-<Credential Type>`）
-* AAPのJob Template名は、動詞＋対象の形式で命名すること（例: `apply-baseline`）
+3台目の Linux があるときは、Web IDE で `linux` グループに次を追加します。アドレスだけ自分の3台目にします。Playbook は変えません。
 
----
+```yaml
+lin2:
+  ansible_host: 203.0.113.12
+```
 
-## 課題 1 — 初期設定の適用
+3台目が無い場合は、ホスト追加の代わりに次を行います。`inventory.yml` の `lin1` に、`ansible_host` と同じ階層で `note_owner: <自分の名前>` を足します。`write_note_linux.yml` の `note.txt` の `content` には、`note:` の次の行として次を足します。
 
-[基礎演習4〜7](../basic-controller/ex7.md)で学んだ内容を使って、GitLab連携・Inventory Source・Job Templateの基本構成を作ってください。
+```
+owner: {{ note_owner | default('none') }}
+```
 
-### 課題1の前提条件
+再実行して、その行が `note.txt` に出れば、この読み替えの完了です。以降の完了条件の `lin2` は、`lin1` の `owner:` 行に読み替えます。
 
-* 経路AならEC2を作成できるAWSアカウント、経路BならSSHできる既存サーバがあること（[事前準備](../prepare_training_environment.md)）
-* 課題に取り組む前に、**設計ドキュメント**を作成すること（形式: ppt or Markdown）
+### AWSで作った場合
 
-#### 設計ドキュメントに含める内容
+Web IDE で `create_aws_servers.yml` の Linux を作るタスクをコピーし、タスク名と `name` を変えます。
 
-* 構成の概要（AAPのObjectと、GitLab・管理対象ノードの関係。経路Aを選ぶ場合はAWS APIでEC2を作る位置も書く）
-* 適用する設定の一覧（タイムゾーン、パッケージ、chronyd、MOTD、sshdの接続制限）
-* AAP上で作成するOrganization/Credential/Project/Inventory/Job Templateの一覧
-* GitLabリポジトリのディレクトリ構成（上記の「成果物の構成」を参考に）
-* Inventory Sourceで読み込むYAMLインベントリの設計（どの値をホスト変数にするか）
+* タスク名: `Create the second Linux server`
+* `name`: `"{{ resource_prefix }}-linux-2"`
+* ユーザーデータはそのまま（ログインユーザーは同じ `ansible`）
 
-### 要件
+`create-aws-servers` を、演習4と同じ `resource_prefix` とパスワードで再実行します。ログに `linux-2` のアドレスが出ます。`inventory.yml` に `lin2` を足し、そのアドレスを `ansible_host` にします。
 
-* 経路Aまたは経路Bのどちらかで、`managed` グループのホストがAAPからSSHできる状態にすること
-* [sample-content](../sample-content/) の `baseline` role と `access` role を使い、`site.yml` から呼び出すこと。設定項目を1つ以上、自分で追加してよい
-* Job Template `apply-baseline` の **テンプレートの起動** 1回で、対象ホストのタイムゾーン、chronyd、`/etc/motd`、`/etc/ssh/sshd_config.d/99-aap-training.conf` がそろうこと
-* 同じJobを再実行したとき、変更が無いタスクは `ok` または `skipped` になり、`changed` が残らないこと
+### 完了
 
-<details>
-<summary>ヒント</summary>
+* ソース `gitlab-inventory` を同期し、ホスト一覧に `lin2` がある
+* `write-note-linux` を起動し、`lin1` と `lin2` の両方に `/var/tmp/aap-training/note.txt` がある
+* `lin2` の1行目は `hostname: lin2` である
+* `verify-note-linux` が `lin1` と `lin2` の両方で成功する
 
-**参考演習:**
-* 対象サーバの用意 → [操作対象サーバ（AWS）](../aws_targets.md)
-* Projectの作成、Inventory Source → [基礎演習4](../basic-controller/ex4.md)、[基礎演習5](../basic-controller/ex5.md)
-* Job Templateの作成 → [基礎演習6](../basic-controller/ex6.md)
+## 課題3 - WorkflowとSurvey
 
-</details>
+### やること
 
----
+1. `write-note-linux` と `write-note-windows` の Survey に、質問 `ファイルに書くメモを入力してください`、変数 `training_note`、既定値 `managed by AAP` を作る
+2. ワークフロー `note-workflow` を、次の順で作る
+   * 開始から `write-note-linux` と `write-note-windows`
+   * 両方の成功の先に承認ノード。名前 `note-review`。説明 `note.txt を確認したら承認してください`
+   * 承認の成功から `verify-note-linux` と `verify-note-windows`
+3. `note-workflow` を起動する。Survey が出たら `homework note` と入力する
+4. **Workflow Approvals** で `note-review` を承認する
 
-## 課題 2 — サーバ増設
+### 完了
 
-管理対象を1台増やします。Playbookにホスト名を直接書き足すのではなく、インベントリの変更だけで増設が終わる状態にしてください。
+* 承認するまで verify のジョブが始まっていない
+* 承認後、4つのジョブが成功し、ワークフローが成功で終わる
+* `lin1` の note.txt の `note:` が `homework note` である
+* `win1` の note.txt の `note:` も `homework note` である
+* 確認後、もう一度ワークフローを起動してメモを `managed by AAP` に戻してある
 
-### 要件
+## 課題4 - 権限、Vault、通知
 
-* GitLab上の `inventory.yml` に新しいホスト（例: `srv3`）を追加する。経路Aで台数を増やす場合は、`ec2_instance_names` に同じ名前を足して `provision-ec2` を再実行し、払い出されたIPを `ansible_host` に書く
-* **AAPの画面からInventoryを直接編集するのではなく**、GitLabへのpush→Inventory SourceのSync→`apply-baseline` の実行、という手順だけで増設が完了する状態にすること
-* 増設後、既存ホストの `/etc/aap-training-peers` にも新しいホストが含まれること
+### RBAC
 
-### 取り組み方
+1. チーム `ops-team` を作る
+2. `write-note-linux`、`write-note-windows`、`note-workflow` に、`ops-team` の **Execute** を付ける
+3. プロジェクト `aap-training-content` とインベントリー `training-inventory` には **Read** だけを付ける
+4. `ops-team` のユーザーでログインする
 
-まず `inventory.yml` にホストを追加してGitLabにpushし、Inventory SourceをSyncしてから `apply-baseline` を実行してください。
+完了:
 
-* うまくいった場合 → 新しいホストに初期設定が入り、既存ホストの peers ファイルにもそのホストが追加されていれば完了です
-* peers ファイルが更新されない場合 → [sample-content/roles/baseline/templates/peers.txt.j2](../sample-content/roles/baseline/templates/peers.txt.j2) が `groups['managed']` と `hostvars` から一覧を作っているかを確認してください。ホスト名をテンプレートへ直接書いていないかを見ます
+* そのユーザーは `write-note-linux` を起動できる
+* そのユーザーはテンプレートの Playbook 名を変更できない
 
-### 確認ポイント
+### Vault
 
-* `inventory.yml` の変更、push、Inventory SourceのSync、Job Templateの実行だけで増設が完了しているか
-* peers ファイルが `{% for %}` で `managed` グループを列挙しているか
+1. AAP サーバで `secrets.yml` を作る。中身は次の1行で、`TrainingSecret1` は自分の英数字に変えてよい
 
-<details>
-<summary>ヒント</summary>
+```yaml
+training_secret: TrainingSecret1
+```
 
-**参考演習:**
-* Inventory Sourceとホスト変数 → [基礎演習5](../basic-controller/ex5.md)
-* テンプレート内の `{% for %}` と `hostvars` → [konono/ansible_training_2026](https://github.com/konono/ansible_training_2026) 応用演習6・9
+2. `ansible-vault encrypt` で暗号化し、暗号文だけを Web IDE で `secrets.yml` としてコミットする。平文のファイルはコミットしない
+3. 認証情報 `vault-training` に、encrypt のときに入力したパスワードを入れる
+4. `write-note-linux` と `write-note-windows` に `vault-training` を追加し、変数 `training_use_vault: true` を付けて起動する
 
-</details>
+完了:
 
----
+* Linux の `/var/tmp/aap-training/secret.txt` が、自分が書いた `training_secret` の値と一致し、モードが `0600` である
+* Windows の `C:\Users\Public\aap-training\secret.txt` も同じ値である
+* ジョブログに、その値がそのまま出ていない
 
-## 課題 3 — Workflow化と点検
+### 通知
 
-初期設定のたびに、人が内容を確認してから点検できるようにしてください。
+自分の環境に合わせて、どちらか一方を行います。
 
-### 要件
+サーバがすでにある場合:
 
-* [応用演習4](../advanced/ex4.md)を参考に、`apply-baseline` → 承認（Approval） → `verify-hosts` という **Workflow Job Template** `baseline-workflow` を作ること
-* `verify.yml` に点検を1つ以上追加し、失敗したらPlaybookが停止すること。サンプルにあるタイムゾーン、chronyd、ディスク空きに加えて、次のいずれかを `assert` で確認する
-  * `/etc/ssh/sshd_config.d/99-aap-training.conf` に `MaxAuthTries` の設定値があること
-  * `chronyc tracking` の結果に `Leap status` が含まれること
-* [基礎演習7](../basic-controller/ex7.md)を参考に、`apply-baseline` のSurveyで `host_timezone` を実行者が入力できるようにすること。確認が終わったら `Asia/Tokyo` に戻すこと
+1. Notifier `note-mail` を作り、Notification type は `メール`、ホストは環境内のメールサーバ、Recipient list は自分が見られるアドレス、Sender email は差出人、Port は配布されたポート（無指定なら `25`）にする
+2. `write-note-linux` の失敗時の通知に `note-mail` を付ける
+3. 制限に `lin-missing` と入れて起動し、失敗させる
+4. メールが届いたら、制限を空に戻して成功させる
 
-<details>
-<summary>ヒント</summary>
+完了: 失敗を知らせるメールが1通届き、その後のジョブは成功している。
 
-* `assert` と `command` の書き方は、サンプルの [verify.yml](../sample-content/verify.yml) と [konono/ansible_training_2026](https://github.com/konono/ansible_training_2026) の応用演習1・3が参考になります。
+AWS で作った場合:
 
-**参考演習:**
-* Workflow Job Template、Approvalノード → [応用演習4](../advanced/ex4.md)
-* Survey → [基礎演習7](../basic-controller/ex7.md)
+1. ジョブテンプレート `notify-aws` を作る。インベントリーは `aws-runner`、Playbook は `notify_aws.yml`、認証情報は `aws-training`、変数の `resource_prefix` は演習4と同じ値
+2. 変数 `notify_message: homework notification` を足して起動する
 
-</details>
+完了: ログに `bucket:`、`object: notification.txt`、`contents: homework notification` の3つが出ている。
 
----
+## 課題5 - スケジュール
 
-## 課題 4 — セキュリティ対応
+### やること
 
-既存の構成に、権限分離、パスワードの暗号化、失敗通知を追加してください。
+1. `verify-note-linux` に、名前 `daily-verify-linux`、毎日 `07:00` のスケジュールを作る
+2. `verify-note-windows` に、名前 `daily-verify-windows`、毎日 `07:00` のスケジュールを作る
+3. 動作確認用に、開始時刻を数分後にした予定を1つ追加し、ジョブ一覧に verify が増えることを見る
+4. 動作確認用の予定は削除し、毎日 07:00 の2つだけを残す
 
-### 要件
+完了:
 
-**a) 権限の最小化** — RBAC設計
+* スケジュール一覧に `daily-verify-linux` と `daily-verify-windows` があり、両方とも有効である
+* 書く方の `write-note-linux` と `write-note-windows` にはスケジュールが無い
 
-[応用演習1](../advanced/ex1.md)を参考に、`infra-ops-team` を作成し、以下の方針でロールを割り当てること。
+### 任意: EDA
 
-* `infra-ops-team` には `apply-baseline` と `baseline-workflow` の `Execute` ロールのみ付与する（編集権限は付与しない）
-* `aap-training-content` Projectには `Read` ロールのみ付与する
+[応用演習8](../advanced/ex8.md) まで終わっている場合だけ実施します。
 
-**b) 秘密情報の保護** — Vault Credential
+Event Stream `check-webhook-stream` へ、次の JSON を送ります。
 
-[応用演習2](../advanced/ex2.md)を参考に、ローカル管理ユーザーのパスワードを `secrets.yml` に書き、`ansible-vault encrypt` で暗号化すること。平文のパスワードとVaultパスワードはリポジトリに置かないこと。`apply-baseline` から `vault-credential` で復号し、ユーザーが `wheel` に所属する状態にすること。暗号化前の形は [example_config/secrets.yml.example](./example_config/secrets.yml.example) を参照してください。
+```json
+{"status":"success","host":"lin1"}
+```
 
-**c) 失敗時の通知** — Notification
+完了: `verify-note-linux` が自動で始まり、制限が `lin1` である。確認後、Activation `note-webhook-activation` を無効にしてある。
 
-[応用演習3](../advanced/ex3.md)を参考に、`apply-baseline` と `baseline-workflow` の両方に、失敗時（Error）の通知を設定すること。
+## 暗号化前の見本
 
-<details>
-<summary>ヒント</summary>
-
-**参考演習:**
-* a) RBACとTeam/ロール設計 → [応用演習1](../advanced/ex1.md)
-* b) ansible-vaultとVault Credential → [応用演習2](../advanced/ex2.md)
-* c) Notification Template → [応用演習3](../advanced/ex3.md)
-
-</details>
-
----
-
-## 課題 5 — 本番運用に向けた仕上げ
-
-定期点検と、イベントを受けた再適用を追加してください。
-
-### 要件
-
-**a) 定期的な健全性チェック** — Schedule
-
-[応用演習3](../advanced/ex3.md)を参考に、`verify-hosts` を定期実行するScheduleを設定すること。設定変更を伴う `apply-baseline` ではなく、点検用のJob Templateに付けること。
-
-**b) 更新の有無を確認するJob** — 任意
-
-[sample-content/patch.yml](../sample-content/patch.yml) を実行するJob Templateを作り、更新一覧だけを表示できることを確認すること。パッケージの適用（`patch_apply=true`）は、承認を挟むWorkflowにしない限り実行しないこと。
-
-**c) イベント駆動による再適用** — EDA
-
-[応用演習9〜10](../advanced/ex9.md)を参考に、次を満たすRulebook（`rulebooks/auto_recovery.yml`）とRulebook Activationを作ること。
-
-* Webhookで `{"status": "disk_low", "host": "srv1"}` 形式のイベントを受信する
-* 受信したら、`host` の値を `Limit` にして `apply-baseline` を再実行する
-* Rulebook ActivationのOutputログに、受信したイベント内容が記録されること
-
-<details>
-<summary>ヒント</summary>
-
-**参考演習:**
-* Schedule → [応用演習3](../advanced/ex3.md)
-* Rulebookの基本構造、`run_job_template`アクション → [応用演習9](../advanced/ex9.md)、[応用演習10](../advanced/ex10.md)
-
-</details>
-
----
-
-## 付録: 環境情報
-
-管理対象のホスト名、IPアドレス、認証情報は[事前準備](../prepare_training_environment.md)と[操作対象サーバ（AWS）](../aws_targets.md)で確認した値を使ってください。資料中の `srv1`、`srv2`、`10.0.1.11` は例です。
-
-| 項目 | 内容 |
-|---|---|
-| AAPのURL / ログイン情報 | [事前準備](../prepare_training_environment.md)参照 |
-| GitLabのURL / ログイン情報 | [事前準備](../prepare_training_environment.md)参照 |
-| 管理対象 | `managed` グループのLinuxサーバ。課題2で1台追加する |
+[example_config/secrets.yml.example](./example_config/secrets.yml.example) は見本です。このファイルは暗号化しないままコミットしません。課題4で作る `secrets.yml` は、暗号化したものだけを GitLab に置きます。

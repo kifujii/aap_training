@@ -1,74 +1,99 @@
-# 演習 5 - Inventory Source（SCM経由のYAMLインベントリ）
+# 演習 5 - GitLabにPlaybookを置く
 
-[前に戻る](./ex4.md)
+[演習3](../basic-intro/ex3.md) | [演習6へ](./ex6.md)
 
----
+Playbook は GitLab に置き、AAP のプロジェクトから読みます。ファイルの作成と編集は Web IDE で行います。サーバが無い場合は、演習4と、演習3の Section 4 まで終わってから、この演習に入ります。
 
-この演習では、[基礎演習3](../basic-intro/ex3.md)で手動登録したInventoryに代えて、GitLab上のYAML形式インベントリファイル（`sample-content/inventory.yml`）から自動的にホスト情報を取り込む **Inventory Source** を設定します。
+| 自分の状況 | この演習でやること |
+|---|---|
+| サーバがすでにある | プロジェクトを新規作成し、下のファイルを置く。`requirements.yml` は置かない |
+| 演習4でプロジェクトを作った | 新規作成はしない。同じプロジェクトに、まだ無いファイルを Web IDE で追加する。`requirements.yml` は置いたままにする |
 
-## Section 1: Inventory Sourceの考え方
+## Section 1: プロジェクトを作る
 
-| 方式 | 概要 | 向いているケース |
-|---|---|---|
-| **手動登録**（基礎演習3） | AAPの画面からHost/Groupを1件ずつ入力する | 台数が少ない、頻繁に変わらない環境 |
-| **Inventory Source: Sourced from a Project** | SCM上のYAML/INIインベントリファイルをAAPが読み込み、Host/Groupを自動的に構築する | OSS版Ansibleのインベントリをそのまま使い回したい、台数が多い、Gitで変更履歴を管理したい |
+演習4で `aap-training-content` を作った場合は、Section 2 へ進んでください。
 
-Inventory SourceはSCM以外にも、クラウドAPIからホストを取得する方式があります。EC2のタグで取り込む手順は [操作対象サーバ（AWS）](../aws_targets.md) の任意節です。この演習は、GitLab上のYAMLを読む **Sourced from a Project** を作ります。経路Bの既存サーバも、EC2作成後にIPを書き戻した経路Aも、ここは同じです。
+GitLab にログインし、**Create new…** > **New project/repository** > **Create blank project** を開きます。
 
-## Section 2: Inventory Sourceの作成
-
-### Step 1: Inventoryの詳細画面を開く
-
-**Automation Execution > Infrastructure > インベントリー** から、[基礎演習3](../basic-intro/ex3.md)で作成した `training-inventory` を開きます。
-
-### Step 2: ソースタブで新規Sourceを追加する
-
-**ソース** タブからソースの追加を開きます。
-
-### Step 3: 入力する
+![Create blank project。Web IDE だけでファイルを置く場合は README 初期化を付けたままでよい](../images/gitlab/blank-project.png)
 
 | 項目 | 入力値 |
 |---|---|
-| Name | `gitlab-inventory-source` |
-| Source | `Sourced from a Project` |
-| Project | [基礎演習4](./ex4.md)で作成した `aap-training-content` |
-| Inventory File | `inventory.yml`（Projectの同期後にドロップダウンから選択可能） |
-| Update Options | `Overwrite`、`Overwrite Variables`、`Update on Launch` を有効化 |
+| Project name | `aap-training-content` |
+| Visibility Level | `Private` |
+| Initialize repository with a README | 付けたまま |
+| SAST / Secret Detection | オフのまま |
 
-**Note:** `Overwrite` を有効にすると、Sync時にSource由来でないHost/Groupが削除されます。[基礎演習3](../basic-intro/ex3.md)で手動登録したホストは、`inventory.yml` に同名で書いてあれば同期後も残ります。YAMLに無いホストは消えます。経路AでまだプライベートIPを書き戻していない場合は、サンプルの `10.0.1.11` などの仮アドレスのまま同期されます。構築Jobのあとで `ansible_host` を直して、もう一度同期してください。
+**Create project** のあと、HTTPS のクローン URL を控えます。
 
-画面下部の作成ボタンをクリックして保存します。項目名が英語のままの環境では、Source は `Sourced from a Project`、更新オプションは `Overwrite` / `Overwrite variables` / `Update on launch` です。
+## Section 2: Web IDEでファイルを置く
 
-### Step 4: Syncの実行
+プロジェクト画面の右上 **Code** を開き、**Web IDE** をクリックします。メニューが **Edit** の環境では、その中の **Web IDE** を選びます。SSH キーの案内が出ても、この演習では使いません。最初に Welcome が出たら閉じて、左のファイルを開きます。
 
-作成した `gitlab-inventory-source` の行にある同期アイコンをクリックし、Syncを実行します。
+![Web IDE。左の一覧でファイルを開き、左端の枝のアイコンが Source Control。中央の README は GitLab が最初に置く見本で、演習のファイルは別に作る](../images/gitlab/web-ide.png)
 
-## Section 3: 結果の確認
+左のファイル一覧で新規ファイルを作り、[sample-content/](../sample-content/) から次を貼り付けます。
 
-### Step 1: Host一覧を確認する
+| ファイル | サーバがすでにある | AWSで作った |
+|---|---|---|
+| `inventory.yml` | 置く。`ansible_host` を自分のアドレスにする | 置く。演習4で控えたアドレスにする |
+| `group_vars/all.yml` | 置く | 演習4で置いていればそのままでよい |
+| `write_note_linux.yml` | 置く | 置く |
+| `write_note_windows.yml` | 置く | 置く |
+| `verify_note_linux.yml` | 置く | 置く |
+| `verify_note_windows.yml` | 置く | 置く |
+| `notify_aws.yml` | 置かない | 置く |
+| `create_aws_servers.yml` / `remove_aws_servers.yml` | 置かない | 演習4で置いていればそのままでよい |
+| `requirements.yml` | **置かない** | 演習4で置いたものを残す |
+| `krb5.conf` | Kerberos のときだけ。example をコピーしてレルムと KDC を書き換える | 置かない |
 
-`training-inventory` の「Hosts」タブを開き、以下のホストが存在することを確認してください。
+`inventory.yml` の `203.0.113.10` と `203.0.113.11` は、保存前に必ず自分のアドレスへ変えます。Windows の `ansible_psrp_auth` は、演習3で選んだ `ntlm` または `kerberos` に合わせます。
 
-* `srv1`（`ansible_host` は `inventory.yml` に書いたアドレス）
-* `srv2`（同様）
-* `localhost`（`ansible_connection: local`。`provision_ec2.yml` 用）
+**Source Control** を開き、メッセージ（例: `Add note playbooks`）を書いて **Commit to main** をクリックします。
 
-### Step 2: Group一覧を確認する
+<details>
+<summary>git CLIで行う場合</summary>
 
-「Groups」タブで `managed` と `automation` が、`inventory.yml` の `children:` 定義通りに構成されていることを確認してください。
+```bash
+git clone https://gitlab.example.local/<namespace>/aap-training-content.git
+cd aap-training-content
+# sample-content から必要なファイルをコピーし、inventory.yml のアドレスを直してから
+git add .
+git commit -m "Add note playbooks"
+git push
+```
 
-### Step 3: ホスト変数を確認する
+ユーザー名とパスワードを聞かれたら、GitLab のログインに使うものを入力します。
 
-`srv1` の詳細を開き、「Variables」の `ansible_host` が、`inventory.yml` に記載した値と一致していることを確認してください。
+</details>
 
-**Note:** これらはOSS版Ansibleのホスト変数とまったく同じ扱いです。[基礎演習6](./ex6.md)でPlaybook実行時にこれらの変数が使われます。
+## Section 3: AAPのプロジェクト
 
-## Section 4: 以後の演習での扱い
+演習4で同名のプロジェクトを作った場合は、新規作成せず、そのプロジェクトで同期を実行してください。
 
-以降の演習（[基礎演習6](./ex6.md)以降）では、特に断りがない限り、この `training-inventory`（Inventory Source経由で同期済み）を使用します。管理対象ノードの構成を変更したい場合は、AAPの画面から直接編集するのではなく、GitLab上の `inventory.yml` を編集してpushし、Inventory SourceのSyncを再実行する運用に統一してください（[宿題 課題2](../homework/hm1.md)で実際に体験します）。
+まだ無い場合は、**Automation Execution > プロジェクト** から **プロジェクトの作成** をクリックします。
 
----
+![Project 作成画面](../images/aap/project-create-git.png)
 
-ここまでで、GitLab上のインベントリファイルをAAPに取り込む設定が完了しました。次の演習では、いよいよPlaybookを実行するJob Templateを作成します。
+| 項目 | 入力値 |
+|---|---|
+| 名前 | `aap-training-content` |
+| ソースコントロールタイプ | Git |
+| ソースコントロールURL | Section 1 の HTTPS URL |
+| ソースコントロールブランチ | `main` |
+| ソースコントロール認証情報 | `gitlab-scm` |
+| 起動時のリビジョン更新 | 有効 |
+| クリーン | 有効 |
 
-[次へ進む](./ex6.md)
+同期が成功することを確認します。
+
+失敗したときの確認箇所:
+
+* URL が HTTPS で、プロジェクトのパスまで含んでいるか
+* `gitlab-scm` のユーザー名とパスワードが、GitLab のログインと同じか
+* ブランチ名が `main` か
+* サーバがある環境なのに `requirements.yml` を置いていないか（置くと、外への取得に失敗します）
+
+## 次
+
+[演習6](./ex6.md) で、GitLab 上の `inventory.yml` をインベントリーへ読み込みます。

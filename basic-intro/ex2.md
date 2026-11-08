@@ -1,118 +1,78 @@
-# 演習 2 - Credentialの作成
+# 演習 2 - 認証情報の作成
 
-[前に戻る](./ex1.md)
+[演習1](./ex1.md) | [次へ](./ex3.md)
 
----
+認証情報は、AAP が接続先へログインするためのユーザー名とパスワードをしまうオブジェクトです。種類ごとに入力欄が違います。
 
-この演習では、AAPが管理対象ノードへ接続するために使う **Credential**（認証情報）を作成します。Credentialは「誰が」「どの認証方式で」接続するかをAAP内に安全に保存する仕組みで、Playbookや接続先ホストのIPアドレスを直接見ても、パスワードやSSH秘密鍵の内容は画面上に表示されません。
+## この演習で作るもの
 
-## Section 1: CredentialとCredential Typeの考え方
-
-AAPのCredentialは、**Credential Type** ごとに入力項目（スキーマ）が決まっています。代表的なCredential Typeは以下の通りです。
-
-| Credential Type | 用途 | 本資料での使用箇所 |
+| 自分の状況 | この演習で作る | あとに回すもの |
 |---|---|---|
-| **Machine** | 管理対象ノードへのSSH接続（ユーザー名、SSH秘密鍵 or パスワード） | 本演習 |
-| **Amazon Web Services** | EC2作成などAWS APIの呼び出し（アクセスキー） | 本演習の経路A。[操作対象サーバ（AWS）](../aws_targets.md) |
-| **Source Control** | GitLab等のSCMリポジトリへの接続（ユーザー名、Personal Access Token） | [基礎演習4](../basic-controller/ex4.md) |
-| **Vault** | ansible-vaultで暗号化されたデータの復号パスワード | [応用演習2](../advanced/ex2.md) |
-| **Container Registry** | カスタムExecution Environmentイメージのpull/push | [応用演習6](../advanced/ex6.md) |
+| サーバがすでにある | Linux 用、Windows 用、GitLab 用 | AWS 用は作らない。次は [演習3](./ex3.md)。[演習4](./ex4.md) は飛ばす |
+| サーバが無く、AWS で作る | AWS 用、GitLab 用 | Linux 用と Windows 用は、演習4でパスワードを決めたあとに作る |
 
-今回はまず、管理対象ノードへのSSH接続に使う **Machine Credential** を作成します。
+GitLab 用はどちらも作ります。ユーザー名とパスワードは、GitLab のログインに使うものと同じです。トークンは発行しません。
 
-## Section 2: Machine Credentialの作成
-
-### Step 1: Credential作成画面を開く
+## Section 1: 作成画面を開く
 
 **Automation Execution > Infrastructure > 認証情報** を開き、**認証情報の作成** をクリックします。
 
-![認証情報の作成画面。タイプに Machine を選ぶとユーザ名、パスワード、SSH Private Key、Privilege Escalation Method が出る](../images/aap/credential-machine.png)
+![Machine 認証情報の作成画面。名前、組織、認証情報タイプ、ユーザー名、パスワードの位置](../images/aap/credential-machine.png)
 
-### Step 2: 基本情報を入力する
+組織は [演習1](./ex1.md) で控えた名前を選びます。以降も同じ組織です。
 
-以下の項目を入力します。
-
-| 項目 | 入力値 |
-|---|---|
-| 名前 | `managed-nodes-ssh` |
-| 組織 | [演習1](./ex1.md)で確認した組織。**組織の選択** から選ぶ |
-| 認証情報タイプ | `Machine`。一覧が長いので、選択欄の検索に `Machine` と入力する |
-
-### Step 3: 認証方式を入力する
-
-Credential Typeに `Machine` を選択すると、以下の入力項目が表示されます。[事前準備](../prepare_training_environment.md)で確認した管理対象ノードの認証方式に応じて、いずれかの方法で入力してください。
-
-**方法A: SSH秘密鍵を使う場合**
+## Section 2: Linux用（サーバがすでにある場合）
 
 | 項目 | 入力値 |
 |---|---|
-| ユーザ名 | 管理対象ノードへの接続ユーザー名（例: `ec2-user`） |
-| SSH Private Key | 秘密鍵の内容を貼り付け（`-----BEGIN OPENSSH PRIVATE KEY-----` から `-----END OPENSSH PRIVATE KEY-----` まで全文） |
-| Private Key Passphrase | 秘密鍵にパスフレーズが設定されている場合のみ入力 |
+| 名前 | `linux-ssh` |
+| 認証情報タイプ | `Machine` |
+| ユーザー名 | Linux へ SSH するユーザー |
+| パスワード | そのユーザーのパスワード |
+| 権限昇格の方式 | 空欄のまま |
 
-**方法B: パスワードを使う場合**
+保存します。この資料の Playbook は `/var/tmp` へ書くだけなので、権限昇格は使いません。
+
+## Section 3: Windows用（サーバがすでにある場合）
+
+もう一度 **認証情報の作成** を開き、次を入力します。認証情報タイプは同じく `Machine` です。
+
+| Windows の状態 | ユーザー名 | パスワード |
+|---|---|---|
+| ドメインに参加していない | ローカルユーザー | そのパスワード |
+| ドメインに参加している | `ユーザー@レルム`（例: `ops@EXAMPLE.COM`） | そのドメインユーザーのパスワード |
+
+名前は `windows-psrp` にします。権限昇格は空欄です。
+
+PSRP にするか NTLM か Kerberos かは、認証情報ではなく [演習3](./ex3.md) のホスト変数で指定します。
+
+## Section 4: GitLab用（どちらの場合も）
 
 | 項目 | 入力値 |
 |---|---|
-| ユーザ名 | 管理対象ノードへの接続ユーザー名 |
-| パスワード | 接続パスワード |
+| 名前 | `gitlab-scm` |
+| 認証情報タイプ | `Source Control` |
+| ユーザー名 | GitLab のログインユーザー名 |
+| パスワード | GitLab のログインパスワード |
 
-### Step 4: 権限昇格（Privilege Escalation）の設定
+パスワードの欄にトークンは入れません。
 
-多くの場合、管理対象ノード上での作業にはroot権限（`sudo`）が必要です。Credential作成画面の「Privilege Escalation」セクションで以下を設定します。
+## Section 5: AWS用（サーバをこれから作る場合だけ）
 
-| 項目 | 入力値 |
-|---|---|
-| Privilege Escalation Method | `sudo` |
-| Privilege Escalation Username | 空欄（デフォルトの `root` を使う場合） |
-| Privilege Escalation Password | `sudo` にパスワードが必要な場合のみ入力 |
+サーバがすでにある場合は、この Section を飛ばしてください。
 
-**Note:** これはOSS版Ansibleの `become: true` / `become_method: sudo` に相当する設定です。Credential側で一度設定しておけば、このCredentialを使うすべてのJob Templateで自動的に適用されます。
-
-### Step 5: 保存
-
-**認証情報の作成** をクリックして保存します。
-
-## Section 3: 作成したCredentialの確認
-
-### Step 1: Credential一覧に表示されることを確認
-
-**認証情報** の一覧に `managed-nodes-ssh` が表示されていることを確認してください。
-
-### Step 2: 秘密情報が表示されないことを確認
-
-作成したCredentialを再度開いてみてください。SSH秘密鍵やパスワードの欄は空欄（または `encrypted` 等の表示）になっており、入力した内容がそのまま表示されないことを確認してください。これはAAPがCredentialの機密情報を暗号化して保存しているためです。
-
-**Note:** パスワードや秘密鍵を一度保存すると、画面上で内容を確認することはできません（再入力してWrite-onlyで更新するのみ）。これはセキュリティ上の仕様であり、不具合ではありません。
-
----
-
-## Section 4: AWS用Credential（経路A）
-
-EC2を新規作成する経路だけが、このCredentialを使います。既存サーバをインベントリに書く経路では、作らずに次の演習へ進んでください。
-
-### Step 1: 作成画面を開く
-
-**Automation Execution > Infrastructure > 認証情報** で **認証情報の作成** をクリックします。
-
-### Step 2: 入力する
+![Amazon Web Services 認証情報。Access Key と Secret Key の欄](../images/aap/credential-aws.png)
 
 | 項目 | 入力値 |
 |---|---|
 | 名前 | `aws-training` |
-| 組織 | [演習1](./ex1.md)で確認した組織 |
-| 認証情報タイプ | `Amazon Web Services`。選択欄の検索に `Amazon` と入力する |
-| Access Key | 演習用IAMユーザーのアクセスキー |
-| Secret Key | 対になるシークレットアクセスキー |
+| 認証情報タイプ | `Amazon Web Services` |
+| アクセスキー | 配布された Access Key |
+| シークレットキー | 配布された Secret Key |
+| STSトークン | 空欄（一時トークンを渡されているときだけ入力） |
 
-STSを使う場合だけ、画面にあるトークン欄も入力します。アクセスキーをGitLabのPlaybookへは書きません。
+Linux 用 `linux-ssh` と Windows 用 `windows-psrp` は、[演習4](./ex4.md) の Section 4 で作ります。ユーザー名は Linux が `ansible`、Windows が `Administrator` です。パスワードは演習4で自分で決めた値です。
 
-**認証情報の作成** をクリックして保存します。保存後にSecret Keyが再表示されないことは、Machine Credentialと同じです。
+## 次
 
-このCredentialを使うJob Templateは [操作対象サーバ（AWS）](../aws_targets.md) と [基礎演習6](../basic-controller/ex6.md) で作ります。AAP 2.7 の既定Execution Environmentには `amazon.aws` が入っているので、構築Jobの実行環境は既定のままで構いません。
-
----
-
-ここまでで、管理対象ノードへ接続するためのCredentialが作成できました。次の演習では、このCredentialを使って実際にホストへ疎通確認を行うため、Inventoryを作成します。
-
-[次へ進む](./ex3.md)
+どちらも [演習3](./ex3.md) へ進みます。サーバが無い場合に演習4へ入るタイミングは、演習3の表に書いてあります。
