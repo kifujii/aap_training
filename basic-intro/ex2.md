@@ -109,7 +109,7 @@ STSを使う場合だけ、画面にあるトークン欄も入力します。�
 
 **認証情報の作成** をクリックして保存します。保存後にSecret Keyが再表示されないことは、Machine Credentialと同じです。
 
-このCredentialを使うJob Templateは [操作対象サーバ（AWS）](../aws_targets.md) と [基礎演習6](../basic-controller/ex6.md) で作ります。`amazon.aws` が既定のExecution Environmentに無い環境では、構築Jobは [応用演習6](../advanced/ex6.md) のあとで実行します。
+このCredentialを使うJob Templateは [操作対象サーバ（AWS）](../aws_targets.md) と [基礎演習6](../basic-controller/ex6.md) で作ります。AAP 2.7 の既定Execution Environmentには `amazon.aws` が入っているので、構築Jobの実行環境は既定のままで構いません。
 
 ---
 

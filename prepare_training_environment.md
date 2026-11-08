@@ -31,7 +31,7 @@
 | **A. EC2を新規作成** | 操作対象がまだない | リージョン、VPC ID、Subnet ID、AMI ID、キーペア名、AAPからSSHを許可するCIDR。アクセスキーは [基礎演習2](./basic-intro/ex2.md) のCredentialに入れる |
 | **B. 既存サーバ** | EC2やその他のLinuxがすでにある | インベントリ名 `srv1` / `srv2` に対応するIPまたはDNS名。台数は1台でもよい |
 
-経路Aのインスタンス作成は [sample-content/provision_ec2.yml](./sample-content/provision_ec2.yml) で行います。このPlaybookは `amazon.aws` collectionが必要です。既定のExecution Environmentに含まれていない場合は、経路Bで基礎演習を進めるか、管理者が用意したEEを使うか、[応用演習6](./advanced/ex6.md) でEEを作ってから経路Aに戻ります。
+経路Aのインスタンス作成は [sample-content/provision_ec2.yml](./sample-content/provision_ec2.yml) で行います。AAP 2.7 の既定Execution Environmentには `amazon.aws` 10.3.0 が入っています。構築Jobの実行環境は既定のままで進めます。別のEEを指定する場合は、[操作対象サーバ（AWS）](./aws_targets.md) の版の説明を見てください。
 
 サンプルのアドレスは `10.0.1.11` と `10.0.1.12` です。実際の値に置き換えてください。経路Aでは、作成Jobのログに出たプライベートIPが置き換え先です。
 

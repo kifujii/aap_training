@@ -37,7 +37,7 @@ ec2_ssh_ingress_cidr: 10.0.0.0/16
 | プロジェクト | `aap-training-content` |
 | Playbook | `provision_ec2.yml` |
 | 認証情報 | `aws-training`（Amazon Web Services） |
-| 実行環境 | `amazon.aws` を含むEE。既定のEEに無い場合は、この節を [応用演習6](../advanced/ex6.md) のあとで実施する |
+| 実行環境 | 空欄（既定）のまま。AAP 2.7 の既定EEには `amazon.aws` 10.3.0 が入っています |
 | Extra variables | Step 1のYAML |
 
 Machine Credentialは割り当てません。Playの対象は `localhost` で、接続は `local` です。

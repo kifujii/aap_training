@@ -41,12 +41,11 @@ Playbook側の `amazon.aws` モジュールは、JobにこのCredentialが付い
 
 ### Execution Environment
 
-`provision_ec2.yml` は `amazon.aws` collectionを使います。AAPの既定Execution Environmentにこのcollectionが無い場合、構築Jobは失敗します。そのときは次のどちらかにしてください。
+`provision_ec2.yml` は `amazon.aws` collectionを使います。AAP 2.7 の既定Execution Environment（`ee-supported-rhel9`）には `amazon.aws` 10.3.0 が入っているので、実行環境は既定のままで構築Jobを実行できます。
 
-* 先に経路Bで基礎演習を進め、[応用演習6](./advanced/ex6.md)で `amazon.aws` を含むEEを作ってから経路Aに戻る
-* 組織ですでに `amazon.aws` 入りのEEがあるなら、構築用Job Templateの実行環境にそれを指定する
+[sample-content/requirements.yml](./sample-content/requirements.yml) はこの 10.3.0 に固定しています。Projectを同期すると、このファイルに書いたcollectionがEE内の同じ名前のcollectionより先に使われます。下限だけを書いて新しい版を許すと、ansible-core 2.16 ではサポートされない版が入り、Jobの先頭に `does not support Ansible version 2.16.19` と出ます。
 
-collectionの宣言は [sample-content/requirements.yml](./sample-content/requirements.yml) にあります。
+既定以外のEEを使うときは、そのEEの ansible-core に合う版かを確認してください。自分でEEを作る手順は [応用演習6](./advanced/ex6.md) です。
 
 ### 変数
 
@@ -76,7 +75,7 @@ ec2_instance_names:
 | インベントリー | `localhost` を含むもの。Playの対象は `localhost`、接続は `local` |
 | Playbook | `provision_ec2.yml` |
 | 認証情報 | `aws-training`（Amazon Web Services） |
-| 実行環境 | `amazon.aws` を含むEE |
+| 実行環境 | 空欄（AAP 2.7 の既定EE） |
 
 インベントリの例は [sample-content/inventory.yml](./sample-content/inventory.yml) の `automation` グループです。Machine CredentialはlocalhostへのSSHには使いません。
 

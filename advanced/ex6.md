@@ -43,7 +43,7 @@ collections:
     version: ">=8.0.0"
   - name: ansible.posix
   - name: amazon.aws
-    version: ">=9.0.0"
+    version: "10.3.0"
 EOF
 ```
 
@@ -146,7 +146,7 @@ $ podman push <レジストリのホスト名>/aap-training/custom-ee:1.0
 
 ### Step 1: Job Templateに割り当てる
 
-`apply-baseline` の編集画面で「Execution Environment」欄に `custom-ee` を選択し、保存します。経路Aの `provision-ec2` も、同じ `custom-ee` を割り当てます。`provision_ec2.yml` は `amazon.aws` が無いEEでは実行できません。基礎演習の時点で構築を飛ばした場合は、ここで `provision-ec2` を実行し、ログのプライベートIPを `inventory.yml` に書き戻します。
+`apply-baseline` の編集画面で「Execution Environment」欄に `custom-ee` を選択し、保存します。経路Aの `provision-ec2` は、AAP 2.7 の既定EEに入っている `amazon.aws` 10.3.0 で実行できます。カスタムEEへ切り替える場合も、`requirements.yml` の版は 10.3.0 のままにしてください。11以降は ansible-core 2.16 のEEではサポートされません。基礎演習の時点で構築を飛ばした場合は、ここで `provision-ec2` を実行し、ログのプライベートIPを `inventory.yml` に書き戻します。
 
 ### Step 2: 実行して確認する
 
