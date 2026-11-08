@@ -1,6 +1,7 @@
 ---
 # AWS上に、この演習で使うネットワークとサーバを作る。
-# パスワードは Extra variables で渡し、ログには出さない。
+# パスワードは Extra variables で渡す。AAP のジョブログには、その変数として出る。
+# 研修用の英数字を使い、本番のパスワードは入れない。
 - name: Create the training network and servers
   hosts: localhost
   connection: local
@@ -214,6 +215,7 @@
           Role: windows
         user_data: |
           <powershell>
+          # PSRP で接続する。プラグインは psrp、認証は NTLM。待ち受けのサービス名は WinRM。
           $admin = [ADSI]"WinNT://./Administrator,user"
           $admin.SetPassword("{{ windows_login_password }}")
           $admin.SetInfo()

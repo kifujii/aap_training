@@ -15,15 +15,19 @@
 
 ## どの演習をやるか
 
-対象の Linux と Windows がすでにある場合と、AWS で新しく作る場合で、やる演習が一部違います。表の「実施」だけを、番号順に進めてください。
+対象の Linux と Windows がすでにある場合と、AWS で新しく作る場合で、やる演習が一部違います。次のどちらかの順に進めてください。
+
+サーバがすでにある場合: 演習1 → 2 → 3（Section 3 は飛ばす）→ 5 → 6 → 7 → 8 → 9 → 10 → 11 → 応用。演習4はしません。
+
+サーバが無い場合: 演習1 → 2 → 3（Section 1、2、3）→ 4 → 3（Section 4、5）→ 5 → 6 → 7 → 8 → 9 → 10 → 11 → 応用。
 
 | 演習 | サーバがすでにある | AWSで新しく作る |
 |---|---|---|
 | [1 ログイン](./basic-intro/ex1.md) | 実施 | 実施 |
-| [2 認証情報](./basic-intro/ex2.md) | 実施 | 実施。サーバのログイン情報は演習3のあと |
-| [3 AWSでサーバを作る](./basic-intro/ex3.md) | **飛ばして演習4へ** | 実施 |
-| [4 インベントリと疎通](./basic-intro/ex4.md) | 実施 | 実施 |
-| [5 GitLab](./basic-controller/ex5.md) | 実施 | 実施。演習3で作ったプロジェクトに残りのファイルを足す |
+| [2 認証情報](./basic-intro/ex2.md) | 実施 | 実施。サーバのログイン情報は演習4のあと |
+| [3 インベントリと疎通](./basic-intro/ex3.md) | 実施。Section 3 は飛ばす | Section 1から3を実施。ホスト登録は演習4のあと |
+| [4 AWSでサーバを作る](./basic-intro/ex4.md) | **飛ばして演習5へ** | 実施。終わったら演習3の Section 4 へ戻る |
+| [5 GitLab](./basic-controller/ex5.md) | 実施 | 実施。演習4で作ったプロジェクトに残りのファイルを足す |
 | [6 Inventory Source](./basic-controller/ex6.md) | 実施 | 実施 |
 | [7 Job Template](./basic-controller/ex7.md) | 実施 | 実施 |
 | [8 Survey](./basic-controller/ex8.md) | 実施 | 実施 |

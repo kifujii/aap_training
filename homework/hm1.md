@@ -2,7 +2,7 @@
 
 基礎演習と応用演習で作ったものを、1台の Linux（`lin1`）と1台の Windows（`win1`）に対して、課題1から順に足していきます。各課題の「完了」を全部満たしたら次へ進みます。
 
-サーバがすでにある場合は [演習3](../basic-intro/ex3.md) を使わず、手元のアドレスを `inventory.yml` に書きます。サーバが無い場合は演習3を済ませ、ログに出たアドレスを使います。`requirements.yml` を置くのは、AWS で作る場合だけです。
+サーバがすでにある場合は [演習4](../basic-intro/ex4.md) を使わず、手元のアドレスを `inventory.yml` に書きます。サーバが無い場合は演習4を済ませ、ログに出たアドレスを使います。`requirements.yml` を置くのは、AWS で作る場合だけです。
 
 ファイルの編集は GitLab の Web IDE で行い、AAP のプロジェクトを同期してからジョブを起動します。
 
@@ -34,18 +34,24 @@ note: managed by AAP
 
 ## 課題2 - ホストを1台増やす
 
-Playbook は変えません。`inventory.yml` だけを変えて、増えたホストにも同じファイルが書かれることを確認します。
+増えたホストにも、同じ `note.txt` が書かれることを確認します。
 
 ### サーバがすでにある場合
 
-まだインベントリに無い Linux を1台足します。Web IDE で `linux` グループに、次を追加します。アドレスだけ自分の3台目にします。
+3台目の Linux があるときは、Web IDE で `linux` グループに次を追加します。アドレスだけ自分の3台目にします。Playbook は変えません。
 
 ```yaml
 lin2:
   ansible_host: 203.0.113.12
 ```
 
-3台目が無い場合は、この課題を次の確認に読み替えます。`lin1` の変数として `ansible_host` の直下に `note_owner: <自分の名前>` を足し、`write_note_linux.yml` の `note.txt` に `owner: {{ note_owner | default('none') }}` の行を1行足す。再実行して、その行がファイルに出る。
+3台目が無い場合は、ホスト追加の代わりに次を行います。`inventory.yml` の `lin1` に、`ansible_host` と同じ階層で `note_owner: <自分の名前>` を足します。`write_note_linux.yml` の `note.txt` の `content` には、`note:` の次の行として次を足します。
+
+```
+owner: {{ note_owner | default('none') }}
+```
+
+再実行して、その行が `note.txt` に出れば、この読み替えの完了です。以降の完了条件の `lin2` は、`lin1` の `owner:` 行に読み替えます。
 
 ### AWSで作った場合
 
@@ -55,7 +61,7 @@ Web IDE で `create_aws_servers.yml` の Linux を作るタスクをコピーし
 * `name`: `"{{ resource_prefix }}-linux-2"`
 * ユーザーデータはそのまま（ログインユーザーは同じ `ansible`）
 
-`create-aws-servers` を、演習3と同じ `resource_prefix` とパスワードで再実行します。ログに `linux-2` のアドレスが出ます。`inventory.yml` に `lin2` を足し、そのアドレスを `ansible_host` にします。
+`create-aws-servers` を、演習4と同じ `resource_prefix` とパスワードで再実行します。ログに `linux-2` のアドレスが出ます。`inventory.yml` に `lin2` を足し、そのアドレスを `ansible_host` にします。
 
 ### 完了
 
@@ -122,7 +128,7 @@ training_secret: TrainingSecret1
 
 サーバがすでにある場合:
 
-1. Notifier `note-mail` を作り、タイプは Email、ホストは環境内のメールサーバ、宛先は自分が見られるアドレスにする
+1. Notifier `note-mail` を作り、Notification type は `メール`、ホストは環境内のメールサーバ、Recipient list は自分が見られるアドレス、Sender email は差出人、Port は配布されたポート（無指定なら `25`）にする
 2. `write-note-linux` の失敗時の通知に `note-mail` を付ける
 3. 制限に `lin-missing` と入れて起動し、失敗させる
 4. メールが届いたら、制限を空に戻して成功させる
@@ -131,7 +137,7 @@ training_secret: TrainingSecret1
 
 AWS で作った場合:
 
-1. ジョブテンプレート `notify-aws` を作る。インベントリーは `aws-runner`、Playbook は `notify_aws.yml`、認証情報は `aws-training`、変数の `resource_prefix` は演習3と同じ値
+1. ジョブテンプレート `notify-aws` を作る。インベントリーは `aws-runner`、Playbook は `notify_aws.yml`、認証情報は `aws-training`、変数の `resource_prefix` は演習4と同じ値
 2. 変数 `notify_message: homework notification` を足して起動する
 
 完了: ログに `bucket:`、`object: notification.txt`、`contents: homework notification` の3つが出ている。

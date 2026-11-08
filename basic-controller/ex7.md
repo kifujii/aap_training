@@ -20,9 +20,9 @@ Linux と Windows のそれぞれに `note.txt` を書きます。1つのジョ�
 | 認証情報 | `linux-ssh` |
 | 制限 | 空欄のまま（Playbook の対象はグループ `linux`） |
 
-保存し、**テンプレートの起動** をクリックします。
+保存し、**テンプレートの起動** をクリックします。ジョブの画面では、右上からログを開きます。
 
-![ジョブ詳細。右上の起動と編集、ログへの入り方](../images/aap/job-template-details.png)
+![テンプレート詳細。右上の起動からジョブを始める](../images/aap/job-template-details.png)
 
 ジョブが成功すると、`lin1` の `/var/tmp/aap-training/note.txt` は次の内容になります。`training_note` の既定値は `managed by AAP` です。
 

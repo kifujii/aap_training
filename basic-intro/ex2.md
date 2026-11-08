@@ -8,8 +8,8 @@
 
 | 自分の状況 | この演習で作る | あとに回すもの |
 |---|---|---|
-| サーバがすでにある | Linux 用、Windows 用、GitLab 用 | AWS 用は作らない。[演習3](./ex3.md) は飛ばして [演習4](./ex4.md) へ |
-| サーバが無く、AWS で作る | AWS 用、GitLab 用 | Linux 用と Windows 用は、演習3でパスワードを決めたあとに作る |
+| サーバがすでにある | Linux 用、Windows 用、GitLab 用 | AWS 用は作らない。次は [演習3](./ex3.md)。[演習4](./ex4.md) は飛ばす |
+| サーバが無く、AWS で作る | AWS 用、GitLab 用 | Linux 用と Windows 用は、演習4でパスワードを決めたあとに作る |
 
 GitLab 用はどちらも作ります。ユーザー名とパスワードは、GitLab のログインに使うものと同じです。トークンは発行しません。
 
@@ -44,7 +44,7 @@ GitLab 用はどちらも作ります。ユーザー名とパスワードは、G
 
 名前は `windows-psrp` にします。権限昇格は空欄です。
 
-PSRP にするか NTLM か Kerberos かは、認証情報ではなく [演習4](./ex4.md) のホスト変数で指定します。
+PSRP にするか NTLM か Kerberos かは、認証情報ではなく [演習3](./ex3.md) のホスト変数で指定します。
 
 ## Section 4: GitLab用（どちらの場合も）
 
@@ -71,9 +71,8 @@ PSRP にするか NTLM か Kerberos かは、認証情報ではなく [演習4](
 | シークレットキー | 配布された Secret Key |
 | STSトークン | 空欄（一時トークンを渡されているときだけ入力） |
 
-Linux 用 `linux-ssh` と Windows 用 `windows-psrp` は、[演習3](./ex3.md) の最後に作ります。ユーザー名は Linux が `ansible`、Windows が `Administrator` です。パスワードは演習3で自分で決めた値です。
+Linux 用 `linux-ssh` と Windows 用 `windows-psrp` は、[演習4](./ex4.md) の Section 4 で作ります。ユーザー名は Linux が `ansible`、Windows が `Administrator` です。パスワードは演習4で自分で決めた値です。
 
 ## 次
 
-* サーバがすでにある: [演習4](./ex4.md)
-* AWS で作る: [演習3](./ex3.md)
+どちらも [演習3](./ex3.md) へ進みます。サーバが無い場合に演習4へ入るタイミングは、演習3の表に書いてあります。

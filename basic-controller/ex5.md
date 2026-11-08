@@ -1,17 +1,17 @@
 # 演習 5 - GitLabにPlaybookを置く
 
-[演習4](../basic-intro/ex4.md) | [演習6へ](./ex6.md)
+[演習3](../basic-intro/ex3.md) | [演習6へ](./ex6.md)
 
-Playbook は GitLab に置き、AAP のプロジェクトから読みます。ファイルの作成と編集は Web IDE で行います。
+Playbook は GitLab に置き、AAP のプロジェクトから読みます。ファイルの作成と編集は Web IDE で行います。サーバが無い場合は、演習4と、演習3の Section 4 まで終わってから、この演習に入ります。
 
 | 自分の状況 | この演習でやること |
 |---|---|
 | サーバがすでにある | プロジェクトを新規作成し、下のファイルを置く。`requirements.yml` は置かない |
-| 演習3でプロジェクトを作った | 新規作成はしない。同じプロジェクトに、まだ無いファイルを Web IDE で追加する。`requirements.yml` は置いたままにする |
+| 演習4でプロジェクトを作った | 新規作成はしない。同じプロジェクトに、まだ無いファイルを Web IDE で追加する。`requirements.yml` は置いたままにする |
 
 ## Section 1: プロジェクトを作る
 
-演習3で `aap-training-content` を作った場合は、Section 2 へ進んでください。
+演習4で `aap-training-content` を作った場合は、Section 2 へ進んでください。
 
 GitLab にログインし、**Create new…** > **New project/repository** > **Create blank project** を開きます。
 
@@ -28,26 +28,26 @@ GitLab にログインし、**Create new…** > **New project/repository** > **C
 
 ## Section 2: Web IDEでファイルを置く
 
-プロジェクト画面の右上 **Code** を開き、**Web IDE** をクリックします。メニューが **Edit** の環境では、その中の **Web IDE** を選びます。SSH キーの案内が出ても、この演習では使いません。
+プロジェクト画面の右上 **Code** を開き、**Web IDE** をクリックします。メニューが **Edit** の環境では、その中の **Web IDE** を選びます。SSH キーの案内が出ても、この演習では使いません。最初に Welcome が出たら閉じて、左のファイルを開きます。
 
-![Code メニューの Web IDE。一覧のファイル名は撮影時の環境のものなので、下の表のファイルを置く](../images/gitlab/web-ide.png)
+![Web IDE。左の一覧でファイルを開き、左端の枝のアイコンが Source Control。中央の README は GitLab が最初に置く見本で、演習のファイルは別に作る](../images/gitlab/web-ide.png)
 
 左のファイル一覧で新規ファイルを作り、[sample-content/](../sample-content/) から次を貼り付けます。
 
 | ファイル | サーバがすでにある | AWSで作った |
 |---|---|---|
-| `inventory.yml` | 置く。`ansible_host` を自分のアドレスにする | 置く。演習3で控えたアドレスにする |
-| `group_vars/all.yml` | 置く | 演習3で置いていればそのままでよい |
+| `inventory.yml` | 置く。`ansible_host` を自分のアドレスにする | 置く。演習4で控えたアドレスにする |
+| `group_vars/all.yml` | 置く | 演習4で置いていればそのままでよい |
 | `write_note_linux.yml` | 置く | 置く |
 | `write_note_windows.yml` | 置く | 置く |
 | `verify_note_linux.yml` | 置く | 置く |
 | `verify_note_windows.yml` | 置く | 置く |
 | `notify_aws.yml` | 置かない | 置く |
-| `create_aws_servers.yml` / `remove_aws_servers.yml` | 置かない | 演習3で置いていればそのままでよい |
-| `requirements.yml` | **置かない** | 演習3で置いたものを残す |
+| `create_aws_servers.yml` / `remove_aws_servers.yml` | 置かない | 演習4で置いていればそのままでよい |
+| `requirements.yml` | **置かない** | 演習4で置いたものを残す |
 | `krb5.conf` | Kerberos のときだけ。example をコピーしてレルムと KDC を書き換える | 置かない |
 
-`inventory.yml` の `203.0.113.10` と `203.0.113.11` は、保存前に必ず自分のアドレスへ変えます。Windows の `ansible_psrp_auth` は、演習4で選んだ `ntlm` または `kerberos` に合わせます。
+`inventory.yml` の `203.0.113.10` と `203.0.113.11` は、保存前に必ず自分のアドレスへ変えます。Windows の `ansible_psrp_auth` は、演習3で選んだ `ntlm` または `kerberos` に合わせます。
 
 **Source Control** を開き、メッセージ（例: `Add note playbooks`）を書いて **Commit to main** をクリックします。
 
@@ -69,7 +69,7 @@ git push
 
 ## Section 3: AAPのプロジェクト
 
-演習3で同名のプロジェクトを作った場合は、新規作成せず、そのプロジェクトで同期を実行してください。
+演習4で同名のプロジェクトを作った場合は、新規作成せず、そのプロジェクトで同期を実行してください。
 
 まだ無い場合は、**Automation Execution > プロジェクト** から **プロジェクトの作成** をクリックします。
 

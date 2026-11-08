@@ -1,118 +1,125 @@
-# 演習 4 - インベントリと疎通確認
+# 演習 4 - AWSでサーバを作る
 
-[演習2](./ex2.md) | [演習5へ](../basic-controller/ex5.md)
+[演習3](./ex3.md) | [ホスト登録へ戻る](./ex3.md#add-hosts)
 
-AAP から Linux と Windows へ届くことを確認します。
+対象の Linux と Windows がすでにある場合は、この演習を全部飛ばして [演習5](../basic-controller/ex5.md) へ進んでください。
 
-| 自分の状況 | アドレスの出どころ |
-|---|---|
-| サーバがすでにある | 事前に控えたアドレス。[演習3](./ex3.md) は飛ばして、ここから再開 |
-| 演習3で AWS に作った | ジョブログに出た「Linuxの接続先」「Windowsの接続先」 |
+この演習は、空の AWS アカウントに次を作ります。
 
-演習3で `aws-runner` を作った場合、それは AWS 用の実行場所です。この演習では、それとは別に `training-inventory` を作ります。`aws-runner` に Linux や Windows は追加しません。
+* VPC、サブネット、インターネットゲートウェイ、ルートテーブル、セキュリティグループ
+* Linux 1台（SSH、ユーザー `ansible`）
+* Windows 1台（PSRP、NTLM、ユーザー `Administrator`）
 
-## Section 1: インベントリーを作る
+名前には、自分専用の `resource_prefix` を付けます。同じアカウントを複数人で使うときに、リソースが混ざらないようにするためです。作ったサーバのアドレスはログに出るので控えます。
 
-**Automation Execution > Infrastructure > インベントリー** を開き、**インベントリーの作成** > **インベントリーの作成** をクリックします。
+ジョブは15分ほどかかることがあります。Windows の PSRP の待ち受けが開くまで待つためです。
 
-![インベントリーの作成。名前と組織の位置](../images/aap/inventory-create.png)
+パスワードはジョブのログに出ます。研修用の英数字にして、本番で使っているパスワードは入れないでください。
+
+開始前に、[演習3](./ex3.md) の Section 3 まで終わっていることを確認します。ジョブテンプレートのインベントリー欄では、そこで作った `aws-runner` を選びます。この演習でインベントリーは作りません。
+
+## Section 1: PlaybookをGitLabに置く
+
+画面操作の詳細は [演習5](../basic-controller/ex5.md) と同じです。ここでは、作成に必要なファイルだけ先に置きます。
+
+1. GitLab で **Create new…** > **New project/repository** > **Create blank project** を開く
+2. Project name は `aap-training-content`、Visibility は `Private`。README の初期化は付けたままにする
+3. 右上の **Code** を開き、**Web IDE** をクリックする。メニュー名が **Edit** の環境では、その中の **Web IDE** を選ぶ
+4. 次の4ファイルを作り、[sample-content/](../sample-content/) の内容を貼り付ける
+   * `create_aws_servers.yml`
+   * `remove_aws_servers.yml`
+   * `requirements.yml`
+   * `group_vars/all.yml`
+5. **Source Control** から **Commit to main** をクリックする
+
+`requirements.yml` が無いと、`amazon.aws` の版が実行環境の 10.3.0 より新しくなり、ジョブが失敗します。このファイルは AWS で作る場合だけ置きます。
+
+<details>
+<summary>git CLIで行う場合</summary>
+
+```bash
+git clone https://gitlab.example.local/<namespace>/aap-training-content.git
+cd aap-training-content
+# 上の4ファイルだけをコピーする
+git add create_aws_servers.yml remove_aws_servers.yml requirements.yml group_vars/all.yml
+git commit -m "Add AWS server creation playbooks"
+git push
+```
+
+</details>
+
+## Section 2: AAPにプロジェクトを登録する
+
+**Automation Execution > プロジェクト** を開き、**プロジェクトの作成** をクリックします。
+
+![Project 作成画面。ソースコントロールの URL と認証情報の位置](../images/aap/project-create-git.png)
 
 | 項目 | 入力値 |
 |---|---|
-| 名前 | `training-inventory` |
-| 組織 | 演習1で確認した組織 |
+| 名前 | `aap-training-content` |
+| ソースコントロールタイプ | Git |
+| ソースコントロールURL | Section 1 の HTTPS の URL |
+| ソースコントロールブランチ | `main` |
+| ソースコントロール認証情報 | `gitlab-scm` |
+| 起動時のリビジョン更新 | 有効 |
+| クリーン | 有効 |
 
-保存します。
+保存したあと、同期を実行し、成功することを確認します。失敗したら URL、ユーザー名、パスワード、ブランチ名を見直してください。
 
-## Section 2: グループを作る
+## Section 3: ジョブテンプレートを作って実行する
 
-`training-inventory` の **グループ** タブで、次の2つを作ります。
+**Automation Execution > テンプレート** を開き、**テンプレートの作成** > **ジョブテンプレートの作成** をクリックします。
 
-| グループ | 入れるホスト |
-|---|---|
-| `linux` | Linux |
-| `windows` | Windows |
-
-## Section 3: ホストを追加する
-
-**ホスト** タブでホストを追加します。
-
-![ホストの追加。名前、変数の位置](../images/aap/host-add.png)
-
-Linux:
+![ジョブテンプレートの作成画面](../images/aap/job-template-create.png)
 
 | 項目 | 入力値 |
 |---|---|
-| 名前 | `lin1` |
+| 名前 | `create-aws-servers` |
+| インベントリー | `aws-runner` |
+| プロジェクト | `aap-training-content` |
+| Playbook | `create_aws_servers.yml` |
+| 実行環境 | 空欄（既定のまま） |
+| 認証情報 | `aws-training` だけ。Machine は付けない |
 | 変数 | 下の YAML |
 
 ```yaml
-ansible_host: 203.0.113.10
+resource_prefix: tanaka01
+linux_login_password: TrainingLinux1
+windows_login_password: TrainingWindows1
 ```
 
-`203.0.113.10` は例です。自分の Linux のアドレスに置き換えてから保存し、グループ `linux` に入れます。
+`tanaka01` は例です。小文字で始め、英小文字・数字・ハイフンだけにし、13文字以内、末尾はハイフンにしないでください。同じアカウントの他の人と重ならない値にします。パスワードは英数字の8文字以上32文字以内で、自分の値に変えます。
 
-Windows（ドメインに参加していない場合。AWS で作ったサーバはこちら）:
+リージョンは `group_vars/all.yml` の `ap-northeast-1` です。変える場合は変数に `ec2_region` を足します。AAP サーバのアドレスが分かっている場合は、`allow_cidr` をそのアドレスの `/32` にします。未指定のときは `0.0.0.0/0` です。
 
-| 項目 | 入力値 |
-|---|---|
-| 名前 | `win1` |
-| 変数 | 下の YAML |
+**テンプレートの起動** をクリックします。成功すると、最後のタスクに次のような行が出ます。
 
-```yaml
-ansible_host: 203.0.113.11
-ansible_connection: psrp
-ansible_psrp_auth: ntlm
-ansible_psrp_protocol: http
-ansible_psrp_port: 5985
-ansible_psrp_cert_validation: ignore
+```
+Linuxの接続先: 203.0.113.10
+Windowsの接続先: 203.0.113.11
+Linuxのユーザー: ansible
+Windowsのユーザー: Administrator
 ```
 
-アドレスを自分の値に置き換え、グループ `windows` に入れます。認証は NTLM です。接続プラグインは `psrp` にします。
+表示された2つのアドレス、ユーザー名、自分で決めた2つのパスワードを控えてください。
 
-### ドメインに参加している Windows の場合
+失敗したときは、失敗したタスクの `msg` を見ます。よくある原因は、`resource_prefix` の文字種、パスワードに記号が入っていること、AWS のキーに EC2 の作成権限が無いことです。
 
-上の変数の代わりに、次を使います。認証は Kerberos です。ユーザー名は演習2の `windows-psrp` に入れた `ユーザー@レルム` です。
+## Section 4: ログイン用の認証情報を作る
 
-```yaml
-ansible_host: 203.0.113.11
-ansible_connection: psrp
-ansible_psrp_auth: kerberos
-ansible_psrp_protocol: https
-ansible_psrp_port: 5986
-ansible_psrp_cert_validation: ignore
-```
+[演習2](./ex2.md) と同じ作成画面で、Machine 認証情報を2つ作ります。
 
-レルムと KDC は、[sample-content/krb5.conf.example](../sample-content/krb5.conf.example) を `krb5.conf` という名前で後の演習のプロジェクトに置きます。置き方は [演習5](../basic-controller/ex5.md) でファイルを追加するときで構いません。中の `EXAMPLE.COM` と `dc.example.com` は、自分の環境の値に書き換えます。
-
-Kerberos の場合、アドホック実行では `krb5.conf` を渡せません。`win_ping` は飛ばし、[演習5](../basic-controller/ex5.md) で `krb5.conf` を置いたあと、[演習7](../basic-controller/ex7.md) の `write-note-windows` が成功すれば接続できています。NTLM の場合は、このまま Section 5 で `win_ping` を実行します。
-
-## Section 4: 認証情報をホストに紐付ける必要はない
-
-ジョブテンプレートに認証情報を付けるのは [演習7](../basic-controller/ex7.md) です。この演習の疎通確認では、実行時に認証情報を選びます。
-
-## Section 5: 疎通確認
-
-`training-inventory` の **ホスト** タブを開き、`lin1` にチェックを入れます。**Run command** をクリックします。
-
-![Run command。モジュール名、認証情報、起動ボタンの位置](../images/aap/run-command.png)
-
-| 項目 | Linux | Windows |
+| 名前 | ユーザー名 | パスワード |
 |---|---|---|
-| モジュール | `ping` | `ansible.windows.win_ping` |
-| 認証情報 | `linux-ssh` | `windows-psrp` |
+| `linux-ssh` | `ansible` | `linux_login_password` に入れた値 |
+| `windows-psrp` | `Administrator` | `windows_login_password` に入れた値 |
 
-起動し、`SUCCESS` と表示されることを確認します。Windows を NTLM で接続する場合は、`lin1` のチェックを外し、`win1` だけを選んでから実行します。1つの実行に付けられる Machine 認証情報は1つなので、Linux と Windows は別々に確認します。Kerberos の場合は、ここでの `win_ping` は飛ばします。
+権限昇格は空欄です。
 
-`ping` が `SUCCESS` なら、SSH のユーザー名とパスワード、アドレスが合っています。`win_ping` が `SUCCESS` なら、PSRP の認証とポートが合っています。
+## Section 5: 不要になったら削除する
 
-失敗したときの確認箇所:
-
-* `ansible_host` が、控えたアドレスと一致しているか
-* 認証情報のユーザー名とパスワード
-* Windows の `ansible_psrp_auth` が、参加状況（NTLM か Kerberos か）と一致しているか
-* セキュリティグループやファイアウォールが、AAP から TCP 22（Linux）または 5985（NTLM）または 5986（Kerberos）を許可しているか
+リソースを残すと課金が続きます。学習が終わったら、同じ要領でジョブテンプレート `remove-aws-servers` を作り、Playbook を `remove_aws_servers.yml` にして実行します。変数の `resource_prefix` は作成時と同じ値にします。パスワードは不要です。認証情報は `aws-training`、インベントリー欄は `aws-runner` です。
 
 ## 次
 
-[演習5](../basic-controller/ex5.md) で、Playbook を GitLab に置きます。
+[演習3の Section 4](./ex3.md#add-hosts) に戻り、控えたアドレスを `lin1` と `win1` として登録し、疎通まで確認します。そのあと [演習5](../basic-controller/ex5.md) です。

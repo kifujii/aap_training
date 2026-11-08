@@ -48,7 +48,7 @@ Web IDE で `notify_aws.yml` がプロジェクトにあることを確認し、
 | Playbook | `notify_aws.yml` |
 | 実行環境 | 空欄 |
 | 認証情報 | `aws-training` |
-| 変数 | `resource_prefix: <演習3で使った値>` |
+| 変数 | `resource_prefix: <演習4で使った値>` |
 
 起動します。成功すると、ログの最後に次の3行が出ます。`contents` は `notification from AAP` です。
 

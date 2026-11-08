@@ -51,7 +51,7 @@ cat secrets.yml
 
 ## Section 2: Web IDEに貼る
 
-GitLab の **Edit** > **Web IDE** で、プロジェクトの直下に `secrets.yml` を作り、コピーした全文を貼ります。暗号化前の1行は貼りません。
+GitLab の **Code** を開き、**Web IDE** で、プロジェクトの直下に `secrets.yml` を作り、コピーした全文を貼ります。メニューが **Edit** の環境では、その中の **Web IDE** を選びます。暗号化前の1行は貼りません。
 
 **Commit to main** でコミットします。
 

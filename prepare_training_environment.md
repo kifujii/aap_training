@@ -26,12 +26,12 @@ Vault の暗号化（[演習9](./basic-controller/ex9.md)）と、カスタム�
 | Linux | `/var/tmp/aap-training/note.txt` | SSH |
 | Windows | `C:\Users\Public\aap-training\note.txt` | PSRP |
 
-どちらか一方だけを実施します。
+Linux と Windows の両方を行います。違うのは、そのサーバをすでにあるものを使うか、AWS で作るかです。
 
 | 状況 | 演習の進み方 | 事前に控えるもの |
 |---|---|---|
-| Linux と Windows がすでにある | [演習3](./basic-intro/ex3.md) は飛ばす。インターネットへ出ない前提で進める | 各サーバのアドレス、ログインユーザー、パスワード。Windows がドメイン参加済みならレルム名と KDC |
-| 対象サーバが無い | [演習2](./basic-intro/ex2.md) のあと [演習3](./basic-intro/ex3.md) で AWS に作る。インターネットへ出られる前提 | AWS のアクセスキー、シークレットキー、リージョン。サーバのパスワードは演習3で自分で決める |
+| Linux と Windows がすでにある | [演習4](./basic-intro/ex4.md) は飛ばす。インターネットへ出ない前提で進める | 各サーバのアドレス、ログインユーザー、パスワード。Windows がドメイン参加済みならレルム名と KDC |
+| 対象サーバが無い | [演習3](./basic-intro/ex3.md) の Section 3 のあと、[演習4](./basic-intro/ex4.md) で AWS に作る。インターネットへ出られる前提 | AWS のアクセスキー、シークレットキー、リージョン。サーバのパスワードは演習4で自分で決める |
 
 すでにサーバがある場合、ログインユーザーがそのディレクトリへ書き込めれば足ります。管理者権限や、時刻・パッケージ・SSH の変更権限は要りません。
 
@@ -66,4 +66,4 @@ Windows の接続は次のとおりです。
 
 ## 5. サンプルファイル
 
-[sample-content/](./sample-content/) を、[演習5](./basic-controller/ex5.md) の Web IDE で GitLab に置きます。AWS で作る場合は、[演習3](./basic-intro/ex3.md) で先に一部のファイルだけ置きます。
+[sample-content/](./sample-content/) を、[演習5](./basic-controller/ex5.md) の Web IDE で GitLab に置きます。AWS で作る場合は、[演習4](./basic-intro/ex4.md) で先に一部のファイルだけ置きます。
