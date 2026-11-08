@@ -1,70 +1,63 @@
-# 応用演習 5 - Execution Environments入門
+# 応用演習 5 - REST API
 
-この演習では、Job実行の裏側で使われている **Execution Environment (EE)** の仕組みを理解します。カスタムEEの作成は次の[応用演習6](./ex6.md)で扱うため、ここではまず既存のEEを確認します。
+[応用演習4](./ex4.md) | [応用演習6へ](./ex6.md)
 
-**前提条件:** 基礎演習1〜7を完了していること（応用演習1〜4とは独立して実施できます）
+画面の起動を、API からも行います。ここで発行するのは AAP の API トークンです。GitLab のパスワードとは別です。
 
-[前に戻る](./ex4.md) | [次へ進む](./ex6.md)
-
----
-
-## Section 1: Execution Environmentとは
-
-従来のAnsible Tower/AWXでは、Ansible本体やCollection、Pythonライブラリをコントローラー自体に直接インストールしていました。この方式には以下のような課題がありました。
-
-* プロジェクトAとプロジェクトBで必要なAnsibleのバージョンやCollectionが競合する
-* コントローラーの環境を変更すると、既存のすべてのPlaybook実行に影響する
-
-AAPでは、Job実行に必要なAnsible本体・Python依存パッケージ・Collectionなどをひとまとめにした**コンテナイメージ**（Execution Environment）を使ってJobを実行します。Job Templateごとに異なるEEを指定できるため、Playbook/プロジェクトごとに必要なバージョンを独立して管理できます。
-
-## Section 2: Default Execution Environmentの確認
-
-### Step 1: Execution Environments一覧を開く
-
-**Automation Execution > Infrastructure > 実行環境** を開きます。
-
-### Step 2: デフォルトEEの詳細を確認する
-
-一覧に表示されているEE（例: `Default execution environment` のような名称）を開き、以下を確認します。
-
-| 項目 | 内容 |
-|---|---|
-| Image | コンテナイメージの参照先（例: `registry.example.local/ee-supported-rhel9:latest`） |
-| Pull | イメージの取得ポリシー（`Always` / `Missing` / `Never`） |
-| Organization | 空欄の場合は全Organizationで使用可能 |
-
-## Section 3: Job TemplateへのEE割当を確認する
-
-### Step 1: Job Template編集画面を開く
-
-`apply-baseline` の編集画面を開き、「Execution Environment」欄を確認します。
-
-### Step 2: 割当を確認する
-
-空欄（Projectのデフォルトを使用）になっているか、特定のEEが明示的に指定されているかを確認します。明示的に指定しない場合、Projectに設定されたデフォルトEE、またはシステム全体のデフォルトEEが使われます。
-
-**Note:** EEの決定順序はおおむね「Job Template個別の指定」＞「Projectのデフォルト」＞「システムのデフォルト」の優先順位です。意図せず別のEEが使われている場合は、この優先順位を確認してください。
-
-## Section 4: EEに含まれる内容を確認する（参考）
-
-AAPの画面だけでは、EEコンテナ内にインストールされているCollectionの一覧までは詳細に確認できません。[応用演習6](./ex6.md)で導入する `ansible-navigator` を使うと、ローカル環境からEEイメージの内容を確認できます。
+## Section 1: APIの場所
 
 ```bash
-$ ansible-navigator images
+curl -sk https://<AAPのURL>/api/ | python3 -m json.tool
 ```
 
-実行すると、利用可能なEEイメージの一覧と、選択したイメージに含まれるAnsibleバージョン・Collection・Pythonパッケージの情報を対話的に確認できます（`:details` コマンドで詳細表示）。
+この資料の例は `https://<AAPのURL>/api/controller/v2` です。`/api/v2/` は、ゲートウェイ構成では 404 になります。以降、このベースを `AAP_API_ROOT` と書きます。
 
-## Section 5: なぜEEを意識する必要があるのか
+## Section 2: トークン
 
-| シナリオ | EEが関係する理由 |
+**Access Management > API Tokens** を開き、**Create API token** をクリックします。
+
+| 項目 | 入力値 |
 |---|---|
-| Playbookで `community.general` の新しいモジュールを使いたい | そのCollectionがEEに含まれているか確認が必要 |
-| 複数チームが異なるAnsibleバージョンのPlaybookを運用している | チームごとに異なるEEを割り当てることで共存できる |
-| セキュリティ部門から使用ソフトウェアの一覧提出を求められた | EEイメージ単位でバージョン・内容を管理・報告できる |
+| Application | 空欄 |
+| Scope | `Write` |
 
----
+表示された文字列は再表示できないので、その場で控えます。画面のスクリーンショットは残しません。
 
-ここまでで、EEの基本的な役割と確認方法を理解しました。次の演習では、実際にカスタムEEを作成し、AAPに登録します。
+```bash
+export AAP_TOKEN="<控えたトークン>"
+export AAP_API_ROOT="https://<AAPのURL>/api/controller/v2"
+```
 
-[次へ進む](./ex6.md)
+## Section 3: テンプレートのIDを見る
+
+```bash
+curl -sk -H "Authorization: Bearer ${AAP_TOKEN}" \
+    "${AAP_API_ROOT}/job_templates/?name=write-note-linux" | python3 -m json.tool
+```
+
+`results` の `id` を控えます。以降の `7` は、その数字に置き換えます。
+
+## Section 4: 起動する
+
+```bash
+curl -sk -X POST \
+    -H "Authorization: Bearer ${AAP_TOKEN}" \
+    -H "Content-Type: application/json" \
+    -d '{"extra_vars": {"training_note": "from api"}, "limit": "lin1"}' \
+    "${AAP_API_ROOT}/job_templates/7/launch/" | python3 -m json.tool
+```
+
+応答の `job` がジョブ ID です。
+
+```bash
+curl -sk -H "Authorization: Bearer ${AAP_TOKEN}" \
+    "${AAP_API_ROOT}/jobs/<ジョブID>/" | python3 -m json.tool
+```
+
+`status` が `successful` になるまで、同じコマンドを繰り返します。`lin1` の `note.txt` の `note:` が `from api` になっていれば、API からの Extra variables が届いています。
+
+確認後、Survey から `managed by AAP` を入れて `write-note-linux` を一度起動し、メモを戻します。
+
+## 次
+
+[応用演習6](./ex6.md)

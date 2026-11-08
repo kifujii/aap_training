@@ -25,10 +25,10 @@
 | **Credential** | 接続先ホストへのSSH認証情報や、SCM（GitLab等）、Vault、クラウドAPIキーなど、Job実行に必要な認証情報を保存・管理するオブジェクト。**Credential Type**ごとに入力項目が異なる。 |
 | **Credential Type** | Credentialの種類を定義するテンプレート（例: Machine、Source Control、Vault、Container Registry）。CredentialはいずれかのCredential Typeに基づいて作成される。 |
 | **Project** | 実行対象のPlaybook/Role一式を管理する単位。多くの場合GitLab等のSCMリポジトリと連携（**SCM Project**）し、Sync操作でリポジトリの最新内容を取得する。 |
-| **SCM Sync** | Projectに紐付いたSCMリポジトリの内容を、AAP側に取得・反映する操作。Webhookで自動実行することも可能（[応用演習11](./advanced/ex11.md)）。 |
+| **SCM Sync** | Projectに紐付いたSCMリポジトリの内容を、AAP側に取得・反映する操作。Webhookで自動実行することも可能（[応用演習9](./advanced/ex9.md)）。 |
 | **Revision** | SCM Sync時に取得したリポジトリのコミットハッシュ。Job実行時にどのリビジョンのPlaybookが使われたかを追跡できる。 |
 | **Inventory** | Job実行対象のホストとグループを定義する単位。手動でHost/Groupを登録する方法と、**Inventory Source**を使って外部（SCM上のYAMLファイル、クラウドAPI等）から取り込む方法がある。 |
-| **Inventory Source** | Inventoryにホスト情報を取り込む方法を定義する設定。本資料の基本は「Sourced from a Project」（SCM上のYAML形式インベントリファイルを読み込む方式）です（[基礎演習5](./basic-controller/ex5.md)）。EC2をタグで取り込む方式は [操作対象サーバ（AWS）](./aws_targets.md) を参照。 |
+| **Inventory Source** | Inventoryにホスト情報を取り込む方法を定義する設定。本資料では GitLab 上の `inventory.yml` を読む「Sourced from a Project」を使います（[演習6](./basic-controller/ex6.md)）。 |
 | **Smart Inventory** | 既存Inventoryのホストを、検索条件（ホスト変数など）に基づいて動的にグルーピングした仮想的なInventory。 |
 | **Job Template** | 「どのProjectのどのPlaybookを」「どのInventoryに対して」「どのCredentialを使って」実行するかを定義した、実行可能なテンプレート。AAPにおける最も基本的な実行単位。 |
 | **Job** | Job Templateを実際に実行した1回分の記録。実行ログ・PLAY RECAP・ステータス（successful/failed等）を持つ。 |
@@ -116,6 +116,6 @@
 | 用語 | 説明 |
 |---|---|
 | **SCM (Source Control Management)** | Gitなどのバージョン管理システムの総称。AAPのProjectはSCMリポジトリと連携して最新のPlaybook/Role/Inventoryファイルを取得する。 |
-| **Personal Access Token (PAT)** | GitLab等でユーザーに対して発行する、リポジトリアクセス用の認証トークン。AAPのSource Control Credentialに設定し、SCM Syncの認証に使う。 |
+| **Source Control認証** | AAPがGitLabを読むときに使うユーザー名とパスワード。この資料ではトークンではなく、GitLabのログインユーザー名とパスワードを登録する。 |
 | **Webhook** | GitLab側でリポジトリへのpush等のイベントが発生した際に、外部URL（AAPのProject Webhook等）へ通知を送信する仕組み。Project側で有効化すると、push時に自動でSCM Syncを実行できる。 |
 | **.gitlab-ci.yml** | GitLab CI/CDパイプラインの定義ファイル。ansible-lintの自動実行や、Controller API経由でのJob Template起動などに利用できる。 |

@@ -1,3 +1,0 @@
-{% for host in groups['managed'] | sort %}
-{{ host }} {{ hostvars[host]['ansible_host'] | default(host) }}
-{% endfor %}

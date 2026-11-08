@@ -1,0 +1,24 @@
+---
+- name: Check the note file on Windows
+  hosts: windows
+  gather_facts: false
+  environment: "{{ {'KRB5_CONFIG': playbook_dir + '/krb5.conf'} if (lookup('ansible.builtin.fileglob', playbook_dir + '/krb5.conf') | length > 0) else {} }}"
+
+  tasks:
+    - name: Read note.txt
+      ansible.windows.win_slurp:
+        src: C:\Users\Public\aap-training\note.txt
+      register: note_file
+
+    - name: Decode note.txt
+      ansible.builtin.set_fact:
+        note_text: "{{ note_file.content | b64decode }}"
+
+    - name: note.txt contains the hostname and the note
+      ansible.builtin.assert:
+        that:
+          - inventory_hostname in note_text
+          - training_note in note_text
+        fail_msg: >-
+          C:\Users\Public\aap-training\note.txt に
+          {{ inventory_hostname }} または「{{ training_note }}」がありません。

@@ -1,139 +1,139 @@
-# 演習 3 - Inventoryとホスト/グループの作成、疎通確認
+# 演習 3 - AWSでサーバを作る
 
-[前に戻る](./ex2.md)
+[演習2](./ex2.md) | [演習4へ](./ex4.md)
 
----
+対象の Linux と Windows がすでにある場合は、この演習を全部飛ばして [演習4](./ex4.md) へ進んでください。
 
-この演習では、AAPの管理対象ホストを定義する **Inventory** を作成し、[演習2](./ex2.md)で作成したCredentialを使って実際にホストへ疎通確認を行います。
+この演習は、空の AWS アカウントに次を作ります。
 
-今回はホスト情報を手動で入力する「静的Inventory」の方法を扱います。GitLab上のYAMLファイルから自動的にホスト情報を取り込む方法（Inventory Source）は[基礎演習5](../basic-controller/ex5.md)で扱います。
+* VPC、サブネット、インターネットゲートウェイ、ルートテーブル、セキュリティグループ
+* Linux 1台（SSH、ユーザー `ansible`）
+* Windows 1台（PSRP、NTLM、ユーザー `Administrator`）
 
-## Section 1: Inventoryの作成
+名前には、自分専用の `resource_prefix` を付けます。同じアカウントを複数人で使うときに、リソースが混ざらないようにするためです。作ったサーバのアドレスはログに出るので控えます。ホストの一覧への登録は次の演習です。
 
-### Step 1: Inventory作成画面を開く
+ジョブは15分ほどかかることがあります。Windows の PSRP の待ち受けが開くまで待つためです。
 
-**Automation Execution > Infrastructure > インベントリー** を開き、**インベントリーの作成** のドロップダウンから、もう一度 **インベントリーの作成** を選びます。スマートインベントリーや構築済みインベントリーは選びません。
+パスワードはジョブのログに出ます。研修用の英数字にして、本番で使っているパスワードは入れないでください。
 
-![インベントリーの作成画面。名前と組織が必須](../images/aap/inventory-create.png)
+## Section 1: PlaybookをGitLabに置く
 
-### Step 2: 基本情報を入力する
+画面操作の詳細は [演習5](../basic-controller/ex5.md) と同じです。ここでは、作成に必要なファイルだけ先に置きます。
 
-| 項目 | 入力値 |
-|---|---|
-| 名前 | `training-inventory` |
-| 組織 | [演習1](./ex1.md)で確認した組織。この項目は必須です |
+1. GitLab で **Create new…** > **New project/repository** > **Create blank project** を開く
+2. Project name は `aap-training-content`、Visibility は `Private`。README の初期化は付けたままにする
+3. 右上の **Code** を開き、**Web IDE** をクリックする。メニュー名が **Edit** の環境では、その中の **Web IDE** を選ぶ
+4. 次の4ファイルを作り、[sample-content/](../sample-content/) の内容を貼り付ける
+   * `create_aws_servers.yml`
+   * `remove_aws_servers.yml`
+   * `requirements.yml`
+   * `group_vars/all.yml`
+5. **Source Control** から **Commit to main** をクリックする
 
-**インベントリーの作成** をクリックして保存します。
+`requirements.yml` が無いと、`amazon.aws` の版が実行環境の 10.3.0 より新しくなり、ジョブが失敗します。このファイルは AWS で作る場合だけ置きます。
 
-## Section 2: Groupの作成
+<details>
+<summary>git CLIで行う場合</summary>
 
-作成した `training-inventory` の詳細画面に移動すると、**グループ** タブがあります。操作対象は `managed`、EC2作成Job専用の実行元は `automation` です。サーバの用意は [操作対象サーバ（AWS）](../aws_targets.md) の経路Aまたは経路Bです。
-
-### Step 1: managedグループの作成
-
-**グループ** タブからグループの作成を開き、以下を入力します。
-
-| 項目 | 入力値 |
-|---|---|
-| Name | `managed` |
-
-### Step 2: automationグループの作成
-
-同様に、以下を入力してもう1つGroupを作成します。
-
-| 項目 | 入力値 |
-|---|---|
-| Name | `automation` |
-
-**Note:** OSS版Ansibleのインベントリにおける `children:` のグループ分けと同じ考え方です。`site.yml` は `hosts: managed` だけを変更します。`automation` は `provision_ec2.yml` が `localhost` でAWS APIを呼ぶためのグループです。
-
-## Section 3: Hostの追加
-
-### Step 1: managedグループへホストを追加する
-
-`managed` グループの詳細画面を開き、**ホスト** タブからホストの作成を開きます。
-
-**経路B（既存サーバ）:** 実サーバのIPまたはDNS名を `ansible_host` に書きます。台数が1台なら `srv1` だけで構いません。
-
-**経路A（これからEC2を作る）:** プライベートIPは [基礎演習6](../basic-controller/ex6.md) の構築Jobのあとで分かります。この時点ではホスト名だけ登録し、`ansible_host` は仮の値で構いません。疎通確認は構築Jobのあとに行います。
-
-| Host名 | Variables (YAML) |
-|---|---|
-| `srv1` | `ansible_host: 10.0.1.11` |
-| `srv2` | `ansible_host: 10.0.1.12` |
-
-Variablesの入力欄には、以下のようなYAML形式で入力します。アドレスは環境の値に置き換えてください。
-
-```yaml
-ansible_host: 10.0.1.11
+```bash
+git clone https://gitlab.example.local/<namespace>/aap-training-content.git
+cd aap-training-content
+# 上の4ファイルだけをコピーする
+git add create_aws_servers.yml remove_aws_servers.yml requirements.yml group_vars/all.yml
+git commit -m "Add AWS server creation playbooks"
+git push
 ```
 
-### Step 2: automationグループへホストを追加する
+</details>
 
-経路AでEC2を作る場合だけ、`automation` グループに次のホストを追加します。経路Bでは不要です。
+## Section 2: AAPにプロジェクトを登録する
 
-| Host名 | Variables (YAML) |
+**Automation Execution > プロジェクト** を開き、**プロジェクトの作成** をクリックします。
+
+![Project 作成画面。ソースコントロールの URL と認証情報の位置](../images/aap/project-create-git.png)
+
+| 項目 | 入力値 |
 |---|---|
-| `localhost` | `ansible_connection: local` |
+| 名前 | `aap-training-content` |
+| ソースコントロールタイプ | Git |
+| ソースコントロールURL | Section 1 の HTTPS の URL |
+| ソースコントロールブランチ | `main` |
+| ソースコントロール認証情報 | `gitlab-scm` |
+| 起動時のリビジョン更新 | 有効 |
+| クリーン | 有効 |
+
+保存したあと、同期を実行し、成功することを確認します。失敗したら URL、ユーザー名、パスワード、ブランチ名を見直してください。
+
+## Section 3: ジョブの実行場所
+
+AWS の操作は、作るサーバの中ではなく、AAP の実行環境の中で動きます。実行場所として `localhost` だけを登録します。Linux と Windows のアドレスは、この演習では登録しません。
+
+1. **Automation Execution > Infrastructure > インベントリー** を開く
+2. **インベントリーの作成** > **インベントリーの作成** をクリックする
+3. 名前は `aws-runner`、組織は演習1の組織。保存する
+4. **ホスト** タブでホストを追加する。名前は `localhost`
+5. ホストの変数に次を入れる
 
 ```yaml
 ansible_connection: local
 ```
 
-**Note:** `ansible_host` は、AAPがSSHするときの接続先です。後の演習では、この値を `hostvars` から参照して、管理対象の一覧ファイルを作ります（[sample-content/roles/baseline/templates/peers.txt.j2](../sample-content/roles/baseline/templates/peers.txt.j2)）。OSS版Ansibleのホスト変数と同じ考え方です。
+![インベントリー作成画面](../images/aap/inventory-create.png)
 
-## Section 4: Ad Hoc Commandによる疎通確認
+## Section 4: ジョブテンプレートを作って実行する
 
-Inventoryとホストの登録が終わったら、Playbookを作らずにモジュールを1回だけ実行する **Ad Hoc Command** 機能で疎通確認を行います。OSS版Ansibleの `ansible all -m ping` に相当する操作です。
+**Automation Execution > テンプレート** を開き、**テンプレートの作成** > **ジョブテンプレートの作成** をクリックします。
 
-### Step 1: Run Commandを起動する
-
-`training-inventory` の **ホスト** タブで、対象ホストにチェックを入れ、**Run command** をクリックします。
-
-### Step 2: 実行内容を入力する
+![ジョブテンプレートの作成画面](../images/aap/job-template-create.png)
 
 | 項目 | 入力値 |
 |---|---|
-| Module | `ping` |
-| Arguments | （空欄でよい） |
-| Limit | 対象ホストが自動的に設定されていることを確認 |
-| Credential | [演習2](./ex2.md)で作成した `managed-nodes-ssh` を選択 |
+| 名前 | `create-aws-servers` |
+| インベントリー | `aws-runner` |
+| プロジェクト | `aap-training-content` |
+| Playbook | `create_aws_servers.yml` |
+| 実行環境 | 空欄（既定のまま） |
+| 認証情報 | `aws-training` だけ。Machine は付けない |
+| 変数 | 下の YAML |
 
-最後の実行ボタン（**Launch** または **Next** のあとに出る実行）をクリックします。
-
-### Step 3: 実行結果を確認する
-
-実行が完了すると、Job詳細画面に以下のような結果が表示されます。
-
-```
-srv1 | SUCCESS => {
-    "changed": false,
-    "ping": "pong"
-}
-srv2 | SUCCESS => {
-    "changed": false,
-    "ping": "pong"
-}
+```yaml
+resource_prefix: tanaka01
+linux_login_password: TrainingLinux1
+windows_login_password: TrainingWindows1
 ```
 
-`managed` のホストが `SUCCESS` と表示されれば、CredentialとInventoryの設定が正しく、AAPから管理対象ノードへ接続できることが確認できました。経路Aでインスタンスがまだ無い場合は、ここを飛ばして [基礎演習6](../basic-controller/ex6.md) の構築Jobのあとで戻ってきてください。`localhost` はSSHしないので、この確認の対象にしません。
+`tanaka01` は例です。小文字で始め、英小文字・数字・ハイフンだけにし、13文字以内、末尾はハイフンにしないでください。同じアカウントの他の人と重ならない値にします。パスワードは英数字の8文字以上32文字以内で、自分の値に変えます。
 
-### Step 4: グループ単位での疎通確認
+リージョンは `group_vars/all.yml` の `ap-northeast-1` です。変える場合は変数に `ec2_region` を足します。AAP サーバのアドレスが分かっている場合は、`allow_cidr` をそのアドレスの `/32` にします。未指定のときは `0.0.0.0/0` です。
 
-同様の手順で、「Limit」を `managed` グループのみに絞って再実行してみましょう。`srv1` と `srv2` が対象になることを確認してください。
+**テンプレートの起動** をクリックします。成功すると、最後のタスクに次のような行が出ます。
 
-## Section 5: トラブルシューティング
+```
+Linuxの接続先: 203.0.113.10
+Windowsの接続先: 203.0.113.11
+Linuxのユーザー: ansible
+Windowsのユーザー: Administrator
+```
 
-Ad Hoc Commandが失敗する場合は、以下を確認してください。
+表示された2つのアドレス、ユーザー名、自分で決めた2つのパスワードを控えてください。
 
-* Host変数の `ansible_host`（IPアドレス）が正しいか
-* Credentialのユーザー名・パスワード（またはSSH秘密鍵）が正しいか
-* AAPの実行環境（Execution Node）から管理対象ノードへネットワーク的に到達可能か（ファイアウォール、セキュリティグループ等）
-* 管理対象ノードのSSHサービスが起動しているか
-* Jobの詳細ログ（Output）にエラーメッセージが出ていないか
+失敗したときは、失敗したタスクの `msg` を見ます。よくある原因は、`resource_prefix` の文字種、パスワードに記号が入っていること、AWS のキーに EC2 の作成権限が無いことです。
 
----
+## Section 5: ログイン用の認証情報を作る
 
-ここまでで、AAPの基本操作（ログイン、Credential、Inventory、疎通確認）が完了しました。次は、GitLabと連携したProjectの作成に進みます。
+[演習2](./ex2.md) と同じ作成画面で、Machine 認証情報を2つ作ります。
 
-[基礎演習（Project・Job Template）へ進む](../basic-controller/ex4.md)
+| 名前 | ユーザー名 | パスワード |
+|---|---|---|
+| `linux-ssh` | `ansible` | `linux_login_password` に入れた値 |
+| `windows-psrp` | `Administrator` | `windows_login_password` に入れた値 |
+
+権限昇格は空欄です。
+
+## Section 6: 不要になったら削除する
+
+リソースを残すと課金が続きます。学習が終わったら、同じ要領でジョブテンプレート `remove-aws-servers` を作り、Playbook を `remove_aws_servers.yml` にして実行します。変数の `resource_prefix` は作成時と同じ値にします。パスワードは不要です。認証情報は `aws-training`、インベントリーは `aws-runner` です。
+
+## 次
+
+[演習4](./ex4.md) で、控えたアドレスをホストとして登録します。

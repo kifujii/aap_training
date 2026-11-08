@@ -1,0 +1,23 @@
+---
+- name: Check the note file on Linux
+  hosts: linux
+  gather_facts: false
+
+  tasks:
+    - name: Read note.txt
+      ansible.builtin.slurp:
+        src: /var/tmp/aap-training/note.txt
+      register: note_file
+
+    - name: Decode note.txt
+      ansible.builtin.set_fact:
+        note_text: "{{ note_file.content | b64decode }}"
+
+    - name: note.txt contains the hostname and the note
+      ansible.builtin.assert:
+        that:
+          - inventory_hostname in note_text
+          - training_note in note_text
+        fail_msg: >-
+          /var/tmp/aap-training/note.txt に
+          {{ inventory_hostname }} または「{{ training_note }}」がありません。

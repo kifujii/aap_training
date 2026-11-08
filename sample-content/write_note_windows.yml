@@ -1,0 +1,32 @@
+---
+- name: Write a note file on Windows
+  hosts: windows
+  gather_facts: true
+  environment: "{{ {'KRB5_CONFIG': playbook_dir + '/krb5.conf'} if (lookup('ansible.builtin.fileglob', playbook_dir + '/krb5.conf') | length > 0) else {} }}"
+
+  tasks:
+    - name: Load secrets.yml when vault is enabled
+      ansible.builtin.include_vars:
+        file: "{{ playbook_dir }}/secrets.yml"
+      when: training_use_vault | default(false) | bool
+      no_log: true
+
+    - name: Create the note directory
+      ansible.windows.win_file:
+        path: C:\Users\Public\aap-training
+        state: directory
+
+    - name: Write note.txt
+      ansible.windows.win_copy:
+        dest: C:\Users\Public\aap-training\note.txt
+        content: |
+          hostname: {{ inventory_hostname }}
+          address: {{ ansible_host }}
+          note: {{ training_note }}
+
+    - name: Write secret.txt
+      ansible.windows.win_copy:
+        dest: C:\Users\Public\aap-training\secret.txt
+        content: "{{ training_secret | default('') }}\n"
+      when: training_secret is defined
+      no_log: true

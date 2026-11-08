@@ -1,0 +1,59 @@
+---
+# AWSでサーバを作った環境の通知確認。
+# メッセージを S3 に書き、同じジョブのログで読み戻す。
+- name: Publish a notification object to S3
+  hosts: localhost
+  connection: local
+  gather_facts: false
+
+  tasks:
+    - name: resource_prefix is set
+      ansible.builtin.assert:
+        that:
+          - resource_prefix is defined
+          - resource_prefix is match('^[a-z][a-z0-9-]{0,12}$')
+          - resource_prefix is not match('-$')
+        fail_msg: Extra variables に resource_prefix を指定してください。
+
+    - name: Read the AWS account id
+      amazon.aws.aws_caller_info:
+      register: caller
+
+    - name: Remember the bucket name
+      ansible.builtin.set_fact:
+        notify_bucket: "{{ resource_prefix }}-aap-notify-{{ caller.account }}"
+
+    - name: Ensure the notification bucket exists
+      amazon.aws.s3_bucket:
+        name: "{{ notify_bucket }}"
+        state: present
+        region: "{{ ec2_region }}"
+
+    - name: Write the notification object
+      amazon.aws.s3_object:
+        bucket: "{{ notify_bucket }}"
+        object: notification.txt
+        mode: put
+        content: "{{ notify_message }}\n"
+        region: "{{ ec2_region }}"
+
+    - name: Read the notification object back
+      amazon.aws.s3_object:
+        bucket: "{{ notify_bucket }}"
+        object: notification.txt
+        mode: getstr
+        region: "{{ ec2_region }}"
+      register: notification_object
+
+    - name: The object body matches the message
+      ansible.builtin.assert:
+        that:
+          - (notification_object.contents | trim) == (notify_message | trim)
+        fail_msg: S3 から読み戻した内容が notify_message と一致しません。
+
+    - name: Show the notification that was stored
+      ansible.builtin.debug:
+        msg:
+          - "bucket: {{ notify_bucket }}"
+          - "object: notification.txt"
+          - "contents: {{ notification_object.contents }}"

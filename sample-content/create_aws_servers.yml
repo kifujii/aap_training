@@ -1,0 +1,262 @@
+---
+# AWS上に、この演習で使うネットワークとサーバを作る。
+# パスワードは Extra variables で渡し、ログには出さない。
+- name: Create the training network and servers
+  hosts: localhost
+  connection: local
+  gather_facts: false
+
+  tasks:
+    - name: Required variables are set
+      ansible.builtin.assert:
+        that:
+          - resource_prefix is defined
+          - resource_prefix is match('^[a-z][a-z0-9-]{0,12}$')
+          - resource_prefix is not match('-$')
+          - linux_login_password is defined
+          - linux_login_password is match('^[A-Za-z0-9]{8,32}$')
+          - windows_login_password is defined
+          - windows_login_password is match('^[A-Za-z0-9]{8,32}$')
+          - vpc_cidr is match('^[0-9.]+/[0-9]+$')
+          - subnet_cidr is match('^[0-9.]+/[0-9]+$')
+          - allow_cidr is match('^[0-9.]+/[0-9]+$')
+        fail_msg: >-
+          Extra variables に resource_prefix、linux_login_password、
+          windows_login_password を指定してください。
+          resource_prefix は小文字で始め、英小文字・数字・ハイフンだけを使い、
+          末尾はハイフンにしないでください（全体で13文字以内）。
+          パスワードは英数字の8文字以上32文字以内です。
+
+    - name: List availability zones
+      amazon.aws.aws_az_info:
+        region: "{{ ec2_region }}"
+      register: az_info
+
+    - name: Choose an availability zone
+      ansible.builtin.set_fact:
+        ec2_az_effective: "{{ ec2_az | default(az_info.availability_zones[0].zone_name) }}"
+
+    - name: Create the VPC
+      amazon.aws.ec2_vpc_net:
+        name: "{{ resource_prefix }}-vpc"
+        cidr_block:
+          - "{{ vpc_cidr }}"
+        region: "{{ ec2_region }}"
+        dns_support: true
+        dns_hostnames: true
+        tags:
+          Project: "{{ resource_prefix }}"
+      register: vpc_net
+
+    - name: Create the subnet
+      amazon.aws.ec2_vpc_subnet:
+        vpc_id: "{{ vpc_net.vpc.id }}"
+        cidr: "{{ subnet_cidr }}"
+        az: "{{ ec2_az_effective }}"
+        map_public: true
+        region: "{{ ec2_region }}"
+        tags:
+          Name: "{{ resource_prefix }}-subnet"
+          Project: "{{ resource_prefix }}"
+      register: subnet
+
+    - name: Create the internet gateway
+      amazon.aws.ec2_vpc_igw:
+        vpc_id: "{{ vpc_net.vpc.id }}"
+        state: present
+        region: "{{ ec2_region }}"
+        tags:
+          Name: "{{ resource_prefix }}-igw"
+          Project: "{{ resource_prefix }}"
+      register: igw
+
+    - name: Create the route table
+      amazon.aws.ec2_vpc_route_table:
+        vpc_id: "{{ vpc_net.vpc.id }}"
+        region: "{{ ec2_region }}"
+        lookup: tag
+        tags:
+          Name: "{{ resource_prefix }}-rt"
+          Project: "{{ resource_prefix }}"
+        subnets:
+          - "{{ subnet.subnet.id }}"
+        routes:
+          - dest: 0.0.0.0/0
+            gateway_id: "{{ igw.gateway_id }}"
+      register: route_table
+
+    - name: Allow SSH and PSRP
+      amazon.aws.ec2_security_group:
+        name: "{{ resource_prefix }}-aap"
+        description: "{{ resource_prefix }} ssh and psrp"
+        vpc_id: "{{ vpc_net.vpc.id }}"
+        region: "{{ ec2_region }}"
+        rules:
+          - proto: tcp
+            ports:
+              - 22
+            cidr_ip: "{{ allow_cidr }}"
+            rule_desc: ssh
+          - proto: tcp
+            ports:
+              - 5985
+            cidr_ip: "{{ allow_cidr }}"
+            rule_desc: psrp
+        rules_egress:
+          - proto: all
+            cidr_ip: 0.0.0.0/0
+        tags:
+          Project: "{{ resource_prefix }}"
+      register: security_group
+
+    - name: Find Amazon Linux 2023
+      amazon.aws.ec2_ami_info:
+        region: "{{ ec2_region }}"
+        owners:
+          - amazon
+        filters:
+          name: al2023-ami-2023*-x86_64
+          state: available
+          architecture: x86_64
+          virtualization-type: hvm
+      register: linux_ami_list
+      when: linux_ami_id is not defined
+
+    - name: Amazon Linux 2023 image was found
+      ansible.builtin.assert:
+        that:
+          - linux_ami_list.images | length > 0
+        fail_msg: Amazon Linux 2023 のAMIが見つかりません。Extra variables に linux_ami_id を指定してください。
+      when: linux_ami_id is not defined
+
+    - name: Choose the Linux AMI
+      ansible.builtin.set_fact:
+        linux_image_id: "{{ linux_ami_id if (linux_ami_id is defined) else (linux_ami_list.images | sort(attribute='creation_date') | last).image_id }}"
+
+    - name: Find Windows Server 2022
+      amazon.aws.ec2_ami_info:
+        region: "{{ ec2_region }}"
+        owners:
+          - amazon
+        filters:
+          name: Windows_Server-2022-English-Full-Base-*
+          state: available
+          architecture: x86_64
+          virtualization-type: hvm
+      register: windows_ami_list
+      when: windows_ami_id is not defined
+
+    - name: Windows Server 2022 image was found
+      ansible.builtin.assert:
+        that:
+          - windows_ami_list.images | length > 0
+        fail_msg: Windows Server 2022 のAMIが見つかりません。Extra variables に windows_ami_id を指定してください。
+      when: windows_ami_id is not defined
+
+    - name: Choose the Windows AMI
+      ansible.builtin.set_fact:
+        windows_image_id: "{{ windows_ami_id if (windows_ami_id is defined) else (windows_ami_list.images | sort(attribute='creation_date') | last).image_id }}"
+
+    - name: Create the Linux server
+      amazon.aws.ec2_instance:
+        name: "{{ resource_prefix }}-linux"
+        state: running
+        region: "{{ ec2_region }}"
+        image_id: "{{ linux_image_id }}"
+        instance_type: "{{ linux_instance_type }}"
+        wait: true
+        network_interfaces:
+          - device_index: 0
+            subnet_id: "{{ subnet.subnet.id }}"
+            assign_public_ip: true
+            groups:
+              - "{{ security_group.group_id }}"
+        tags:
+          Project: "{{ resource_prefix }}"
+          Role: linux
+        user_data: |
+          #cloud-config
+          users:
+            - name: ansible
+              groups: wheel
+              sudo: ALL=(ALL) NOPASSWD:ALL
+              shell: /bin/bash
+              lock_passwd: false
+          ssh_pwauth: true
+          chpasswd:
+            expire: false
+            list: |
+              ansible:{{ linux_login_password }}
+          write_files:
+            - path: /etc/ssh/sshd_config.d/50-password.conf
+              content: |
+                PasswordAuthentication yes
+          runcmd:
+            - systemctl restart sshd
+      register: linux_created
+
+    - name: Create the Windows server
+      amazon.aws.ec2_instance:
+        name: "{{ resource_prefix }}-windows"
+        state: running
+        region: "{{ ec2_region }}"
+        image_id: "{{ windows_image_id }}"
+        instance_type: "{{ windows_instance_type }}"
+        wait: true
+        network_interfaces:
+          - device_index: 0
+            subnet_id: "{{ subnet.subnet.id }}"
+            assign_public_ip: true
+            groups:
+              - "{{ security_group.group_id }}"
+        tags:
+          Project: "{{ resource_prefix }}"
+          Role: windows
+        user_data: |
+          <powershell>
+          $admin = [ADSI]"WinNT://./Administrator,user"
+          $admin.SetPassword("{{ windows_login_password }}")
+          $admin.SetInfo()
+          Enable-PSRemoting -Force
+          Set-Item -Path WSMan:\localhost\Service\Auth\Negotiate -Value $true
+          Set-Item -Path WSMan:\localhost\Service\AllowUnencrypted -Value $true
+          New-NetFirewallRule -Name "AAP-PSRP-HTTP" -DisplayName "AAP PSRP" -Enabled True -Direction Inbound -Protocol TCP -Action Allow -LocalPort 5985 -ErrorAction SilentlyContinue
+          Restart-Service WinRM
+          </powershell>
+      register: windows_created
+
+    - name: Remember the public addresses
+      ansible.builtin.set_fact:
+        linux_public_ip: "{{ linux_created.instances[0].public_ip_address | default('', true) }}"
+        windows_public_ip: "{{ windows_created.instances[0].public_ip_address | default('', true) }}"
+
+    - name: Both servers have a public address
+      ansible.builtin.assert:
+        that:
+          - linux_public_ip | length > 0
+          - windows_public_ip | length > 0
+        fail_msg: パブリックIPが付いていません。サブネットのパブリック設定とルートを確認してください。
+
+    - name: Wait until SSH accepts connections
+      ansible.builtin.wait_for:
+        host: "{{ linux_public_ip }}"
+        port: 22
+        timeout: 300
+
+    - name: Wait until PSRP accepts connections
+      ansible.builtin.wait_for:
+        host: "{{ windows_public_ip }}"
+        port: 5985
+        timeout: 900
+
+    - name: Show the addresses to write down
+      ansible.builtin.debug:
+        msg:
+          - "resource_prefix: {{ resource_prefix }}"
+          - "Linuxの名前: {{ resource_prefix }}-linux"
+          - "Linuxの接続先: {{ linux_public_ip }}"
+          - "Linuxのユーザー: ansible"
+          - "Windowsの名前: {{ resource_prefix }}-windows"
+          - "Windowsの接続先: {{ windows_public_ip }}"
+          - "Windowsのユーザー: Administrator"
+          - "パスワードは、このジョブの Extra variables に入れた値です。"

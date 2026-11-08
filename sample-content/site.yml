@@ -1,8 +1,0 @@
----
-# 登録済みの managed ホストへ、初期設定を適用する。サーバの作成はしない。
-- name: Apply Linux baseline
-  hosts: managed
-  become: true
-  roles:
-    - baseline
-    - access

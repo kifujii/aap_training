@@ -1,19 +1,19 @@
 ---
-# 経路B（既存サーバ）では managed.hosts の ansible_host を実サーバに書き換える。
-# 経路A（EC2新規作成）では、provision_ec2.yml のログに出たプライベートIPを同じ場所へ書く。
-# automation グループは provision_ec2.yml を localhost で実行するためだけに使う。
+# 203.0.113.0/24 は文書用の例示アドレスです。実行前に、自分のサーバのアドレスへ書き換えてください。
 all:
-  vars:
-    ansible_user: ec2-user
-    ansible_port: 22
   children:
-    managed:
-      hosts:
-        srv1:
-          ansible_host: 10.0.1.11
-        srv2:
-          ansible_host: 10.0.1.12
-    automation:
-      hosts:
-        localhost:
-          ansible_connection: local
+    targets:
+      children:
+        linux:
+          hosts:
+            lin1:
+              ansible_host: 203.0.113.10
+        windows:
+          hosts:
+            win1:
+              ansible_host: 203.0.113.11
+              ansible_connection: psrp
+              ansible_psrp_auth: ntlm
+              ansible_psrp_protocol: http
+              ansible_psrp_port: 5985
+              ansible_psrp_cert_validation: ignore

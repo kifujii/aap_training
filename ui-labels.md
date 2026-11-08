@@ -59,6 +59,12 @@
 | 操作 | 手順 |
 |---|---|
 | 新規リポジトリ | 右上 **Create new…** > **New project/repository** > **Create blank project** |
-| Personal Access Token | 右上のユーザーメニューから User Settings を開き、左メニュー **Personal access tokens** |
+| Web IDE | リポジトリ右上の **Code** を開き、**Web IDE**。メニューが **Edit** の環境ではその中 |
+| AAPがGitLabを読む認証 | 認証情報タイプ **Source Control**。ユーザー名とパスワードは GitLab のログインと同じものを入れる |
+| 通知の新規作成 | **Notifiers** 一覧の **Create notifier**。メールのタイプ名は **メール** |
+| スケジュールの新規作成 | テンプレートの **スケジュール** タブにある **Create schedule** |
+| Workflowのノード追加 | ビジュアライザーの **Add step**。確定は **Save** |
 
-`sample-content` を `git push` する場合は、**Initialize repository with a README** のチェックを外してから **Create project** してください。チェックを付けたまま push すると、空でないリポジトリへの拒否で失敗します。Web IDE だけでファイルを作る場合は、README 初期化を付けたままでも進められます。SAST と Secret Detection は、この研修ではオフのままで構いません。
+この資料のファイル作成は Web IDE で行います。**Initialize repository with a README** は付けたままで進められます。SAST と Secret Detection はオフのままで構いません。
+
+git CLI で空でないリポジトリへ push する場合は、README 初期化を外してからプロジェクトを作ってください。

@@ -1,124 +1,85 @@
-# 応用演習 4 - Workflow Job Template
+# 応用演習 4 - カスタム実行環境
 
-この演習では、複数のJob Templateを連携させ、成功/失敗に応じて分岐させる **Workflow Job Template** を作成します。承認（Approval）ノードの使い方もあわせて扱います。
+[応用演習3](./ex3.md) | [応用演習5へ](./ex5.md)
 
-**前提条件:** 応用演習1〜3を完了していること
+実行環境を1つ作り、AAP に登録します。作業場所は AAP サーバです。ビルド用の別サーバは作りません。
 
-[前に戻る](./ex3.md) | [次へ進む](./ex5.md)
+次のどちらかなら、この演習は飛ばして既定の実行環境のまま [応用演習5](./ex5.md) へ進みます。
 
----
+* AAP サーバからコンテナイメージを取得できない
+* `ansible-builder` も `podman` も無い
 
-## Section 1: 確認用Job Templateの作成
+## Section 1: AAPサーバでツールを確認する
 
-Workflowの中で「初期設定のあとの点検」を行うため、[sample-content/verify.yml](../sample-content/verify.yml)を実行する新しいJob Templateを作成します。`verify.yml` はタイムゾーン、chronyd、ルートファイルシステムの空きを確認し、サーバの設定は変更しません。
-
-### Step 1: Job Templateを作成する
-
-**Automation Execution > テンプレート** → **テンプレートの作成** → **ジョブテンプレートの作成** で、以下を入力します。
-
-| 項目 | 入力値 |
-|---|---|
-| Name | `verify-hosts` |
-| Job Type | `Run` |
-| Inventory | `training-inventory` |
-| Project | `aap-training-content` |
-| Playbook | `verify.yml` |
-| Credentials | `managed-nodes-ssh` |
-
-「Save」をクリックして保存します。単体で一度「Launch」し、正常終了することを確認しておきましょう。
-
-## Section 2: Workflow Job Templateの作成
-
-### Step 1: Workflow Job Template作成画面を開く
-
-**Automation Execution > テンプレート** → **テンプレートの作成** → **ワークフロージョブテンプレートの作成** をクリックします。
-
-### Step 2: 入力する
-
-| 項目 | 入力値 |
-|---|---|
-| Name | `baseline-workflow` |
-| Organization | 基礎演習1で確認したOrganization |
-
-「Save」をクリックすると、Workflow Visualizer（ノードを配置するグラフィカルな編集画面）が開きます。
-
-## Section 3: ノードの配置
-
-### Step 1: 開始ノードを追加する
-
-「Start」ノードの「+」をクリックし、以下を設定します。
-
-| 項目 | 入力値 |
-|---|---|
-| Node Type | `Job Template` |
-| Job Template | `apply-baseline` |
-
-### Step 2: 成功時のApprovalノードを追加する
-
-`apply-baseline` ノードの右側（または下側）の「+」から、「On Success」の分岐でノードを追加します。
-
-| 項目 | 入力値 |
-|---|---|
-| Node Type | `Approval` |
-| Name | `本番反映前の承認` |
-| Description | 初期設定の内容を確認し、問題なければ承認してください |
-| Timeout | `1` hour（任意） |
-
-### Step 3: 承認後のノードを追加する
-
-Approvalノードの「On Success」（承認された場合）の分岐で、以下のノードを追加します。
-
-| 項目 | 入力値 |
-|---|---|
-| Node Type | `Job Template` |
-| Job Template | `verify-hosts` |
-
-### Step 4: 保存する
-
-画面右上の「Save」をクリックしてWorkflowを保存します。以下のような構造になっていることを確認してください。
-
-```
-apply-baseline --(成功)--> [承認: 本番反映前の承認] --(承認)--> verify-hosts
-                 \
-                  --(失敗)--> （何も繋がない。応用演習3のError通知で検知する）
+```bash
+ssh <ユーザー>@<AAPサーバ>
+ansible-builder --version
+podman --version
 ```
 
-## Section 4: Workflowの実行
+ホストに無い場合は、`podman ps` で controller を含むコンテナを探し、その中に `ansible-builder` があるかを見ます。どちらにも無ければ、この演習はここで終わります。
 
-### Step 1: Launchする
+## Section 2: 定義ファイル
 
-`baseline-workflow` を「Launch」します。
+AAP サーバ上で作業ディレクトリを作ります。
 
-### Step 2: 承認待ち状態を確認する
+```bash
+mkdir -p ~/custom-ee && cd ~/custom-ee
+```
 
-`apply-baseline` ノードが成功すると、Approvalノードが「Pending」状態になり、Workflowの実行が一時停止します。
+`requirements.yml`:
 
-### Step 3: 承認する
-
-Workflow実行画面、または **Automation Execution > ジョブ** と **管理 > Workflow Approvals** から、Approvalノードの詳細を開き、承認します。
-
-### Step 4: 残りのノードが実行されることを確認する
-
-承認後、`verify-hosts` ノードが自動的に実行され、Workflow全体が `Successful` のステータスで完了することを確認してください。
-
-### Step 5: 拒否（Deny）した場合の動作を確認する（任意）
-
-もう一度Workflowを実行し、今回はApprovalノードで「Deny」を選択してみましょう。Workflow全体が `Failed` として終了し、`verify-hosts` ノードは実行されないことを確認してください。
-
-**Note:** Approvalノードを拒否・タイムアウトさせた場合の動きは、Workflow全体を失敗として扱うか、別の分岐（例: ロールバック用のJob Template）に繋ぐかを設計できます。実運用では、「失敗時のロールバック」や「承認者への再通知」を別ノードとして追加することも検討してください。
-
-## Section 5: まとめ
-
-| 要素 | 役割 |
-|---|---|
-| Job Templateノード | 既存のJob Templateをそのままノードとして呼び出す |
-| Approvalノード | 人による承認を挟む。`Approve` ロールを持つUser/Teamのみ承認可能 |
-| On Success / On Failure / Always分岐 | 前段ノードの結果に応じて、後続の実行経路を切り替える |
-
-Workflow Job Templateを使うことで、「初期設定→承認→点検」のような、複数ステップにわたる運用フローをAAP上で一元管理できます。[宿題 課題3](../homework/hm1.md)でも、この仕組みを活用します。
-
+```yaml
 ---
+collections:
+  - name: community.general
+    version: "8.6.1"
+```
 
-ここまでで、Workflow Job Templateの基本的な使い方を習得しました。次の演習では、Job実行の裏側で使われているExecution Environmentについて学びます。
+`execution-environment.yml`:
 
-[次へ進む](./ex5.md)
+```yaml
+---
+version: 3
+
+images:
+  base_image:
+    name: registry.redhat.io/ansible-automation-platform-27/ee-supported-rhel9:latest
+
+dependencies:
+  galaxy: requirements.yml
+```
+
+ベースは `ee-supported` にします。`ee-minimal` から作ると、既定のイメージに入っている `ansible.windows` や `amazon.aws` が欠けることがあります。`amazon.aws` をこのファイルへ足す場合も、版は `10.3.0` です。
+
+## Section 3: ビルドする
+
+```bash
+ansible-builder build \
+    -f execution-environment.yml \
+    -t custom-ee:1.0 \
+    --container-runtime podman
+podman images | grep custom-ee
+```
+
+## Section 4: AAPへ登録する
+
+レジストリへ push できる場合は、push したイメージ名を登録します。AAP の実行ノードがこの AAP サーバ自身である場合は、push せずに次の値でも登録できます。
+
+| 項目 | 入力値 |
+|---|---|
+| 名前 | `custom-ee` |
+| Image | `localhost/custom-ee:1.0` |
+| Pull | `Never` |
+
+**実行環境** の作成画面で保存します。レジストリを使う場合は、認証情報タイプ `Container Registry` を作り、Pull は `Always`、Image は push した名前にします。
+
+## Section 5: テンプレートへ付ける
+
+`write-note-linux` の実行環境に `custom-ee` を選び、起動して成功することを確認します。ジョブ詳細の実行環境が `custom-ee` になっていれば、指定は効いています。
+
+確認が終わったら、実行環境を空欄に戻します。以降の演習は既定の実行環境で進めます。
+
+## 次
+
+[応用演習5](./ex5.md)

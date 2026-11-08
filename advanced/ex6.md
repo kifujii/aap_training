@@ -1,163 +1,75 @@
-# 応用演習 6 - カスタムEEの作成
+# 応用演習 6 - PlaybookからJobを起動する
 
-この演習では、`ansible-builder` を使って独自のCollectionを含むカスタムExecution Environment（EE）を作成し、AAPに登録します。
+[応用演習5](./ex5.md) | [応用演習7へ](./ex7.md)
 
-**前提条件:** [応用演習5](./ex5.md)を完了していること、かつ以下の環境が利用可能であること（[事前準備](../prepare_training_environment.md)参照）
+応用演習5の API 呼び出しを、Playbook から行います。作業場所は AAP サーバです。
 
-* `podman` または `docker` が使えるLinuxサーバー
-* インターネット接続（ベースイメージ・Collectionの取得のため）
-* コンテナイメージをpushできるコンテナレジストリ
+`ansible-galaxy collection install` はインターネットへ出ます。出られない場合は、この演習は読み物にして [応用演習7](./ex7.md) へ進んでください。
 
-> **注意:** この演習はAAPの画面操作ではなく、別のLinuxサーバー上でのCLI作業が中心です。
+## Section 1: コレクション
 
-[前に戻る](./ex5.md) | [次へ進む](./ex7.md)
+AAP サーバに SSH し、次を実行します。
 
+```bash
+ansible-galaxy collection install ansible.controller
+```
+
+同じディレクトリに `controller_auth.yml` を作ります。トークンはファイルに書かず、環境変数のままにします。
+
+```yaml
 ---
-
-## Section 1: 必要なツールの確認・導入
-
-```bash
-$ python3 -m pip install --user ansible-builder ansible-navigator
-$ ansible-builder --version
-$ ansible-navigator --version
-$ podman --version
+controller_host: "https://<AAPのURL>"
+controller_oauthtoken: "{{ lookup('env', 'AAP_TOKEN') }}"
+controller_validate_certs: false
 ```
 
-いずれかが導入されていない場合は、上記の `pip install` コマンドで導入してください（社内ミラー等、環境に応じてインデックスURLを調整してください）。
+`controller_validate_certs: false` は、演習用の証明書向けです。
 
-## Section 2: execution-environment.ymlの作成
+## Section 2: 起動するPlaybook
 
-### Step 1: 作業ディレクトリを作成する
+`launch_note.yml`:
 
-```bash
-$ mkdir ~/custom-ee && cd ~/custom-ee
-```
-
-### Step 2: 必要なCollectionを定義する
-
-```bash
-$ cat << 'EOF' > requirements.yml
+```yaml
 ---
-collections:
-  - name: community.general
-    version: ">=8.0.0"
-  - name: ansible.posix
-  - name: amazon.aws
-    version: "10.3.0"
-EOF
-```
+- name: Launch write-note-linux from a playbook
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  vars_files:
+    - controller_auth.yml
 
-### Step 3: execution-environment.ymlを作成する
+  tasks:
+    - name: Launch write-note-linux
+      ansible.controller.job_launch:
+        name: write-note-linux
+        controller_host: "{{ controller_host }}"
+        controller_oauthtoken: "{{ controller_oauthtoken }}"
+        validate_certs: "{{ controller_validate_certs }}"
+        extra_vars:
+          training_note: from controller collection
+      register: launch_result
+
+    - name: Wait for the job
+      ansible.controller.job_wait:
+        job_id: "{{ launch_result.id }}"
+        controller_host: "{{ controller_host }}"
+        controller_oauthtoken: "{{ controller_oauthtoken }}"
+        validate_certs: "{{ controller_validate_certs }}"
+
+    - name: Show the launched job id
+      ansible.builtin.debug:
+        msg: "job {{ launch_result.id }} finished"
+```
 
 ```bash
-$ cat << 'EOF' > execution-environment.yml
----
-version: 3
-
-images:
-  base_image:
-    name: registry.redhat.io/ansible-automation-platform-25/ee-minimal-rhel9:latest
-
-dependencies:
-  galaxy: requirements.yml
-EOF
+export AAP_TOKEN="<応用演習5で控えたトークン>"
+ansible-playbook launch_note.yml
 ```
 
-**Note:** `base_image` にはAAPが提供する最小構成のEEイメージ（`ee-minimal`）を指定し、そこに必要なCollectionだけを追加していくのが推奨される方法です。社内レジストリにミラーされたベースイメージがある場合は、そのイメージ名に置き換えてください。
+AAP のジョブ一覧に `write-note-linux` が増え、`note:` が `from controller collection` になれば完了です。終わったら Survey で `managed by AAP` に戻します。
 
-## Section 3: ansible-builderでビルドする
+この2つのファイルは演習用の作業ディレクトリに置きます。GitLab の `aap-training-content` には入れません。トークンが混ざるのを防ぐためです。
 
-### Step 1: ビルドを実行する
+## 次
 
-```bash
-$ ansible-builder build \
-    -f execution-environment.yml \
-    -t custom-ee:1.0 \
-    --container-runtime podman
-```
-
-ビルドが進行すると、ベースイメージの取得、Collectionのインストール、イメージのレイヤー構築が順に実行されます。
-
-### Step 2: ビルド結果を確認する
-
-```bash
-$ podman images | grep custom-ee
-localhost/custom-ee   1.0   xxxxxxxxxxxx   2 minutes ago   512 MB
-```
-
-### Step 3: ansible-navigatorでローカル動作確認する
-
-AAPに登録する前に、ビルドしたEEがsample-contentの `site.yml` を正しく実行できるか、ローカルで確認します。
-
-```bash
-$ cd aap-training-content   # sample-contentをpushしたリポジトリのクローン
-$ ansible-navigator run site.yml \
-    -i inventory.yml \
-    --eei localhost/custom-ee:1.0 \
-    --mode stdout
-```
-
-**Note:** `ansible-navigator` はEEコンテナの中でPlaybookを実行するためのCLIツールです。`--mode stdout` を指定すると、対話UIではなく通常のターミナル出力形式で結果を確認できます。
-
-## Section 4: コンテナレジストリへのpush
-
-### Step 1: レジストリにログインする
-
-```bash
-$ podman login <レジストリのホスト名>
-Username: <レジストリのユーザー名>
-Password: <レジストリのパスワードまたはトークン>
-```
-
-### Step 2: タグ付けしてpushする
-
-```bash
-$ podman tag custom-ee:1.0 <レジストリのホスト名>/aap-training/custom-ee:1.0
-$ podman push <レジストリのホスト名>/aap-training/custom-ee:1.0
-```
-
-## Section 5: AAPへの登録
-
-### Step 1: Container Registry Credentialを作成する
-
-**Automation Execution > Infrastructure > 認証情報** を開き、**認証情報の作成** で以下を入力します。認証情報タイプは `Container Registry` です。
-
-| 項目 | 入力値 |
-|---|---|
-| Name | `custom-ee-registry-credential` |
-| Credential Type | `Container Registry` |
-| Authentication URL | レジストリのホスト名 |
-| Username / Password (or Token) | レジストリのログイン情報 |
-
-### Step 2: Execution Environmentを登録する
-
-**Automation Execution > Infrastructure > 実行環境** を開き、実行環境の作成で以下を入力します。
-
-| 項目 | 入力値 |
-|---|---|
-| Name | `custom-ee` |
-| Image | `<レジストリのホスト名>/aap-training/custom-ee:1.0` |
-| Pull | `Always`（研修中は更新を確実に反映するため） |
-| Registry Credential | `custom-ee-registry-credential` |
-
-「Save」をクリックして保存します。
-
-## Section 6: Job Templateへの割当と実行確認
-
-### Step 1: Job Templateに割り当てる
-
-`apply-baseline` の編集画面で「Execution Environment」欄に `custom-ee` を選択し、保存します。経路Aの `provision-ec2` は、AAP 2.7 の既定EEに入っている `amazon.aws` 10.3.0 で実行できます。カスタムEEへ切り替える場合も、`requirements.yml` の版は 10.3.0 のままにしてください。11以降は ansible-core 2.16 のEEではサポートされません。基礎演習の時点で構築を飛ばした場合は、ここで `provision-ec2` を実行し、ログのプライベートIPを `inventory.yml` に書き戻します。
-
-### Step 2: 実行して確認する
-
-「Launch」してJobを実行し、正常終了することを確認します。Job詳細画面の「Details」タブで、使用されたExecution Environmentが `custom-ee` になっていることを確認してください。
-
-### Step 3: 動作を元に戻す（任意）
-
-研修終了後は、意図せず他の演習に影響しないよう、Execution Environmentの指定を空欄（デフォルトに戻す）にしておくとよいでしょう。
-
----
-
-ここまでで、カスタムEEのビルドからAAPへの登録・利用までの一連の流れを習得しました。次の演習では、REST APIを使ったAAPの操作を扱います。
-
-[次へ進む](./ex7.md)
+[応用演習7](./ex7.md)
