@@ -4,15 +4,16 @@
 
 実行だけできるチームと、設定を変えられる人を分けます。
 
-## Section 1: ロール
+## Section 1: 画面上のロール名
 
-| ロール | できること |
-|---|---|
-| Execute | Job Template の起動。編集はできない |
-| Read | 閲覧 |
-| Use | Job Template 作成時に、その認証情報やプロジェクトを選べる |
-| Admin | そのオブジェクトの編集 |
-| Approve | Workflow の承認 |
+一覧に Read や Execute という短い名前はありません。付けるオブジェクトの名前が前に付きます。
+
+| 画面上の名前 | 付ける場所 | できること |
+|---|---|---|
+| JobTemplate Execute | `write-note-linux`、`write-note-windows` | 起動できる。編集はできない |
+| WorkflowJobTemplate Execute | `note-workflow` | ワークフローを起動できる |
+| Project Read Compat | `aap-training-content` | プロジェクトを見られる |
+| Inventory Read Compat | `training-inventory` | インベントリーを見られる |
 
 ## Section 2: チームを作る
 
@@ -27,11 +28,25 @@
 
 ## Section 3: 実行権限だけを付ける
 
-`write-note-linux` の **Team Access** で、`ops-team` に **Execute** を付けます。`write-note-windows` と `note-workflow` にも、同じ Execute を付けます。
+`write-note-linux` の **Team Access** を開きます。
 
-`aap-training-content` プロジェクトのアクセスには **Read** を付けます。`training-inventory` にも **Read** を付けます。
+![Team Access。Assign teams からチームとロールを選ぶ](../images/aap/team-access.png)
 
-Execute だけでは、Playbook や認証情報の変更はできません。
+**Assign teams** をクリックし、`ops-team` にチェックを入れて **Next** を押します。
+
+![チームを選ぶ。チェックを入れて Next](../images/aap/team-access-assign.png)
+
+**JobTemplate Execute** にチェックを入れ、**Next**、確認画面で **Finish** を押します。Admin にはチェックを入れません。
+
+![ジョブテンプレートのロール。付けるのは JobTemplate Execute](../images/aap/team-access-roles.png)
+
+`write-note-windows` にも **JobTemplate Execute** を付けます。`note-workflow` の Team Access では、名前が **WorkflowJobTemplate Execute** です。
+
+プロジェクト `aap-training-content` の Team Access では **Project Read Compat** を付けます。インベントリー `training-inventory` では **Inventory Read Compat** です。
+
+![プロジェクトのロール。付けるのは Project Read Compat](../images/aap/team-access-project-roles.png)
+
+JobTemplate Execute だけでは、Playbook や認証情報の変更はできません。
 
 ## Section 4: 確認する
 

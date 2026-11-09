@@ -45,8 +45,15 @@
 | Job Templateの実行 | **テンプレートの起動** |
 | Job Templateの変更 | **テンプレートの編集** |
 | アドホック実行 | インベントリーの **ホスト** タブにある **Run command** |
-| Surveyの質問追加 | **Create survey question** |
-| APIトークンの発行 | **Create API token** |
+| Surveyの質問追加 | **Create survey question**。保存は **Save survey question**。一覧の **Survey enabled** をオンにする |
+| APIトークンの発行 | **API Tokens** の **Create API token**。発行ボタンは **Create token**。Scope は **Write** |
+| グループの作成 | インベントリーの **グループ** タブの **グループの作成** |
+| ホストをグループへ入れる | グループの **ホスト** タブ > **Add host** > **Add existing host** > チェック > **Add hosts** |
+| ジョブテンプレートの追加変数 | **Extra variables**。「変数」という欄名はない |
+| チェック実行 | 編集画面の **ジョブタイプ** を **チェック**。選択肢は **実行** と **チェック** |
+| インベントリソースのファイル | **Inventory path** |
+| チームへ権限を付ける | 対象の **Team Access** > **Assign teams**。最後は **Finish** |
+| Event Streamの作成 | **Automation Decisions > Event Streams** の **Create event stream**。タイプは検索欄で探す |
 
 インベントリー詳細のタブは **グループ**、**ホスト**、**ソース** です。Job Template詳細のタブは **詳細**、**Team Access**、**User Access**、**スケジュール**、**ジョブ**、**Survey**、**通知** です。
 

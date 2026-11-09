@@ -16,12 +16,15 @@ curl -sk https://<AAPのURL>/api/ | python3 -m json.tool
 
 **Access Management > API Tokens** を開き、**Create API token** をクリックします。
 
+![トークン作成。説明は任意、OAuth application は空欄、Scope は Write。Create token を押す前の画面](../images/aap/api-token-create.png)
+
 | 項目 | 入力値 |
 |---|---|
-| Application | 空欄 |
+| 説明 | 空欄で構いません |
+| OAuth application | 空欄 |
 | Scope | `Write` |
 
-表示された文字列は再表示できないので、その場で控えます。画面のスクリーンショットは残しません。
+**Create token** を押すと、文字列が1度だけ表示されます。再表示できないので、その場で控えます。この資料の写真には、その文字列は写していません。控えたあと、画面を閉じます。
 
 ```bash
 export AAP_TOKEN="<控えたトークン>"

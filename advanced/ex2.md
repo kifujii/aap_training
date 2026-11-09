@@ -48,7 +48,7 @@ Web IDE で `notify_aws.yml` がプロジェクトにあることを確認し、
 | Playbook | `notify_aws.yml` |
 | 実行環境 | 空欄 |
 | 認証情報 | `aws-training` |
-| 変数 | `resource_prefix: <演習4で使った値>` |
+| Extra variables | `resource_prefix: <演習4で使った値>` |
 
 起動します。成功すると、ログの最後に次の3行が出ます。`contents` は `notification from AAP` です。
 
@@ -60,7 +60,7 @@ contents: notification from AAP
 
 この3行が見えれば、通知先へ書いた内容を、別の画面を開かずに確認できています。
 
-`notify_message` を変数で `note failed` に変えてもう一度起動し、`contents` が変わることも確認します。終わったら変数を消すか、`notification from AAP` に戻します。
+編集画面の **Extra variables** に、`resource_prefix` の行を残したまま `notify_message: note failed` を足して保存し、もう一度起動します。起動画面にはこの欄は出ません。`contents` が `note failed` になることを確認したら、足した行だけを消すか、`notification from AAP` に戻して保存します。
 
 ## 次
 

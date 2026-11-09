@@ -70,11 +70,14 @@ URL の末尾は `/api/controller/` です。このパスが無い URL だと、
 
 Token は再表示されないので、入力した文字列を控えます。
 
-**Automation Decisions > Event Streams** で追加します。
+**Automation Decisions > Event Streams** の **Create event stream** で追加します。**Event stream type** を開き、検索欄に `Token` と入れます。先頭の一覧には Token Event Stream がありません。タイプを選ぶと、**認証情報** の欄が出ます。
+
+![Event stream type の検索。Token で Token Event Stream が出る](../images/aap/event-stream-create.png)
 
 | 項目 | 入力値 |
 |---|---|
 | 名前 | `check-webhook-stream` |
+| 組織 | 演習1で控えた組織 |
 | Event stream type | `Token Event Stream` |
 | 認証情報 | `check-webhook-token` |
 

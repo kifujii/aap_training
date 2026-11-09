@@ -15,7 +15,7 @@
 
 AAP のインストールとユーザー作成は、この資料の範囲外です。
 
-Vault の暗号化（[演習9](./basic-controller/ex9.md)）と、カスタム実行環境を作る場合（[応用演習4](./advanced/ex4.md)）は、AAP サーバへ SSH して行います。別のビルド用サーバは使いません。SSH できるユーザーと、`ansible-vault` または `podman` の有無を確認してください。
+Vault の暗号化（[演習9](./basic-controller/ex9.md)）と、カスタム実行環境を作る場合（[応用演習4](./advanced/ex4.md)）は、AAP サーバへ SSH して行います。別のビルド用サーバは使いません。SSH できるユーザーと、`ansible-vault` または `podman` の有無を確認してください。SSH できず、そのどちらも使えない場合は、演習9を飛ばして演習10へ進みます。
 
 ## 2. 対象サーバ
 

@@ -49,6 +49,8 @@ podman cp <コンテナ>:/tmp/secrets.yml ./secrets.yml
 cat secrets.yml
 ```
 
+SSH で AAP サーバに入れない、または `ansible-vault` も `podman` も使えない場合は、この演習を全部飛ばして [演習10](./ex10.md) へ進みます。`secret.txt` は作られません。サーバへ入れるようになったら、Section 1 から実施します。
+
 ## Section 2: Web IDEに貼る
 
 GitLab の **Code** を開き、**Web IDE** で、プロジェクトの直下に `secrets.yml` を作り、コピーした全文を貼ります。メニューが **Edit** の環境では、その中の **Web IDE** を選びます。暗号化前の1行は貼りません。
@@ -86,17 +88,21 @@ git push
 
 ## Section 4: ジョブで復号する
 
-`write-note-linux` の編集で、認証情報に `vault-training` を追加します。`linux-ssh` も付けたままにします。変数に次を入れます。
+`write-note-linux` の編集で、認証情報に `vault-training` を追加します。`linux-ssh` も付けたままにします。**Extra variables** に次を入れます。起動画面にはこの欄は出ないので、編集画面で保存します。
 
 ```yaml
 training_use_vault: true
 ```
 
+![詳細画面。認証情報は linux-ssh と vault-training、Extra variables は training_use_vault: true。実行環境に既定の名前が見えても、編集画面では空欄のままにする](../images/aap/template-launch.png)
+
+![編集画面の Extra variables](../images/aap/extra-variables.png)
+
 起動します。成功すると `/var/tmp/aap-training/secret.txt` の内容は `TrainingSecret1` です。ログには値を出さないようにしてあります。
 
-`write-note-windows` にも `vault-training` と `windows-psrp` を付け、同じ変数で起動します。ファイルは `C:\Users\Public\aap-training\secret.txt` です。
+`write-note-windows` にも `vault-training` と `windows-psrp` を付け、同じ Extra variables で起動します。ファイルは `C:\Users\Public\aap-training\secret.txt` です。
 
-変数を付け忘れると `secrets.yml` は読まれず、`secret.txt` は作られません。暗号化パスワードが違うと、ジョブは `secrets.yml` の読み込みで失敗します。
+Extra variables を付け忘れると `secrets.yml` は読まれず、`secret.txt` は作られません。暗号化パスワードが違うと、ジョブは `secrets.yml` の読み込みで失敗します。
 
 ## 次
 

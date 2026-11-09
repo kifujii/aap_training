@@ -25,7 +25,7 @@
 | **Credential** | 接続先ホストへのSSH認証情報や、SCM（GitLab等）、Vault、クラウドAPIキーなど、Job実行に必要な認証情報を保存・管理するオブジェクト。**Credential Type**ごとに入力項目が異なる。 |
 | **Credential Type** | Credentialの種類を定義するテンプレート（例: Machine、Source Control、Vault、Container Registry）。CredentialはいずれかのCredential Typeに基づいて作成される。 |
 | **Project** | 実行対象のPlaybook/Role一式を管理する単位。多くの場合GitLab等のSCMリポジトリと連携（**SCM Project**）し、Sync操作でリポジトリの最新内容を取得する。 |
-| **SCM Sync** | Projectに紐付いたSCMリポジトリの内容を、AAP側に取得・反映する操作。Webhookで自動実行することも可能（[応用演習9](./advanced/ex9.md)）。 |
+| **SCM Sync** | Projectに紐付いたSCMリポジトリの内容を、AAP側に取得・反映する操作。画面の同期で実行します。GitLab への push だけでは同期は始まりません（[応用演習9](./advanced/ex9.md)）。 |
 | **Revision** | SCM Sync時に取得したリポジトリのコミットハッシュ。Job実行時にどのリビジョンのPlaybookが使われたかを追跡できる。 |
 | **Inventory** | Job実行対象のホストとグループを定義する単位。手動でHost/Groupを登録する方法と、**Inventory Source**を使って外部（SCM上のYAMLファイル、クラウドAPI等）から取り込む方法がある。 |
 | **Inventory Source** | Inventoryにホスト情報を取り込む方法を定義する設定。本資料では GitLab 上の `inventory.yml` を読む「Sourced from a Project」を使います（[演習6](./basic-controller/ex6.md)）。 |
@@ -76,7 +76,7 @@
 | 用語 | 説明 |
 |---|---|
 | **RBAC (Role-Based Access Control)** | User/Teamに対してロールを割り当てることで、Organization/Project/Inventory/Job Template等のオブジェクトへの操作権限を制御する仕組み。 |
-| **ビルトインロール** | AAPが標準で用意しているロール（例: Admin、Execute、Use、Read、Approve、Auditor等）。オブジェクトの種類ごとに付与可能なロールが異なる。 |
+| **ビルトインロール** | AAPが標準で用意しているロール。画面では `JobTemplate Execute` や `Project Read Compat` のように、オブジェクト名が前に付く。付ける手順は[応用演習1](./advanced/ex1.md)。 |
 | **オブジェクト単位の権限** | 特定のProject・Inventory・Job Template等、個別のオブジェクトに対して直接ロールを付与する方式。Organization全体への権限付与より細かい制御が可能。 |
 | **System Administrator** | AAP全体に対する最上位権限を持つシステムロール。 |
 | **ansible-vault** | OSS版と同様、機密情報（パスワード等）を暗号化するためのコマンド。AAPでは暗号化済みの変数ファイルをProject経由で読み込み、復号は**Vault Credential**で行う。 |
