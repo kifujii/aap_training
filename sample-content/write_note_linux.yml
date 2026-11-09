@@ -12,13 +12,13 @@
 
     - name: Create the note directory
       ansible.builtin.file:
-        path: /var/tmp/aap-training
+        path: /tmp/aap-training
         state: directory
         mode: "0755"
 
     - name: Write note.txt
       ansible.builtin.copy:
-        dest: /var/tmp/aap-training/note.txt
+        dest: /tmp/aap-training/note.txt
         mode: "0644"
         content: |
           hostname: {{ inventory_hostname }}
@@ -27,7 +27,7 @@
 
     - name: Write secret.txt
       ansible.builtin.copy:
-        dest: /var/tmp/aap-training/secret.txt
+        dest: /tmp/aap-training/secret.txt
         mode: "0600"
         content: "{{ training_secret | default('') }}\n"
       when: training_secret is defined
