@@ -166,6 +166,7 @@
         image_id: "{{ linux_image_id }}"
         instance_type: "{{ linux_instance_type }}"
         wait: true
+        vpc_subnet_id: "{{ subnet.subnet.id }}"
         network_interfaces:
           - device_index: 0
             subnet_id: "{{ subnet.subnet.id }}"
@@ -204,6 +205,7 @@
         image_id: "{{ windows_image_id }}"
         instance_type: "{{ windows_instance_type }}"
         wait: true
+        vpc_subnet_id: "{{ subnet.subnet.id }}"
         network_interfaces:
           - device_index: 0
             subnet_id: "{{ subnet.subnet.id }}"

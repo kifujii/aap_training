@@ -117,7 +117,7 @@ Kerberos の場合、アドホック実行では `krb5.conf` を渡せません�
 
 | 項目 | Linux | Windows |
 |---|---|---|
-| モジュール | `ping` | `ansible.windows.win_ping` |
+| モジュール | `ping` | `win_ping` |
 | 認証情報 | `linux-ssh` | `windows-psrp` |
 
 起動し、`SUCCESS` と表示されることを確認します。Windows を NTLM で接続する場合は、`lin1` のチェックを外し、`win1` だけを選んでから実行します。1つの実行に付けられる Machine 認証情報は1つなので、Linux と Windows は別々に確認します。Kerberos の場合は、ここでの `win_ping` は飛ばします。
