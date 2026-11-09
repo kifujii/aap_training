@@ -24,12 +24,11 @@ AAP から Linux と Windows へ接続するための一覧を作ります。
 
 ## Section 2: グループを作る
 
-`training-inventory` の **グループ** タブで、次の2つを作ります。
+`training-inventory` を開き、**グループ** タブの **グループの作成** をクリックします。
 
-| グループ | 入れるホスト |
-|---|---|
-| `linux` | Linux |
-| `windows` | Windows |
+![グループの作成。名前だけ入れて、下の変数は空のまま保存する](../images/aap/group-create.png)
+
+名前に `linux` と入力し、変数は空のまま **グループの作成** を押します。同じ手順で `windows` も作ります。ホストはこの画面では入れません。ホストの作成画面にも、グループを選ぶ欄はありません。入れ方は Section 4 で行います。
 
 ## Section 3: AWS用の実行場所（サーバが無い場合だけ）
 
@@ -70,7 +69,7 @@ Linux:
 ansible_host: 203.0.113.10
 ```
 
-`203.0.113.10` は例です。自分の Linux のアドレスに置き換えてから保存し、グループ `linux` に入れます。AWS で作った場合は、演習4のログの「Linuxの接続先」です。
+`203.0.113.10` は例です。自分の Linux のアドレスに置き換えてから保存します。AWS で作った場合は、演習4のログの「Linuxの接続先」です。保存しただけでは `linux` には入りません。入れ方はこの Section の最後です。
 
 Windows（ドメインに参加していない場合。AWS で作ったサーバはこちら）:
 
@@ -88,7 +87,20 @@ ansible_psrp_port: 5985
 ansible_psrp_cert_validation: ignore
 ```
 
-アドレスを自分の値に置き換え、グループ `windows` に入れます。認証は NTLM です。接続プラグインは `psrp` にします。AWS で作った場合のアドレスは、ログの「Windowsの接続先」です。
+アドレスを自分の値に置き換えて保存します。認証は NTLM です。接続プラグインは `psrp` にします。AWS で作った場合のアドレスは、ログの「Windowsの接続先」です。ドメインに参加している Windows は、この NTLM の変数ではなく、下の Kerberos の変数で保存します。
+
+### ホストをグループに入れる
+
+1. **グループ** タブで、入れる先のグループを開く
+2. **ホスト** タブの **Add host** を開く
+3. **Add existing host** を選ぶ
+4. 入れるホストにチェックを入れ、**Add hosts** をクリックする
+
+![グループのホストタブ。Add host から Add existing host を選ぶ](../images/aap/group-add-host-menu.png)
+
+![Select host。まだ入っていないホストにチェックを入れ、Add hosts を押す](../images/aap/group-add-existing-host.png)
+
+`lin1` はグループ `linux`、`win1` はグループ `windows` に入れます。写真の Select host に出ているのは、そのグループにまだ入っていないホストです。`linux` を開いたときに `win1` が見えても、チェックするのは `lin1` だけです。
 
 ### ドメインに参加している Windows の場合
 
@@ -102,6 +114,8 @@ ansible_psrp_protocol: https
 ansible_psrp_port: 5986
 ansible_psrp_cert_validation: ignore
 ```
+
+この変数で保存します。`win1` をグループ `windows` に入れる手順は、上の「ホストをグループに入れる」と同じです。NTLM の変数で保存済みの場合は、ホストを開いて変数を置き換えてからグループへ入れます。
 
 レルムと KDC は、[sample-content/krb5.conf.example](../sample-content/krb5.conf.example) を `krb5.conf` という名前で後の演習のプロジェクトに置きます。置き方は [演習5](../basic-controller/ex5.md) でファイルを追加するときで構いません。中の `EXAMPLE.COM` と `dc.example.com` は、自分の環境の値に書き換えます。
 

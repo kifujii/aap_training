@@ -20,11 +20,17 @@
 
 ## Section 1: PlaybookをGitLabに置く
 
-画面操作の詳細は [演習5](../basic-controller/ex5.md) と同じです。ここでは、作成に必要なファイルだけ先に置きます。
+ここでは、サーバ作成に必要なファイルだけ先に置きます。残りのファイルは [演習5](../basic-controller/ex5.md) で同じ画面に足します。
 
 1. GitLab で **Create new…** > **New project/repository** > **Create blank project** を開く
 2. Project name は `aap-training-content`、Visibility は `Private`。README の初期化は付けたままにする
+
+![空のプロジェクトを作る画面](../images/gitlab/blank-project.png)
+
 3. 右上の **Code** を開き、**Web IDE** をクリックする。メニュー名が **Edit** の環境では、その中の **Web IDE** を選ぶ
+
+![Web IDE。左の一覧でファイルを開き、中央で中身を編集する。コミットは左端の Source Control から行う](../images/gitlab/web-ide.png)
+
 4. 次の4ファイルを作り、[sample-content/](../sample-content/) の内容を貼り付ける
    * `create_aws_servers.yml`
    * `remove_aws_servers.yml`
@@ -32,7 +38,7 @@
    * `group_vars/all.yml`
 5. **Source Control** から **Commit to main** をクリックする
 
-`requirements.yml` が無いと、`amazon.aws` の版が実行環境の 10.3.0 より新しくなり、ジョブが失敗します。このファイルは AWS で作る場合だけ置きます。
+`requirements.yml` は、ジョブが使う `amazon.aws` の版を 10.3.0 に固定するファイルです。AWS で作る場合だけ置きます。置かないとジョブが失敗します。
 
 <details>
 <summary>git CLIで行う場合</summary>
@@ -80,7 +86,7 @@ git push
 | Playbook | `create_aws_servers.yml` |
 | 実行環境 | 空欄（既定のまま） |
 | 認証情報 | `aws-training` だけ。Machine は付けない |
-| 変数 | 下の YAML |
+| Extra variables | 下の YAML |
 
 ```yaml
 resource_prefix: tanaka01
@@ -90,7 +96,7 @@ windows_login_password: TrainingWindows1
 
 `tanaka01` は例です。小文字で始め、英小文字・数字・ハイフンだけにし、13文字以内、末尾はハイフンにしないでください。同じアカウントの他の人と重ならない値にします。パスワードは英数字の8文字以上32文字以内で、自分の値に変えます。
 
-リージョンは `group_vars/all.yml` の `ap-northeast-1` です。変える場合は変数に `ec2_region` を足します。AAP サーバのアドレスが分かっている場合は、`allow_cidr` をそのアドレスの `/32` にします。未指定のときは `0.0.0.0/0` です。
+リージョンは `group_vars/all.yml` の `ap-northeast-1` のままにします。この演習では変えません。Extra variables に入れるのは、上の3行だけです。
 
 **テンプレートの起動** をクリックします。成功すると、最後のタスクに次のような行が出ます。
 
@@ -118,7 +124,7 @@ Windowsのユーザー: Administrator
 
 ## Section 5: 不要になったら削除する
 
-リソースを残すと課金が続きます。学習が終わったら、同じ要領でジョブテンプレート `remove-aws-servers` を作り、Playbook を `remove_aws_servers.yml` にして実行します。変数の `resource_prefix` は作成時と同じ値にします。パスワードは不要です。認証情報は `aws-training`、インベントリー欄は `aws-runner` です。
+リソースを残すと課金が続きます。学習が終わったら、同じ要領でジョブテンプレート `remove-aws-servers` を作り、Playbook を `remove_aws_servers.yml` にして実行します。Extra variables の `resource_prefix` は作成時と同じ値にします。パスワードは不要です。認証情報は `aws-training`、インベントリー欄は `aws-runner` です。
 
 ## 次
 

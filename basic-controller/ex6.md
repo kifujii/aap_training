@@ -13,12 +13,12 @@
 | 名前 | `gitlab-inventory` |
 | ソース | `Sourced from a Project` |
 | プロジェクト | `aap-training-content` |
-| インベントリファイル | `inventory.yml` |
+| Inventory path | `inventory.yml` |
 | Overwrite | 有効 |
 | Overwrite variables | 有効 |
 | Update on launch | 有効 |
 
-項目名が英語のままの環境では、上の英語表記のまま探してください。保存します。
+日本語UIでも、ファイルの欄名は **Inventory path** です。「インベントリファイル」という欄はありません。保存します。
 
 ![インベントリソースの編集。ソースは Sourced from a Project、プロジェクトは aap-training-content、Inventory path は inventory.yml。Overwrite、Overwrite variables、Update on launch にチェックが入っている](../images/aap/inventory-source.png)
 

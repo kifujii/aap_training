@@ -96,8 +96,8 @@ Web IDE で `create_aws_servers.yml` の Linux を作るタスクをコピーし
 ### RBAC
 
 1. チーム `ops-team` を作る
-2. `write-note-linux`、`write-note-windows`、`note-workflow` に、`ops-team` の **Execute** を付ける
-3. プロジェクト `aap-training-content` とインベントリー `training-inventory` には **Read** だけを付ける
+2. `write-note-linux` と `write-note-windows` に、`ops-team` の **JobTemplate Execute** を付ける。`note-workflow` には **WorkflowJobTemplate Execute** を付ける
+3. プロジェクト `aap-training-content` には **Project Read Compat**、インベントリー `training-inventory` には **Inventory Read Compat** だけを付ける
 4. `ops-team` のユーザーでログインする
 
 完了:
@@ -115,7 +115,7 @@ training_secret: TrainingSecret1
 
 2. `ansible-vault encrypt` で暗号化し、暗号文だけを Web IDE で `secrets.yml` としてコミットする。平文のファイルはコミットしない
 3. 認証情報 `vault-training` に、encrypt のときに入力したパスワードを入れる
-4. `write-note-linux` と `write-note-windows` に `vault-training` を追加し、変数 `training_use_vault: true` を付けて起動する
+4. `write-note-linux` と `write-note-windows` に `vault-training` を追加し、編集画面の **Extra variables** に `training_use_vault: true` を入れて保存してから起動する
 
 完了:
 
@@ -138,8 +138,8 @@ training_secret: TrainingSecret1
 
 AWS で作った場合:
 
-1. ジョブテンプレート `notify-aws` を作る。インベントリーは `aws-runner`、Playbook は `notify_aws.yml`、認証情報は `aws-training`、変数の `resource_prefix` は演習4と同じ値
-2. テンプレートの変数に、`resource_prefix` の行を残したまま次の行を足して保存する。起動画面には変数の入力欄は出ない
+1. ジョブテンプレート `notify-aws` を作る。インベントリーは `aws-runner`、Playbook は `notify_aws.yml`、認証情報は `aws-training`、**Extra variables** の `resource_prefix` は演習4と同じ値
+2. **Extra variables** に、`resource_prefix` の行を残したまま次の行を足して保存する。起動画面にはこの欄は出ない
 
 ```yaml
 notify_message: homework notification
