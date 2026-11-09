@@ -61,7 +61,7 @@ Web IDE で `create_aws_servers.yml` の Linux を作るタスクをコピーし
 * `name`: `"{{ resource_prefix }}-linux-2"`
 * ユーザーデータはそのまま（ログインユーザーは同じ `ansible`）
 
-`create-aws-servers` を、演習4と同じ `resource_prefix` とパスワードで再実行します。ログに `linux-2` のアドレスが出ます。`inventory.yml` に `lin2` を足し、そのアドレスを `ansible_host` にします。
+`create-aws-servers` を、演習4と同じ `resource_prefix` とパスワードで再実行します。ジョブ末尾のまとめに出るアドレスは、1台目の Linux です。2台目のアドレスは、タスク `Create the second Linux server` の結果にある `public_ip_address` です。`inventory.yml` に `lin2` を足し、そのアドレスを `ansible_host` にします。
 
 ### 完了
 
@@ -79,8 +79,9 @@ Web IDE で `create_aws_servers.yml` の Linux を作るタスクをコピーし
    * 開始から `write-note-linux` と `write-note-windows`
    * 両方の成功の先に承認ノード。名前 `note-review`。説明 `note.txt を確認したら承認してください`
    * 承認の成功から `verify-note-linux` と `verify-note-windows`
-3. `note-workflow` を起動する。Survey が出たら `homework note` と入力する
-4. **Workflow Approvals** で `note-review` を承認する
+3. ビジュアライザーで `write-note-linux` のノードを開き、**Edit step** から **Survey** まで進む。`ファイルに書くメモを入力してください` に `homework note` と入れ、最後まで進めて保存する。`write-note-windows` のノードも同じ値にする。左上の **Save** を押す。ワークフローの起動画面には、この Survey は出ない
+4. `note-workflow` を起動する
+5. **Workflow Approvals** で `note-review` を承認する
 
 ### 完了
 
@@ -88,7 +89,7 @@ Web IDE で `create_aws_servers.yml` の Linux を作るタスクをコピーし
 * 承認後、4つのジョブが成功し、ワークフローが成功で終わる
 * `lin1` の note.txt の `note:` が `homework note` である
 * `win1` の note.txt の `note:` も `homework note` である
-* 確認後、もう一度ワークフローを起動してメモを `managed by AAP` に戻してある
+* 確認後、2つの write ノードの Survey を `managed by AAP` に戻し、ワークフローをもう一度起動して承認してある
 
 ## 課題4 - 権限、Vault、通知
 
@@ -138,7 +139,13 @@ training_secret: TrainingSecret1
 AWS で作った場合:
 
 1. ジョブテンプレート `notify-aws` を作る。インベントリーは `aws-runner`、Playbook は `notify_aws.yml`、認証情報は `aws-training`、変数の `resource_prefix` は演習4と同じ値
-2. 変数 `notify_message: homework notification` を足して起動する
+2. テンプレートの変数に、`resource_prefix` の行を残したまま次の行を足して保存する。起動画面には変数の入力欄は出ない
+
+```yaml
+notify_message: homework notification
+```
+
+3. 起動する。確認が終わったら、足した `notify_message` の行だけを消して保存する
 
 完了: ログに `bucket:`、`object: notification.txt`、`contents: homework notification` の3つが出ている。
 
