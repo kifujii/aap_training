@@ -2,23 +2,42 @@
 
 [応用演習8](./ex8.md) | [宿題へ](../homework/hm1.md)
 
-GitLab へのコミットを契機に、AAP のプロジェクト同期を走らせます。CI の節は、GitLab Runner がコンテナイメージを取得できる場合だけ実施します。取得できない場合は Section 1 だけで終わりです。
+GitLab の push を Event Stream で受けます。プロジェクト編集画面のオプションは、Clean、削除、Track submodules、Update revision on launch、ブランチの上書き許可です。push の記録は Event Stream の Events received に残ります。プロジェクトの同期は、ジョブの起動時更新か、プロジェクト画面の同期ボタンで行います。
 
-## Section 1: pushで同期する
+CI の節は、GitLab Runner がコンテナイメージを取得できる場合だけ実施します。取得できない場合は Section 1 だけで終わりです。
 
-`aap-training-content` プロジェクトの編集で、Webhook を有効にして保存します。表示された **Webhook URL** と **Webhook Key** を控えます。
+## Section 1: pushをEvent Streamで受ける
+
+応用演習8の curl は `Authorization` ヘッダを使います。GitLab の Webhook は秘密の文字列を `X-Gitlab-Token` で送るので、認証情報のタイプが違います。
+
+**Automation Decisions > Infrastructure > 認証情報** で、タイプ `GitLab Event Stream` を作ります。一覧に無いときは、検索欄に `GitLab Event` と入れます。
+
+| 項目 | 入力値 |
+|---|---|
+| 名前 | `gitlab-push-token` |
+| Token | 自分で決めた文字列。次の Secret token に、同じ文字列を入れます |
+
+**Automation Decisions > Event Streams** で追加します。
+
+| 項目 | 入力値 |
+|---|---|
+| 名前 | `gitlab-push-stream` |
+| Event stream type | `GitLab Event Stream` |
+| 認証情報 | `gitlab-push-token` |
+
+保存後の詳細に出る URL を控えます。
 
 GitLab の **Settings > Webhooks** を開きます。
 
 | 項目 | 入力値 |
 |---|---|
-| URL | 控えた Webhook URL |
-| Secret token | 控えた Webhook Key |
+| URL | 控えた Event Stream の URL |
+| Secret token | 認証情報の Token と同じ文字列 |
 | Trigger | Push events |
 
 **Add webhook** をクリックします。
 
-動作確認は Web IDE で行います。`group_vars/all.yml` の `training_note` を `managed by AAP` のままにしておき、行末に空白を1つ足すなど、意味が変わらない変更でコミットします。数秒後、AAP のプロジェクトのジョブ履歴に、ボタンを押していない同期が増えていれば完了です。
+動作確認は Web IDE で行います。`group_vars/all.yml` の `training_note` は `managed by AAP` のままにして、行末に空白を1つ足すなど、値の変わらない変更でコミットします。数秒後、`gitlab-push-stream` の Events received が増えていれば完了です。プロジェクトのジョブ履歴に、ボタンを押していない同期は増えません。
 
 GitLab の webhook の Recent Deliveries が 2xx であることも確認します。失敗している場合は、URL と Secret token を見比べます。
 
