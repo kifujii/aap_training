@@ -6,7 +6,7 @@
 
   tasks:
     - name: Read note.txt
-      ansible.windows.win_slurp:
+      ansible.windows.slurp:
         src: C:\Users\Public\aap-training\note.txt
       register: note_file
 
