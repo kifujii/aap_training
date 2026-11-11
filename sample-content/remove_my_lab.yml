@@ -105,12 +105,12 @@
         headers:
           Authorization: "Bearer {{ api_token }}"
         validate_certs: false
-        status_code: [200, 202, 204]
+        status_code: [200, 202, 204, 409]
       loop: "{{ delete_targets }}"
       loop_control:
         label: "{{ item.name }}"
       no_log: true
 
-    - name: Show what was deleted
+    - name: Show the names that matched
       ansible.builtin.debug:
         msg: "{{ delete_targets | default([]) | map(attribute='name') | list }}"
