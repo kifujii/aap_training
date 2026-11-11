@@ -7,10 +7,8 @@
 ## Section 1: APIの場所
 
 ```bash
-curl -sk https://<AAPのURL>/api/ | jq
+curl -sk https://<AAPのURL>/api/ | python3 -m json.tool
 ```
-
-応答は `jq` で整形します。このコマンドは、`curl` を実行する端末で動かします。
 
 この資料の例は `https://<AAPのURL>/api/controller/v2` です。`/api/v2/` は、ゲートウェイ構成では 404 になります。以降、このベースを `AAP_API_ROOT` と書きます。
 
@@ -37,7 +35,7 @@ export AAP_API_ROOT="https://<AAPのURL>/api/controller/v2"
 
 ```bash
 curl -sk -H "Authorization: Bearer ${AAP_TOKEN}" \
-    "${AAP_API_ROOT}/job_templates/?name=write-note-linux" | jq
+    "${AAP_API_ROOT}/job_templates/?name=write-note-linux" | python3 -m json.tool
 ```
 
 `results` の `id` を控えます。以降の `7` は、その数字に置き換えます。
@@ -49,14 +47,14 @@ curl -sk -X POST \
     -H "Authorization: Bearer ${AAP_TOKEN}" \
     -H "Content-Type: application/json" \
     -d '{"extra_vars": {"training_note": "from api"}, "limit": "lin1"}' \
-    "${AAP_API_ROOT}/job_templates/7/launch/" | jq
+    "${AAP_API_ROOT}/job_templates/7/launch/" | python3 -m json.tool
 ```
 
 応答の `job` がジョブ ID です。
 
 ```bash
 curl -sk -H "Authorization: Bearer ${AAP_TOKEN}" \
-    "${AAP_API_ROOT}/jobs/<ジョブID>/" | jq
+    "${AAP_API_ROOT}/jobs/<ジョブID>/" | python3 -m json.tool
 ```
 
 `status` が `successful` になるまで、同じコマンドを繰り返します。`lin1` の `note.txt` の `note:` が `from api` になっていれば、API からの Extra variables が届いています。
