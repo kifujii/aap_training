@@ -51,7 +51,7 @@ name_prefix: tanaka01
 
 `tanaka01` は自分の接頭辞にします。起動画面には Extra variables は出ないので、編集画面で保存してから **テンプレートの起動** を押します。
 
-成功すると、出力の最後に消したオブジェクト名の一覧が出ます。このジョブは、最後に `<name_prefix>-remove-lab`、`<name_prefix>-aap-runner`、`<name_prefix>-aap-api` も消します。作っていない名前は一覧に出ません。ジョブの終盤で失敗した場合は、Section 3 の検索で残っている行を消します。
+成功すると、出力の最後に見つかったオブジェクト名の一覧が出ます。このジョブは、実行中の自分自身が使っているプロジェクト、インベントリー `<name_prefix>-aap-runner`、テンプレート `<name_prefix>-remove-lab` を消せないことがあります。その3つは Section 3 で消します。作っていない名前は一覧に出ません。それ以外でジョブが失敗した場合も、Section 3 の検索で残っている行を消します。
 
 使った API トークンは、**Access Management > API Tokens** で削除します。自分が今発行したものだけを消します。
 

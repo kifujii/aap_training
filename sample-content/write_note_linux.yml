@@ -4,6 +4,14 @@
   gather_facts: true
 
   tasks:
+    - name: name_prefix is set
+      ansible.builtin.assert:
+        that:
+          - name_prefix is defined
+          - name_prefix is match('^[a-z][a-z0-9-]{1,12}$')
+          - name_prefix is not match('.*-$')
+        fail_msg: ジョブテンプレートの Extra variables に、演習1で決めた name_prefix を指定してください。
+
     - name: Load secrets.yml when vault is enabled
       ansible.builtin.include_vars:
         file: "{{ playbook_dir }}/secrets.yml"
@@ -12,13 +20,13 @@
 
     - name: Create the note directory
       ansible.builtin.file:
-        path: /tmp/aap-training
+        path: "/tmp/{{ name_prefix }}-aap-training"
         state: directory
         mode: "0755"
 
     - name: Write note.txt
       ansible.builtin.copy:
-        dest: /tmp/aap-training/note.txt
+        dest: "/tmp/{{ name_prefix }}-aap-training/note.txt"
         mode: "0644"
         content: |
           hostname: {{ inventory_hostname }}
@@ -27,7 +35,7 @@
 
     - name: Write secret.txt
       ansible.builtin.copy:
-        dest: /tmp/aap-training/secret.txt
+        dest: "/tmp/{{ name_prefix }}-aap-training/secret.txt"
         mode: "0600"
         content: "{{ training_secret | default('') }}\n"
       when: training_secret is defined

@@ -45,6 +45,7 @@ Web IDE で `launch_note.yml` を開き、次の内容にします。ファイ�
   gather_facts: false
   environment:
     CONTROLLER_OPTIONAL_API_URLPATTERN_PREFIX: /api/controller/
+    CONTROLLER_REQUEST_TIMEOUT: "30"
 
   tasks:
     - name: Launch write-note-linux
@@ -63,7 +64,7 @@ Web IDE で `launch_note.yml` を開き、次の内容にします。ファイ�
         msg: "job {{ launch_result.id }} finished"
 ```
 
-`CONTROLLER_OPTIONAL_API_URLPATTERN_PREFIX` は、ゲートウェイ構成の API が `/api/controller/v2/` にあるための指定です。認証情報の URL には、このパスを重ねて書きません。`{{ name_prefix }}` は、このファイルでは書き換えません。
+`CONTROLLER_OPTIONAL_API_URLPATTERN_PREFIX` は、ゲートウェイ構成の API が `/api/controller/v2/` にあるための指定です。認証情報の URL には、このパスを重ねて書きません。認証情報のタイムアウト欄は空欄のままにします。空欄の値は文字列として渡され、モジュールが秒数に変換できず失敗するため、`CONTROLLER_REQUEST_TIMEOUT` で秒数を指定します。`{{ name_prefix }}` は、このファイルでは書き換えません。
 
 **Commit to main** でコミットし、プロジェクト `<name_prefix>-aap-training-content` を同期します。
 

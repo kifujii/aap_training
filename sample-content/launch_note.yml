@@ -4,6 +4,7 @@
   gather_facts: false
   environment:
     CONTROLLER_OPTIONAL_API_URLPATTERN_PREFIX: /api/controller/
+    CONTROLLER_REQUEST_TIMEOUT: "30"
 
   tasks:
     - name: Launch write-note-linux

@@ -71,7 +71,7 @@ https://<AAPのURL>/
 
 例: ログイン名が `Tanaka.01` なら `tanaka01`。以降の `<name_prefix>` は、この文字列に置き換えてから入力します。画面写真の名前に接頭辞が写っていないときは、写真の名前の前に自分の接頭辞とハイフンを付けます。
 
-AWS でサーバを作るときの `resource_prefix` も、この同じ文字列にします。
+AWS でサーバを作るときの `resource_prefix` も、この同じ文字列にします。サーバに書くディレクトリも、この文字列で分かれます。Linux は `/tmp/<name_prefix>-aap-training/`、Windows は `C:\temp\<name_prefix>-aap-training\` です。
 
 ホスト名 `lin1` と `win1`、グループ名 `linux` と `windows` には付けません。それらは自分のインベントリーの中だけにあります。Demo で始まる既存のオブジェクトは、そのままにします。
 
