@@ -2,7 +2,7 @@
 
 [応用演習3](./ex3.md) | [応用演習5へ](./ex5.md)
 
-実行環境を1つ作り、AAP に登録します。作業場所は AAP サーバです。
+実行環境を1つ作り、AAP に登録します。定義ファイルは AAP サーバの `/tmp/custom-ee` に置きます。
 
 次のどちらかなら、この演習は飛ばして既定の実行環境のまま [応用演習5](./ex5.md) へ進みます。
 
@@ -13,6 +13,7 @@
 
 ```bash
 ssh <ユーザー>@<AAPサーバ>
+cd /tmp
 ansible-builder --version
 podman --version
 ```
@@ -21,10 +22,10 @@ podman --version
 
 ## Section 2: 定義ファイル
 
-AAP サーバ上で作業ディレクトリを作ります。
+`/tmp/custom-ee` を作り、その中に定義ファイルを置きます。
 
 ```bash
-mkdir -p ~/custom-ee && cd ~/custom-ee
+mkdir -p /tmp/custom-ee && cd /tmp/custom-ee
 ```
 
 `requirements.yml`:
@@ -55,6 +56,7 @@ dependencies:
 ## Section 3: ビルドする
 
 ```bash
+cd /tmp/custom-ee
 ansible-builder build \
     -f execution-environment.yml \
     -t custom-ee:1.0 \

@@ -1,0 +1,22 @@
+---
+- name: Launch write-note-linux from a playbook
+  hosts: localhost
+  gather_facts: false
+  environment:
+    CONTROLLER_OPTIONAL_API_URLPATTERN_PREFIX: /api/controller/
+
+  tasks:
+    - name: Launch write-note-linux
+      ansible.controller.job_launch:
+        name: write-note-linux
+        extra_vars:
+          training_note: from controller collection
+      register: launch_result
+
+    - name: Wait for the job
+      ansible.controller.job_wait:
+        job_id: "{{ launch_result.id }}"
+
+    - name: Show the launched job id
+      ansible.builtin.debug:
+        msg: "job {{ launch_result.id }} finished"

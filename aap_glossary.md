@@ -25,7 +25,7 @@
 | **Credential** | 接続先ホストへのSSH認証情報や、SCM（GitLab等）、Vault、クラウドAPIキーなど、Job実行に必要な認証情報を保存・管理するオブジェクト。**Credential Type**ごとに入力項目が異なる。 |
 | **Credential Type** | Credentialの種類を定義するテンプレート（例: Machine、Source Control、Vault、Container Registry）。CredentialはいずれかのCredential Typeに基づいて作成される。 |
 | **Project** | 実行対象のPlaybook/Role一式を管理する単位。多くの場合GitLab等のSCMリポジトリと連携（**SCM Project**）し、Sync操作でリポジトリの最新内容を取得する。 |
-| **SCM Sync** | Projectに紐付いたSCMリポジトリの内容を、AAP側に取得・反映する操作。画面の同期で実行します。GitLab への push だけでは同期は始まりません（[応用演習9](./advanced/ex9.md)）。 |
+| **SCM Sync** | Projectに紐付いたSCMリポジトリの内容を、AAP側に取得・反映する操作。画面の同期で実行します。GitLab の Webhook では同期は始まりません（[応用演習7](./advanced/ex7.md)）。 |
 | **Revision** | SCM Sync時に取得したリポジトリのコミットハッシュ。Job実行時にどのリビジョンのPlaybookが使われたかを追跡できる。 |
 | **Inventory** | Job実行対象のホストとグループを定義する単位。手動でHost/Groupを登録する方法と、**Inventory Source**を使って外部（SCM上のYAMLファイル、クラウドAPI等）から取り込む方法がある。 |
 | **Inventory Source** | Inventoryにホスト情報を取り込む方法を定義する設定。本資料では GitLab 上の `inventory.yml` を読む「Sourced from a Project」を使います（[演習6](./basic-controller/ex6.md)）。 |
@@ -79,8 +79,8 @@
 | **ビルトインロール** | AAPが標準で用意しているロール。画面では `JobTemplate Execute` や `Project Read Compat` のように、オブジェクト名が前に付く。付ける手順は[応用演習1](./advanced/ex1.md)。 |
 | **オブジェクト単位の権限** | 特定のProject・Inventory・Job Template等、個別のオブジェクトに対して直接ロールを付与する方式。Organization全体への権限付与より細かい制御が可能。 |
 | **System Administrator** | AAP全体に対する最上位権限を持つシステムロール。 |
-| **ansible-vault** | OSS版と同様、機密情報（パスワード等）を暗号化するためのコマンド。AAPでは暗号化済みの変数ファイルをProject経由で読み込み、復号は**Vault Credential**で行う。 |
-| **Vault Credential** | ansible-vaultで暗号化されたデータを復号するためのパスワード（またはパスワードファイル）を保持するCredential Type。Job Template実行時に割り当てることで、暗号化Vaultファイルを自動的に復号して使用できる。 |
+| **ansible-vault** | 機密の値を暗号化するコマンド。この資料では `ansible-vault encrypt_string` で値だけを暗号化し、ファイル自体は YAML のまま GitLab に置きます。復号はジョブに付けた Vault 認証情報で行います。 |
+| **Vault Credential** | `ansible-vault encrypt_string` で暗号化した値を復号するためのパスワードを保持する認証情報。Job Template に付けると、ジョブの中で値が復号されます。 |
 | **Vault ID** | 複数のVaultパスワードを使い分ける際に使う識別子。Credential側・暗号化ファイル側の双方で指定する。 |
 
 ---
@@ -91,7 +91,7 @@
 |---|---|
 | **Controller REST API** | AAPのほぼ全機能をHTTP経由で操作できるAPI。UIで行える操作の大部分はAPI経由でも実行可能。 |
 | **APIトークン (OAuth2 Token)** | REST APIを呼び出す際の認証に使うトークン。UIまたはAPI経由で発行し、`Authorization: Bearer <token>` ヘッダーで利用する。 |
-| **ansible.controller collection** | Playbookやロールの中からController APIを操作するためのモジュール群を提供するCollection（例: `ansible.controller.job_launch`）。CLIやPlaybookベースでの自動化・CI/CD連携に使う。 |
+| **ansible.controller collection** | Playbook から Controller API を操作するモジュール群（例: `ansible.controller.job_launch`）。既定の実行環境に入っています。応用演習6では、このコレクションを使う Playbook をジョブとして実行します。 |
 | **CI/CDパイプライン連携** | GitLab CI等から、Controller REST APIやansible.controller collectionを介してJob Templateを起動するなど、外部の自動化パイプラインとAAPを連携させる構成。 |
 
 ---
@@ -117,5 +117,5 @@
 |---|---|
 | **SCM (Source Control Management)** | Gitなどのバージョン管理システムの総称。AAPのProjectはSCMリポジトリと連携して最新のPlaybook/Role/Inventoryファイルを取得する。 |
 | **Source Control認証** | AAPがGitLabを読むときに使う認証情報。GitLabのログインユーザー名とパスワードを登録する。 |
-| **Webhook** | 外部の出来事を HTTP で受け取る仕組み。応用演習9では GitLab の push を Event Stream で受けます。push でプロジェクトの同期は始まりません。 |
-| **.gitlab-ci.yml** | GitLab CI/CDパイプラインの定義ファイル。ansible-lintの自動実行や、Controller API経由でのJob Template起動などに利用できる。 |
+| **Webhook** | 外部の出来事を HTTP で受けてジョブを起動する仕組み。応用演習7では、ジョブテンプレートの Webhook で GitLab のマージリクエストを受けます。この受信ではプロジェクトの同期は始まりません。EDA の受け口は Event Stream で、応用演習8以降です。 |
+| **.gitlab-ci.yml** | GitLab CI/CD パイプラインの定義ファイル。 |

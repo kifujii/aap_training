@@ -1,70 +1,55 @@
-# 応用演習 7 - EDA入門
+# 応用演習 7 - ジョブテンプレートのWebhook
 
 [応用演習6](./ex6.md) | [応用演習8へ](./ex8.md)
 
-これまでのジョブは、人が起動するか、スケジュールで起動するものでした。EDA は、受け取ったイベントの内容に応じて処理を始めます。
+ジョブテンプレートには、GitLab からの HTTP を受けて自分を起動する Webhook があります。ここでは `verify-note-linux` に付け、マージリクエストを作成したときにジョブが起動することを確認します。操作は Automation Execution のジョブテンプレートだけです。
 
-| 用語 | 役割 |
+マージリクエストを作っても、プロジェクトの同期は始まりません。ジョブが使う Playbook は、すでに同期済みの内容です。
+
+## Section 1: ジョブテンプレートでWebhookを有効にする
+
+`verify-note-linux` の **テンプレートの編集** を開きます。
+
+**Webhook の有効化** にチェックを入れます。
+
+| 項目 | 入力値 |
 |---|---|
-| Rulebook | イベントの受け口と、条件に対する処理を書いた YAML |
-| Decision Environment | Rulebook を動かすコンテナイメージ |
-| Rulebook Activation | Rulebook を動かし続ける設定 |
+| Webhook service | `GitLab` |
+| Webhook credential | 空欄 |
 
-## Section 1: RulebookをWeb IDEで置く
+**ジョブテンプレートの保存** をクリックします。詳細画面に **Webhook URL** と **Webhook key** が出ます。両方を控えます。Webhook key は、GitLab の Secret token に入れる文字列です。
 
-`aap-training-content` の Web IDE で `rulebooks/notify_on_webhook.yml` を作り、次を貼ります。
+## Section 2: GitLabに受け口を登録する
 
-```yaml
----
-- name: Record a webhook
-  hosts: all
+GitLab のプロジェクト `aap-training-content` で **Settings > Webhooks** を開きます。
 
-  sources:
-    - ansible.eda.webhook:
-        host: 0.0.0.0
-        port: 5000
+| 項目 | 入力値 |
+|---|---|
+| URL | Section 1 の Webhook URL |
+| Secret token | Section 1 の Webhook key |
+| Trigger | **Merge request events** だけオン |
 
-  rules:
-    - name: Log every event
-      condition: true
-      action:
-        debug:
-          msg: "イベントを受信しました: {{ event.payload }}"
-```
+Push events が最初からオンなら外します。**Add webhook** をクリックします。
 
-**Commit to main** でコミットし、AAP のプロジェクトを同期します。
+追加された webhook の Recent Deliveries は、この時点では空で構いません。
 
-<details>
-<summary>git CLIで行う場合</summary>
+## Section 3: マージリクエストを作る
 
-```bash
-mkdir -p rulebooks
-# 上の内容を rulebooks/notify_on_webhook.yml に保存してから
-git add rulebooks/notify_on_webhook.yml
-git commit -m "Add sample rulebook"
-git push
-```
+Web IDE を開きます。
 
-</details>
+1. 画面左下のブランチ名 `main` をクリックし、**Create new branch...** で `webhook-check` を作って切り替えます
+2. `group_vars/all.yml` の末尾に空行を1つ足します。`training_note` は `managed by AAP` のままにします
+3. **Source Control** を開き、メッセージ `Trigger job from a merge request` でコミットします。コミット先は `webhook-check` です
+4. 画面に **Create merge request** が出たら、それを開きます。出ない場合は、プロジェクトの **Merge requests** > **New merge request** を開き、Source branch を `webhook-check`、Target branch を `main` にして **Compare branches and continue**、続けて **Create merge request** を押します
 
-## Section 2: ローカルでの起動は任意
+## Section 4: ジョブを確認する
 
-AAP サーバに `ansible-rulebook` がある場合だけ、次で受信を試せます。無い場合は [応用演習8](./ex8.md) の画面上の Activation で確認します。
+AAP の **ジョブ** を開きます。起動ボタンを押していない `verify-note-linux` が増えていれば、Webhook で起動しています。そのジョブの詳細を開き、Extra variables に `awx_webhook_payload` があること、その中の `object_kind` が `merge_request` であることを確認します。
 
-```bash
-ansible-rulebook --rulebook rulebooks/notify_on_webhook.yml -i inventory.yml --verbose
-```
+ジョブが増えない場合は、GitLab の webhook の Recent Deliveries を見ます。失敗しているときは、URL と Secret token を、AAP の Webhook URL、Webhook key と見比べます。証明書のエラーなら、GitLab 側の **Enable SSL verification** を外して保存し、マージリクエストの説明に1文字足して保存します。Merge request events がもう一度送られます。
 
-別の端末から:
-
-```bash
-curl -X POST http://localhost:5000/endpoint \
-    -H "Content-Type: application/json" \
-    -d '{"status":"success","host":"lin1"}'
-```
-
-ログに `lin1` が出れば、Rulebook はイベントを受け取っています。確認が終わったら、起動したプロセスは止めます。
+確認が終わったら、`verify-note-linux` の **Webhook の有効化** を外して保存します。外したあとは、同じ URL へ送ってもジョブは起動しません。
 
 ## 次
 
-[応用演習8](./ex8.md) で、同じイベントから `verify-note-linux` を起動します。
+[応用演習8](./ex8.md) では、別の受け口として Event Stream を作ります。

@@ -35,7 +35,7 @@ https://<AAPのURL>/
 | グループ | この資料で使うもの |
 |---|---|
 | **Automation Execution** | ジョブ、テンプレート、スケジュール、プロジェクト。Infrastructure の中にインベントリー、実行環境、認証情報 |
-| **Automation Decisions** | [応用演習7](../advanced/ex7.md) 以降 |
+| **Automation Decisions** | [応用演習8](../advanced/ex8.md) 以降 |
 | **Access Management** | 組織。チームと API Tokens は応用演習 |
 
 ### Step 1: Automation Executionを開く
