@@ -7,18 +7,28 @@
 次のどちらかなら、この演習は飛ばして既定の実行環境のまま [応用演習4](./ex4.md) へ進みます。
 
 * AAP サーバからコンテナイメージを取得できない
-* `ansible-builder` も `podman` も無い
+* `podman` が無い、または `ansible-builder` を入れられない
 
 ## Section 1: AAPサーバでツールを確認する
 
 ```bash
 ssh <ユーザー>@<AAPサーバ>
 cd /tmp
-ansible-builder --version
 podman --version
+ansible-builder --version
 ```
 
-ホストに無い場合は、`podman ps` で controller を含むコンテナを探し、その中に `ansible-builder` があるかを見ます。どちらにも無ければ、この演習はここで終わります。
+`podman --version` が失敗したときは、この演習はここで終わります。
+
+`ansible-builder --version` が失敗したときは、ホストに入れます。ビルドはこのホストで行うので、controller のコンテナの中だけにあっても、ここから先には進めません。
+
+```bash
+python3 -m pip install --user 'ansible-builder>=3,<4'
+export PATH="$HOME/.local/bin:$PATH"
+ansible-builder --version
+```
+
+このインストールが失敗したときも、この演習はここで終わります。
 
 ## Section 2: 定義ファイル
 
@@ -37,6 +47,36 @@ collections:
     version: "8.6.1"
 ```
 
+`pkgmgr`:
+
+```bash
+#!/bin/bash
+cmd=()
+for arg in "$@"; do
+  case "$arg" in
+    python|python-*|python3|python3-*|dnf|dnf-*) ;;
+    *) cmd+=("$arg") ;;
+  esac
+done
+if printf '%s\n' "${cmd[@]}" | grep -qx install; then
+  has_pkg=0
+  for arg in "${cmd[@]}"; do
+    case "$arg" in
+      -*|install|clean|makecache|update|remove) ;;
+      *) has_pkg=1 ;;
+    esac
+  done
+  if [ "$has_pkg" -eq 0 ]; then
+    exit 0
+  fi
+fi
+exec /usr/bin/microdnf "${cmd[@]}"
+```
+
+```bash
+chmod 755 pkgmgr
+```
+
 `execution-environment.yml`:
 
 ```yaml
@@ -49,20 +89,51 @@ images:
 
 dependencies:
   galaxy: requirements.yml
+
+additional_build_files:
+  - src: pkgmgr
+    dest: scripts
+
+additional_build_steps:
+  prepend_base:
+    - COPY _build/scripts/pkgmgr /usr/local/bin/pkgmgr
+    - RUN chmod 755 /usr/local/bin/pkgmgr
+    - ENV PKGMGR=/usr/local/bin/pkgmgr
+  prepend_builder:
+    - ENV PKGMGR=/usr/local/bin/pkgmgr
+  prepend_final:
+    - ENV PKGMGR=/usr/local/bin/pkgmgr
+
+options:
+  package_manager_path: /usr/local/bin/pkgmgr
+  skip_pip_install: true
 ```
 
-ベースは `ee-supported` にします。`ee-minimal` から作ると、既定のイメージに入っている `ansible.windows` や `amazon.aws` が欠けることがあります。`amazon.aws` をこのファイルへ足す場合も、版は `10.3.0` です。
+ベースは `ee-supported` にします。このイメージのパッケージ管理は `microdnf` で、Python は 3.12 です。`ansible-builder` は既定で `/usr/bin/dnf` を呼びます。`dnf` のパッケージを入れると、この Python が置き換わり、ビルドは `pip` のところで止まります。`pkgmgr` は `microdnf` を呼び、`python` と `dnf` のパッケージ名は渡しません。`pip` はベースイメージに入っているので、入れ直しません。`ee-minimal` から作ると、既定のイメージに入っている `ansible.windows` や `amazon.aws` が欠けることがあります。`amazon.aws` をこのファイルへ足す場合も、版は `10.3.0` です。
 
 ## Section 3: ビルドする
 
 ```bash
 cd '/tmp/<name_prefix>-custom-ee'
+export PATH="$HOME/.local/bin:$PATH"
+systemctl --user show podman.service -p Environment
+```
+
+`CONTAINERS_STORAGE_CONF=` のあとにパスが出ているときは、そのパスを `<storage.conf>` に入れて、ビルドの前に実行します。出ていないときは、このコマンドは実行しません。保存先が違うと、イメージはできてもジョブが `image not known` になります。
+
+```bash
+export CONTAINERS_STORAGE_CONF=<storage.conf>
+```
+
+```bash
 ansible-builder build \
     -f execution-environment.yml \
     -t '<name_prefix>-custom-ee:1.0' \
     --container-runtime podman
 podman images | grep '<name_prefix>-custom-ee'
 ```
+
+ビルドが終わるまで数分かかります。
 
 ## Section 4: AAPへ登録する
 
@@ -78,7 +149,7 @@ podman images | grep '<name_prefix>-custom-ee'
 
 ## Section 5: テンプレートへ付ける
 
-`<name_prefix>-write-note-linux` の実行環境に `<name_prefix>-custom-ee` を選び、起動して成功することを確認します。ジョブ詳細の実行環境が `<name_prefix>-custom-ee` になっていれば、指定は効いています。
+`<name_prefix>-write-note-linux` の実行環境に `<name_prefix>-custom-ee` を選び、起動して成功することを確認します。ジョブ詳細の実行環境が `<name_prefix>-custom-ee` になっていれば、指定は効いています。ジョブが `image not known` で失敗したときは、Section 3 の `CONTAINERS_STORAGE_CONF` を設定して、ビルドからやり直します。
 
 確認が終わったら、実行環境を空欄に戻します。以降の演習は既定の実行環境で進めます。
 
