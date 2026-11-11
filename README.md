@@ -39,10 +39,10 @@
 | [応用3 EEの確認](./advanced/ex3.md) | 実施 | 実施 |
 | [応用4 カスタムEE](./advanced/ex4.md) | イメージを取得できるときだけ | AAPサーバで実施 |
 | [応用5 API](./advanced/ex5.md) | 実施 | 実施 |
-| [応用6 CLI](./advanced/ex6.md) | インターネットへ出られるとき | AAPサーバで実施 |
-| [応用7 EDA](./advanced/ex7.md) | 実施 | 実施 |
-| [応用8 EDAからJob起動](./advanced/ex8.md) | 実施 | 実施 |
-| [応用9 GitLab応用](./advanced/ex9.md) | ランナーがイメージを取得できるとき、CIの節を実施 | 実施 |
+| [応用6 Playbookから起動](./advanced/ex6.md) | 実施 | 実施 |
+| [応用7 ジョブテンプレートのWebhook](./advanced/ex7.md) | 実施 | 実施 |
+| [応用8 EDA](./advanced/ex8.md) | 実施 | 実施 |
+| [応用9 EDAからJob起動](./advanced/ex9.md) | 実施 | 実施 |
 
 サーバがすでにある環境では、演習中にインターネットへ出ません。コレクションとコンテナイメージは、AAP に入っているものを使います。AWS でサーバを作る場合は、インターネットへ出られます。
 
@@ -59,7 +59,7 @@ Windows への接続方式は PSRP です。ドメインに参加していない
 
 * AAP 2.5 以降（統合UI: **Automation Execution** / **Automation Decisions** / **Access Management**）
 * SCM: GitLab。ファイルの編集は Web IDE を使います
-* カスタム Execution Environment を作る場合は、AAP サーバ上で行います
+* カスタム Execution Environment を作る場合は、AAP サーバの `/tmp` で行います
 
 ## 画面の見方
 

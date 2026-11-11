@@ -2,7 +2,7 @@
 
 [演習8](./ex8.md) | [演習10へ](./ex10.md)
 
-`training_secret` を暗号化して GitLab に置き、ジョブの中で復号してファイルへ書きます。暗号化は AAP サーバで行います。Web IDE には、暗号化したあとの文字列を貼ります。Web IDE では `ansible-vault` を実行できません。
+`training_secret` の値だけを暗号化して GitLab に置き、ジョブの中で復号してファイルへ書きます。暗号化は AAP サーバの `/tmp` で行います。Web IDE には、`ansible-vault encrypt_string` が表示した文字列を貼ります。Web IDE では `ansible-vault` を実行できません。
 
 書かれるファイル:
 
@@ -11,56 +11,47 @@
 | Linux | `/tmp/aap-training/secret.txt` | `0600` |
 | Windows | `C:\temp\aap-training\secret.txt` | 接続ユーザーが書き込める場所 |
 
-## Section 1: AAPサーバで暗号化する
+## Section 1: AAPサーバの /tmp で値を暗号化する
 
 AAP サーバへ SSH します。
 
 ```bash
 ssh <ユーザー>@<AAPサーバ>
+cd /tmp
 command -v ansible-vault
 ```
 
-コマンドが表示された場合は、そのシェルで次を実行します。
+コマンドが表示された場合は、その場で次を実行します。`TrainingSecret1` は例です。英数字で自分の値にしてください。
 
 ```bash
-mkdir -p ~/aap-vault && cd ~/aap-vault
-printf '%s\n' 'training_secret: TrainingSecret1' > secrets.yml
-ansible-vault encrypt secrets.yml
+cd /tmp
+ansible-vault encrypt_string 'TrainingSecret1' --name training_secret | tee /tmp/secrets.yml
 ```
 
-`TrainingSecret1` は例です。英数字で自分の値にしてください。`ansible-vault encrypt` が聞くパスワードは、この文字列とは別です。復号用なので、自分だけが知る値を決め、控えます。
+`ansible-vault` が聞くパスワードは、`TrainingSecret1` とは別です。復号用なので、自分だけが知る値を決め、控えます。
 
-`cat secrets.yml` の先頭が `$ANSIBLE_VAULT;1.1;AES256` になっていれば暗号化できています。表示された全文をコピーします。
+`/tmp/secrets.yml` の先頭が `training_secret: !vault |` で、次の行に `$ANSIBLE_VAULT;1.1;AES256` があれば、値だけが暗号化されています。表示された全文をコピーします。
 
-`ansible-vault` がホストに無く、コンテナで動いている場合:
+`ansible-vault` がホストに無く、コンテナで動いている場合は、名前に `controller` を含むコンテナを選びます。`<コンテナ>` は `podman ps` に出た名前です。出力は画面に出るので、全文をコピーします。
 
 ```bash
+cd /tmp
 podman ps
-```
-
-名前に `controller` を含むコンテナを選び、次のようにファイルを渡します。`<コンテナ>` は `podman ps` に出た名前です。
-
-```bash
-mkdir -p ~/aap-vault && cd ~/aap-vault
-printf '%s\n' 'training_secret: TrainingSecret1' > secrets.yml
-podman cp secrets.yml <コンテナ>:/tmp/secrets.yml
-podman exec -it <コンテナ> ansible-vault encrypt /tmp/secrets.yml
-podman cp <コンテナ>:/tmp/secrets.yml ./secrets.yml
-cat secrets.yml
+podman exec -it <コンテナ> ansible-vault encrypt_string 'TrainingSecret1' --name training_secret
 ```
 
 SSH で AAP サーバに入れない、または `ansible-vault` も `podman` も使えない場合は、この演習を全部飛ばして [演習10](./ex10.md) へ進みます。`secret.txt` は作られません。サーバへ入れるようになったら、Section 1 から実施します。
 
 ## Section 2: Web IDEに貼る
 
-GitLab の **Code** を開き、**Web IDE** で、プロジェクトの直下に `secrets.yml` を作り、コピーした全文を貼ります。メニューが **Edit** の環境では、その中の **Web IDE** を選びます。暗号化前の1行は貼りません。
+GitLab の **Code** を開き、**Web IDE** で、プロジェクトの直下に `secrets.yml` を作り、コピーした全文を貼ります。メニューが **Edit** の環境では、その中の **Web IDE** を選びます。平文の `TrainingSecret1` は貼りません。
 
 **Commit to main** でコミットします。
 
 <details>
 <summary>git CLIで行う場合</summary>
 
-AAP サーバ上の暗号化した `secrets.yml` を、clone した作業ディレクトリへコピーしてから push します。
+`/tmp/secrets.yml` を、clone した作業ディレクトリへコピーしてから push します。
 
 ```bash
 git add secrets.yml
@@ -82,7 +73,7 @@ git push
 |---|---|
 | 名前 | `vault-training` |
 | 認証情報タイプ | `Vault` |
-| Vault Password | Section 1 で `ansible-vault encrypt` に入力したパスワード |
+| Vault Password | Section 1 で `ansible-vault encrypt_string` に入力したパスワード |
 
 `TrainingSecret1` の方ではありません。
 

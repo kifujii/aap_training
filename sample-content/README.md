@@ -15,6 +15,8 @@
 | `create_aws_servers.yml` | サーバが無いときだけ実行する。VPC、サブネット、Linux、Windows を作る |
 | `remove_aws_servers.yml` | 上記のリソースを削除する |
 | `notify_aws.yml` | AWS で作った場合の通知確認。S3 に書いて読み戻す |
+| `launch_note.yml` | 応用演習6。既定の実行環境から `write-note-linux` を起動する |
+| `show_handed_note.yml` | 演習11。前のジョブが `set_stats` で渡したメモを表示する |
 | `requirements.yml` | **AWS で作る場合だけ** GitLab に置く。`amazon.aws` 10.3.0 |
 | `krb5.conf.example` | ドメイン参加済み Windows を Kerberos で接続するときの見本 |
 

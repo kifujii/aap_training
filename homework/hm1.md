@@ -107,14 +107,15 @@ Web IDE で `create_aws_servers.yml` の Linux を作るタスクをコピーし
 
 ### Vault
 
-1. AAP サーバで `secrets.yml` を作る。中身は次の1行で、`TrainingSecret1` は自分の英数字に変えてよい
+1. AAP サーバへ SSH し、`cd /tmp` してから `ansible-vault encrypt_string` で値だけを暗号化する。平文の例は次の1行で、`TrainingSecret1` は自分の英数字に変えてよい。コマンドが聞くパスワードは、この文字列とは別の復号用パスワードにする
 
-```yaml
-training_secret: TrainingSecret1
+```bash
+cd /tmp
+ansible-vault encrypt_string 'TrainingSecret1' --name training_secret | tee /tmp/secrets.yml
 ```
 
-2. `ansible-vault encrypt` で暗号化し、暗号文だけを Web IDE で `secrets.yml` としてコミットする。平文のファイルはコミットしない
-3. 認証情報 `vault-training` に、encrypt のときに入力したパスワードを入れる
+2. `/tmp/secrets.yml` の先頭が `training_secret: !vault |` になっていることを確認し、その全文を Web IDE で `secrets.yml` としてコミットする。平文の `TrainingSecret1` はコミットしない。ホストに `ansible-vault` が無い場合は、演習9と同じく、名前に `controller` を含むコンテナで `encrypt_string` を実行し、画面に出た全文をコピーする
+3. 認証情報 `vault-training` に、`encrypt_string` のときに入力したパスワードを入れる
 4. `write-note-linux` と `write-note-windows` に `vault-training` を追加し、編集画面の **Extra variables** に `training_use_vault: true` を入れて保存してから起動する
 
 完了:
@@ -165,7 +166,7 @@ notify_message: homework notification
 
 ### 任意: EDA
 
-[応用演習8](../advanced/ex8.md) まで終わっている場合だけ実施します。
+[応用演習9](../advanced/ex9.md) まで終わっている場合だけ実施します。
 
 Event Stream `check-webhook-stream` へ、次の JSON を送ります。
 
@@ -177,4 +178,4 @@ Event Stream `check-webhook-stream` へ、次の JSON を送ります。
 
 ## 暗号化前の見本
 
-[example_config/secrets.yml.example](./example_config/secrets.yml.example) は見本です。このファイルは暗号化しないままコミットしません。課題4で作る `secrets.yml` は、暗号化したものだけを GitLab に置きます。
+[example_config/secrets.yml.example](./example_config/secrets.yml.example) は、暗号化する前の形の見本です。課題4で GitLab に置く `secrets.yml` は、`encrypt_string` の出力だけにします。

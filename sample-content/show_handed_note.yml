@@ -1,0 +1,15 @@
+---
+- name: Use the note from the previous workflow job
+  hosts: linux
+  gather_facts: false
+
+  tasks:
+    - name: Show the note handed off by write-note-linux
+      ansible.builtin.debug:
+        msg: "note_from_linux={{ note_from_linux }}"
+
+    - name: The previous job must have set note_from_linux
+      ansible.builtin.assert:
+        that:
+          - note_from_linux is defined
+          - note_from_linux | length > 0

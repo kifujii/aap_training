@@ -54,6 +54,7 @@
 | インベントリソースのファイル | **Inventory path** |
 | チームへ権限を付ける | 対象の **Team Access** > **Assign teams**。最後は **Finish** |
 | Event Streamの作成 | **Automation Decisions > Event Streams** の **Create event stream**。タイプは検索欄で探す |
+| ジョブテンプレートの Webhook | 編集画面の **Webhook の有効化**。サービスは **Webhook service** の `GitLab`。保存後の詳細に **Webhook URL** と **Webhook key** |
 
 インベントリー詳細のタブは **グループ**、**ホスト**、**ソース** です。Job Template詳細のタブは **詳細**、**Team Access**、**User Access**、**スケジュール**、**ジョブ**、**Survey**、**通知** です。
 
