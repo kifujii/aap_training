@@ -71,6 +71,7 @@ Activation の削除で失敗した場合は、**Automation Decisions > ルー�
 | Automation Execution > Infrastructure > 実行環境 | `<name_prefix>-custom-ee` だけ削除する。Default execution environment は残す |
 | Automation Execution > 管理 > Notifiers | その行を削除する |
 | Access Management > チーム | `<name_prefix>-ops-team` を削除する |
+| Access Management > ユーザー | `<name_prefix>-ops` を削除する |
 | Automation Decisions > ルールブックのアクティベーション | 無効にしてから削除する |
 | Automation Decisions > Event Streams | その行を削除する |
 | Automation Decisions > プロジェクト | その行を削除する |

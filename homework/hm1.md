@@ -98,7 +98,8 @@ Web IDE で `create_aws_servers.yml` の Linux を作るタスクをコピーし
 1. チーム `<name_prefix>-ops-team` を作る
 2. `<name_prefix>-write-note-linux` と `<name_prefix>-write-note-windows` に、`<name_prefix>-ops-team` の **JobTemplate Execute** を付ける。`<name_prefix>-note-workflow` には **WorkflowJobTemplate Execute** を付ける
 3. プロジェクト `<name_prefix>-aap-training-content` には **Project Read Compat**、インベントリー `<name_prefix>-training-inventory` には **Inventory Read Compat** だけを付ける
-4. `<name_prefix>-ops-team` のユーザーでログインする
+4. ユーザー `<name_prefix>-ops` を作る。ユーザータイプは `標準ユーザー`、組織は演習1の組織。`<name_prefix>-ops-team` の **ユーザー** タブで **Assign users** から追加する
+5. `<name_prefix>-ops` でログインする
 
 完了:
 
