@@ -6,7 +6,7 @@
 
 ## Section 1: Rulebookを書き換える
 
-Web IDE で `rulebooks/notify_on_webhook.yml` を、次の内容に置き換えます。`<name_prefix>` は演習1の接頭辞に置き換えます。`organization` は演習1で控えた組織名にします。`sources` の名前は、Event Stream `<name_prefix>-check-webhook-stream` と同じです。
+Web IDE で `rulebooks/notify_on_webhook.yml` を、次の内容に置き換えます。`<name_prefix>` は演習1の接頭辞に置き換えます。`organization` は演習1で控えた組織名にします。`sources` の名前は、Event Stream `<name_prefix>-check-webhook-stream` と同じです。`ansible.eda.webhook: {}` の行は、応用演習7で書いたものを残します。
 
 ```yaml
 ---
@@ -15,6 +15,7 @@ Web IDE で `rulebooks/notify_on_webhook.yml` を、次の内容に置き換え�
 
   sources:
     - name: <name_prefix>-check-webhook-stream
+      ansible.eda.webhook: {}
 
   rules:
     - name: Launch <name_prefix>-verify-note-linux
