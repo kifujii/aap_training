@@ -24,8 +24,8 @@ Vault の暗号化（[演習9](./basic-controller/ex9.md)）は `/tmp/<name_pref
 
 | OS | 書くファイル | 接続 |
 |---|---|---|
-| Linux | `/tmp/aap-training/note.txt` | SSH |
-| Windows | `C:\temp\aap-training\note.txt` | PSRP |
+| Linux | `/tmp/<name_prefix>-aap-training/note.txt` | SSH |
+| Windows | `C:\temp\<name_prefix>-aap-training\note.txt` | PSRP |
 
 Linux と Windows の両方を行います。違うのは、そのサーバをすでにあるものを使うか、AWS で作るかです。
 
@@ -34,7 +34,7 @@ Linux と Windows の両方を行います。違うのは、そのサーバを�
 | Linux と Windows がすでにある | [演習4](./basic-intro/ex4.md) は飛ばす。インターネットへ出ない前提で進める | 各サーバのアドレス、ログインユーザー、パスワード。Windows がドメイン参加済みならレルム名と KDC |
 | 対象サーバが無い | [演習3](./basic-intro/ex3.md) の Section 3 のあと、[演習4](./basic-intro/ex4.md) で AWS に作る。インターネットへ出られる前提 | AWS のアクセスキー、シークレットキー、リージョン。サーバのパスワードは演習4で自分で決める |
 
-すでにサーバがある場合、ログインユーザーが `/tmp/aap-training` と `C:\temp\aap-training` を作れることを確認します。Playbook がこのディレクトリを作り、その中にファイルを書きます。
+すでにサーバがある場合、ログインユーザーが `/tmp` と `C:\temp` の下に自分のディレクトリを作れることを確認します。Playbook が `/tmp/<name_prefix>-aap-training` と `C:\temp\<name_prefix>-aap-training` を作り、その中にファイルを書きます。`<name_prefix>` は演習1で決める接頭辞です。
 
 Windows の接続は次のとおりです。
 

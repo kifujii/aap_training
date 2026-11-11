@@ -4,9 +4,17 @@
   gather_facts: false
 
   tasks:
+    - name: name_prefix is set
+      ansible.builtin.assert:
+        that:
+          - name_prefix is defined
+          - name_prefix is match('^[a-z][a-z0-9-]{1,12}$')
+          - name_prefix is not match('.*-$')
+        fail_msg: ジョブテンプレートの Extra variables に、演習1で決めた name_prefix を指定してください。
+
     - name: Read note.txt
       ansible.builtin.slurp:
-        src: /tmp/aap-training/note.txt
+        src: "/tmp/{{ name_prefix }}-aap-training/note.txt"
       register: note_file
 
     - name: Decode note.txt
@@ -19,5 +27,5 @@
           - inventory_hostname in note_text
           - training_note in note_text
         fail_msg: >-
-          /tmp/aap-training/note.txt に
+          /tmp/{{ name_prefix }}-aap-training/note.txt に
           {{ inventory_hostname }} または「{{ training_note }}」がありません。

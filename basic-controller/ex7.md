@@ -19,8 +19,15 @@ Linux と Windows のそれぞれに `note.txt` を書きます。1つのジョ�
 | 実行環境 | 空欄 |
 | 認証情報 | `<name_prefix>-linux-ssh` |
 | 制限 | 空欄のまま（Playbook の対象はグループ `linux`） |
+| Extra variables | 下の1行 |
 
-表に無い欄は空欄のままにします。**起動プロンプト** には、この時点ではチェックを入れません。実行環境も空欄です。
+```yaml
+name_prefix: tanaka01
+```
+
+`tanaka01` は演習1で決めた接頭辞にします。Playbook の中の `{{ name_prefix }}` は書き換えません。ファイルは `/tmp/<name_prefix>-aap-training/note.txt` に書かれます。
+
+表に無い欄は空欄のままにします。**起動プロンプト** には、この時点ではチェックを入れません。実行環境も空欄です。起動画面には Extra variables は出ないので、この編集画面で保存します。
 
 保存すると詳細画面に戻ります。右上の **テンプレートの起動** をクリックします。
 
@@ -32,7 +39,7 @@ Linux と Windows のそれぞれに `note.txt` を書きます。1つのジョ�
 
 先頭の `SSH password:` と `Vault password:` は、認証情報を渡したときの表示です。パスワードそのものは出ません。その下に Python の WARNING が出ても、この演習では無視して構いません。
 
-ジョブが成功すると、`lin1` の `/tmp/aap-training/note.txt` は次の内容になります。`training_note` の既定値は `managed by AAP` です。
+ジョブが成功すると、`lin1` の `/tmp/<name_prefix>-aap-training/note.txt` は次の内容になります。`training_note` の既定値は `managed by AAP` です。
 
 ```
 hostname: lin1
@@ -60,7 +67,9 @@ note: managed by AAP
 | Playbook | `write_note_windows.yml` |
 | 認証情報 | `<name_prefix>-windows-psrp` |
 
-起動して成功することを確認します。ファイルは `C:\temp\aap-training\note.txt` です。中身の形は Linux と同じで、1行目は `hostname: win1` です。
+コピーした場合、Extra variables の `name_prefix` はそのままにします。新規作成の場合は、Linux と同じ1行を入れます。ファイルは `C:\temp\<name_prefix>-aap-training\note.txt` に書かれます。
+
+起動して成功することを確認します。中身の形は Linux と同じで、1行目は `hostname: win1` です。
 
 Kerberos の場合は、演習5で `krb5.conf` を置いてから実行します。失敗したら、レルム、KDC、ユーザー名が `ユーザー@レルム` になっているかを確認します。
 
@@ -73,7 +82,7 @@ Kerberos の場合は、演習5で `krb5.conf` を置いてから実行します
 | `<name_prefix>-verify-note-linux` | `verify_note_linux.yml` | `<name_prefix>-linux-ssh` |
 | `<name_prefix>-verify-note-windows` | `verify_note_windows.yml` | `<name_prefix>-windows-psrp` |
 
-インベントリーとプロジェクトは、書くときと同じです。両方を起動し、成功することを確認します。`note.txt` にホスト名または `managed by AAP` が無いと、ここで失敗します。
+インベントリーとプロジェクトは、書くときと同じです。コピーした場合、Extra variables の `name_prefix` は残します。新規作成の場合は、書くときと同じ1行を入れます。両方を起動し、成功することを確認します。`note.txt` にホスト名または `managed by AAP` が無いと、ここで失敗します。`name_prefix` の行が無いと、ファイルを読む前に失敗します。
 
 ## 次
 
