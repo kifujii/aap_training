@@ -76,9 +76,3 @@ Windows への接続方式は PSRP です。ドメインに参加していない
 → [sample-content/](./sample-content/)
 
 GitLab のプロジェクトへ、Web IDE で置いて使います。
-
-## 宿題
-
-→ [宿題](./homework/hm1.md)
-
-課題1から順に、同じ Linux と Windows へ機能を足していきます。各課題に完了条件を書いてあります。

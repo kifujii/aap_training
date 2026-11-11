@@ -1,6 +1,6 @@
 # 応用演習 8 - EDAからJobを起動する
 
-[応用演習7](./ex7.md) | [宿題へ](../homework/hm1.md)
+[応用演習7](./ex7.md) | [削除手順へ](../cleanup.md)
 
 `status` が `success` のイベントを受けたら、`<name_prefix>-verify-note-linux` を起動します。受け口は、応用演習7で作った Event Stream のままです。
 
@@ -64,4 +64,4 @@ curl -X POST "<Event StreamのURL>" \
 
 ## 次
 
-[宿題](../homework/hm1.md) のあと、[削除手順](../cleanup.md) で自分のオブジェクトを消します。
+[削除手順](../cleanup.md) で自分のオブジェクトを消します。
