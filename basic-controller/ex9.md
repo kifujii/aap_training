@@ -8,8 +8,8 @@
 
 | OS | パス | 権限 |
 |---|---|---|
-| Linux | `/tmp/aap-training/secret.txt` | `0600` |
-| Windows | `C:\temp\aap-training\secret.txt` | 接続ユーザーが書き込める場所 |
+| Linux | `/tmp/<name_prefix>-aap-training/secret.txt` | `0600` |
+| Windows | `C:\temp\<name_prefix>-aap-training\secret.txt` | 接続ユーザーが書き込める場所 |
 
 ## Section 1: AAPサーバの /tmp で値を暗号化する
 
@@ -79,21 +79,26 @@ git push
 
 ## Section 4: ジョブで復号する
 
-`<name_prefix>-write-note-linux` の編集で、認証情報に `<name_prefix>-vault-training` を追加します。`<name_prefix>-linux-ssh` も付けたままにします。**Extra variables** に次を入れます。起動画面にはこの欄は出ないので、編集画面で保存します。
+`<name_prefix>-write-note-linux` の編集で、認証情報に `<name_prefix>-vault-training` を追加します。`<name_prefix>-linux-ssh` も付けたままにします。**Extra variables** は、演習7で入れた `name_prefix` の行を残したまま、次の行を足します。起動画面にはこの欄は出ないので、編集画面で保存します。
 
 ```yaml
+name_prefix: tanaka01
 training_use_vault: true
 ```
+
+`tanaka01` は、演習7で保存してある自分の接頭辞のままにします。
 
 ![詳細画面。認証情報は linux-ssh と vault-training、Extra variables は training_use_vault: true。実行環境に既定の名前が見えても、編集画面では空欄のままにする](../images/aap/template-launch.png)
 
 ![編集画面の Extra variables](../images/aap/extra-variables.png)
 
-起動します。成功すると `/tmp/aap-training/secret.txt` の内容は `TrainingSecret1` です。ログには値を出さないようにしてあります。
+写真の Extra variables は `training_use_vault` だけです。自分の画面では、その上に `name_prefix` の行もあります。
 
-`<name_prefix>-write-note-windows` にも `<name_prefix>-vault-training` と `<name_prefix>-windows-psrp` を付け、同じ Extra variables で起動します。ファイルは `C:\temp\aap-training\secret.txt` です。
+起動します。成功すると `/tmp/<name_prefix>-aap-training/secret.txt` の内容は `TrainingSecret1` です。ログには値を出さないようにしてあります。
 
-Extra variables を付け忘れると `secrets.yml` は読まれず、`secret.txt` は作られません。暗号化パスワードが違うと、ジョブは `secrets.yml` の読み込みで失敗します。
+`<name_prefix>-write-note-windows` にも `<name_prefix>-vault-training` と `<name_prefix>-windows-psrp` を付けます。Extra variables は、`name_prefix` の行を残したまま `training_use_vault: true` を足して起動します。ファイルは `C:\temp\<name_prefix>-aap-training\secret.txt` です。
+
+`training_use_vault: true` を足し忘れると `secrets.yml` は読まれず、`secret.txt` は作られません。暗号化パスワードが違うと、ジョブは `secrets.yml` の読み込みで失敗します。
 
 ## 次
 

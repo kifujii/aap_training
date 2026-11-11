@@ -49,8 +49,10 @@
 
 | OS | ファイル |
 |---|---|
-| Linux | `/tmp/aap-training/note.txt` |
-| Windows | `C:\temp\aap-training\note.txt` |
+| Linux | `/tmp/<name_prefix>-aap-training/note.txt` |
+| Windows | `C:\temp\<name_prefix>-aap-training\note.txt` |
+
+`<name_prefix>` は演習1で決める接頭辞です。人ごとにディレクトリが分かれるので、同じサーバを複数人で使えます。
 
 Windows への接続方式は PSRP です。ドメインに参加していない Windows（AWS で作るサーバを含む）は NTLM、ドメインに参加している Windows は Kerberos を使います。
 

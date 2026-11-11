@@ -2,6 +2,7 @@
 # ファイルに書くメモ。Job Template の Survey から上書きできる。
 training_note: managed by AAP
 
+# name_prefix はここへ書かない。ジョブテンプレートの Extra variables で渡す。
 # AWSでサーバを作るときだけ使う。パスワードと resource_prefix はここへ書かず、起動時の Extra variables で渡す。
 ec2_region: ap-northeast-1
 vpc_cidr: 10.42.0.0/16

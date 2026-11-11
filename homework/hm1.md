@@ -15,12 +15,12 @@
    * ドメインに参加していない、または AWS で作った: `ansible_psrp_auth: ntlm`、ポート `5985`、プロトコル `http`
    * ドメインに参加している: `ansible_psrp_auth: kerberos`、ポート `5986`、プロトコル `https`。`krb5.conf` のレルムと KDC を自分の値にする
 3. 認証情報 `<name_prefix>-linux-ssh` と `<name_prefix>-windows-psrp`、プロジェクト `<name_prefix>-aap-training-content`、インベントリー `<name_prefix>-training-inventory`、ソース `<name_prefix>-gitlab-inventory` を作る
-4. ジョブテンプレート `<name_prefix>-write-note-linux` と `<name_prefix>-write-note-windows` を作り、それぞれ1回起動する
+4. ジョブテンプレート `<name_prefix>-write-note-linux` と `<name_prefix>-write-note-windows` を作る。編集画面の Extra variables に `name_prefix: tanaka01` を入れる。`tanaka01` は自分の接頭辞にし、Playbook 内の `{{ name_prefix }}` は書き換えない。それぞれ1回起動する
 5. もう一度ずつ起動する
 
 ### 完了
 
-* `lin1` の `/tmp/aap-training/note.txt` が、次の3行である。アドレスの行は、inventory に書いた値と一致する
+* `lin1` の `/tmp/<name_prefix>-aap-training/note.txt` が、次の3行である。アドレスの行は、inventory に書いた値と一致する
 
 ```
 hostname: lin1
@@ -28,9 +28,9 @@ address: <lin1 の ansible_host>
 note: managed by AAP
 ```
 
-* `win1` の `C:\temp\aap-training\note.txt` が、同じ形で1行目だけ `hostname: win1` である
+* `win1` の `C:\temp\<name_prefix>-aap-training\note.txt` が、同じ形で1行目だけ `hostname: win1` である
 * 2回目のジョブで、note.txt を書くタスクの `changed` が `0` である
-* `<name_prefix>-verify-note-linux` と `<name_prefix>-verify-note-windows` が成功する
+* `<name_prefix>-verify-note-linux` と `<name_prefix>-verify-note-windows` が成功する。どちらも Extra variables に、書くテンプレートと同じ `name_prefix` がある
 
 ## 課題2 - ホストを1台増やす
 
@@ -66,7 +66,7 @@ Web IDE で `create_aws_servers.yml` の Linux を作るタスクをコピーし
 ### 完了
 
 * ソース `<name_prefix>-gitlab-inventory` を同期し、ホスト一覧に `lin2` がある
-* `<name_prefix>-write-note-linux` を起動し、`lin1` と `lin2` の両方に `/tmp/aap-training/note.txt` がある
+* `<name_prefix>-write-note-linux` を起動し、`lin1` と `lin2` の両方に `/tmp/<name_prefix>-aap-training/note.txt` がある
 * `lin2` の1行目は `hostname: lin2` である
 * `<name_prefix>-verify-note-linux` が `lin1` と `lin2` の両方で成功する
 
@@ -116,12 +116,12 @@ ansible-vault encrypt_string 'TrainingSecret1' --name training_secret | tee '/tm
 
 2. `/tmp/<name_prefix>-secrets.yml` の先頭が `training_secret: !vault |` になっていることを確認し、その全文を Web IDE で `secrets.yml` としてコミットする。平文の `TrainingSecret1` はコミットしない。ホストに `ansible-vault` が無い場合は、演習9と同じく、名前に `controller` を含むコンテナで `encrypt_string` を実行し、画面に出た全文をコピーする
 3. 認証情報 `<name_prefix>-vault-training` に、`encrypt_string` のときに入力したパスワードを入れる
-4. `<name_prefix>-write-note-linux` と `<name_prefix>-write-note-windows` に `<name_prefix>-vault-training` を追加し、編集画面の **Extra variables** に `training_use_vault: true` を入れて保存してから起動する
+4. `<name_prefix>-write-note-linux` と `<name_prefix>-write-note-windows` に `<name_prefix>-vault-training` を追加し、編集画面の **Extra variables** は `name_prefix` の行を残したまま `training_use_vault: true` を足して保存してから起動する
 
 完了:
 
-* Linux の `/tmp/aap-training/secret.txt` が、自分が書いた `training_secret` の値と一致し、モードが `0600` である
-* Windows の `C:\temp\aap-training\secret.txt` も同じ値である
+* Linux の `/tmp/<name_prefix>-aap-training/secret.txt` が、自分が書いた `training_secret` の値と一致し、モードが `0600` である
+* Windows の `C:\temp\<name_prefix>-aap-training\secret.txt` も同じ値である
 * ジョブログに、その値がそのまま出ていない
 
 ### 通知

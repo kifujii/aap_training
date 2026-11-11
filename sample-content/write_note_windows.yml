@@ -5,6 +5,14 @@
   environment: "{{ {'KRB5_CONFIG': playbook_dir + '/krb5.conf'} if (lookup('ansible.builtin.fileglob', playbook_dir + '/krb5.conf') | length > 0) else {} }}"
 
   tasks:
+    - name: name_prefix is set
+      ansible.builtin.assert:
+        that:
+          - name_prefix is defined
+          - name_prefix is match('^[a-z][a-z0-9-]{1,12}$')
+          - name_prefix is not match('.*-$')
+        fail_msg: ジョブテンプレートの Extra variables に、演習1で決めた name_prefix を指定してください。
+
     - name: Load secrets.yml when vault is enabled
       ansible.builtin.include_vars:
         file: "{{ playbook_dir }}/secrets.yml"
@@ -13,12 +21,12 @@
 
     - name: Create the note directory
       ansible.windows.win_file:
-        path: C:\temp\aap-training
+        path: 'C:\temp\{{ name_prefix }}-aap-training'
         state: directory
 
     - name: Write note.txt
       ansible.windows.win_copy:
-        dest: C:\temp\aap-training\note.txt
+        dest: 'C:\temp\{{ name_prefix }}-aap-training\note.txt'
         content: |
           hostname: {{ inventory_hostname }}
           address: {{ ansible_host }}
@@ -26,7 +34,7 @@
 
     - name: Write secret.txt
       ansible.windows.win_copy:
-        dest: C:\temp\aap-training\secret.txt
+        dest: 'C:\temp\{{ name_prefix }}-aap-training\secret.txt'
         content: "{{ training_secret | default('') }}\n"
       when: training_secret is defined
       no_log: true
