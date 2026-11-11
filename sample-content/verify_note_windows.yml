@@ -7,7 +7,7 @@
   tasks:
     - name: Read note.txt
       ansible.windows.slurp:
-        src: C:\Users\Public\aap-training\note.txt
+        src: C:\temp\aap-training\note.txt
       register: note_file
 
     - name: Decode note.txt
@@ -20,5 +20,5 @@
           - inventory_hostname in note_text
           - training_note in note_text
         fail_msg: >-
-          C:\Users\Public\aap-training\note.txt に
+          C:\temp\aap-training\note.txt に
           {{ inventory_hostname }} または「{{ training_note }}」がありません。

@@ -13,12 +13,12 @@
 
     - name: Create the note directory
       ansible.windows.win_file:
-        path: C:\Users\Public\aap-training
+        path: C:\temp\aap-training
         state: directory
 
     - name: Write note.txt
       ansible.windows.win_copy:
-        dest: C:\Users\Public\aap-training\note.txt
+        dest: C:\temp\aap-training\note.txt
         content: |
           hostname: {{ inventory_hostname }}
           address: {{ ansible_host }}
@@ -26,7 +26,7 @@
 
     - name: Write secret.txt
       ansible.windows.win_copy:
-        dest: C:\Users\Public\aap-training\secret.txt
+        dest: C:\temp\aap-training\secret.txt
         content: "{{ training_secret | default('') }}\n"
       when: training_secret is defined
       no_log: true

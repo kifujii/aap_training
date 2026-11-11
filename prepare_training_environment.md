@@ -15,7 +15,7 @@
 
 AAP のインストールとユーザー作成は、この資料の範囲外です。
 
-Vault の暗号化（[演習9](./basic-controller/ex9.md)）と、カスタム実行環境を作る場合（[応用演習4](./advanced/ex4.md)）は、AAP サーバへ SSH して行います。別のビルド用サーバは使いません。SSH できるユーザーと、`ansible-vault` または `podman` の有無を確認してください。SSH できず、そのどちらも使えない場合は、演習9を飛ばして演習10へ進みます。
+Vault の暗号化（[演習9](./basic-controller/ex9.md)）と、カスタム実行環境を作る場合（[応用演習4](./advanced/ex4.md)）は、AAP サーバへ SSH して行います。SSH できるユーザーと、`ansible-vault` または `podman` の有無を確認してください。SSH できず、そのどちらも使えない場合は、演習9を飛ばして演習10へ進みます。
 
 ## 2. 対象サーバ
 
@@ -23,8 +23,8 @@ Vault の暗号化（[演習9](./basic-controller/ex9.md)）と、カスタム�
 
 | OS | 書くファイル | 接続 |
 |---|---|---|
-| Linux | `/var/tmp/aap-training/note.txt` | SSH |
-| Windows | `C:\Users\Public\aap-training\note.txt` | PSRP |
+| Linux | `/tmp/aap-training/note.txt` | SSH |
+| Windows | `C:\temp\aap-training\note.txt` | PSRP |
 
 Linux と Windows の両方を行います。違うのは、そのサーバをすでにあるものを使うか、AWS で作るかです。
 
@@ -33,7 +33,7 @@ Linux と Windows の両方を行います。違うのは、そのサーバを�
 | Linux と Windows がすでにある | [演習4](./basic-intro/ex4.md) は飛ばす。インターネットへ出ない前提で進める | 各サーバのアドレス、ログインユーザー、パスワード。Windows がドメイン参加済みならレルム名と KDC |
 | 対象サーバが無い | [演習3](./basic-intro/ex3.md) の Section 3 のあと、[演習4](./basic-intro/ex4.md) で AWS に作る。インターネットへ出られる前提 | AWS のアクセスキー、シークレットキー、リージョン。サーバのパスワードは演習4で自分で決める |
 
-すでにサーバがある場合、ログインユーザーがそのディレクトリへ書き込めれば足ります。管理者権限や、時刻・パッケージ・SSH の変更権限は要りません。
+すでにサーバがある場合、ログインユーザーが `/tmp/aap-training` と `C:\temp\aap-training` を作れることを確認します。Playbook がこのディレクトリを作り、その中にファイルを書きます。
 
 Windows の接続は次のとおりです。
 
@@ -53,7 +53,7 @@ Windows の接続は次のとおりです。
 | プロジェクトを作る Namespace | グループ名、またはユーザー名 |
 | デフォルトブランチ | この資料では `main` |
 
-ファイルの作成は Web IDE で行います。AAP がリポジトリを読む認証は、ユーザー名とパスワードです。トークンは使いません。
+ファイルの作成は Web IDE で行います。AAP がリポジトリを読む認証は、GitLab のログインユーザー名とパスワードです。
 
 二要素認証が有効なユーザーは、Git のパスワード認証が拒否されることがあります。その場合は、二要素認証を使っていないユーザーで進めてください。
 

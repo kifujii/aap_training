@@ -20,7 +20,7 @@
 
 ### 完了
 
-* `lin1` の `/var/tmp/aap-training/note.txt` が、次の3行である。アドレスの行は、inventory に書いた値と一致する
+* `lin1` の `/tmp/aap-training/note.txt` が、次の3行である。アドレスの行は、inventory に書いた値と一致する
 
 ```
 hostname: lin1
@@ -28,7 +28,7 @@ address: <lin1 の ansible_host>
 note: managed by AAP
 ```
 
-* `win1` の `C:\Users\Public\aap-training\note.txt` が、同じ形で1行目だけ `hostname: win1` である
+* `win1` の `C:\temp\aap-training\note.txt` が、同じ形で1行目だけ `hostname: win1` である
 * 2回目のジョブで、note.txt を書くタスクの `changed` が `0` である
 * `verify-note-linux` と `verify-note-windows` が成功する
 
@@ -66,7 +66,7 @@ Web IDE で `create_aws_servers.yml` の Linux を作るタスクをコピーし
 ### 完了
 
 * ソース `gitlab-inventory` を同期し、ホスト一覧に `lin2` がある
-* `write-note-linux` を起動し、`lin1` と `lin2` の両方に `/var/tmp/aap-training/note.txt` がある
+* `write-note-linux` を起動し、`lin1` と `lin2` の両方に `/tmp/aap-training/note.txt` がある
 * `lin2` の1行目は `hostname: lin2` である
 * `verify-note-linux` が `lin1` と `lin2` の両方で成功する
 
@@ -119,8 +119,8 @@ training_secret: TrainingSecret1
 
 完了:
 
-* Linux の `/var/tmp/aap-training/secret.txt` が、自分が書いた `training_secret` の値と一致し、モードが `0600` である
-* Windows の `C:\Users\Public\aap-training\secret.txt` も同じ値である
+* Linux の `/tmp/aap-training/secret.txt` が、自分が書いた `training_secret` の値と一致し、モードが `0600` である
+* Windows の `C:\temp\aap-training\secret.txt` も同じ値である
 * ジョブログに、その値がそのまま出ていない
 
 ### 通知

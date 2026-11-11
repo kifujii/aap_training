@@ -10,8 +10,8 @@
 | **Automation Controller** | AAPの中核コンポーネント。Playbookの実行管理（Job Template、Workflow、Inventory、Credential等）を担う。旧称 Ansible Tower。2.5以降のUIでは「**Automation Execution**」メニュー配下に相当する機能が集約されている。 |
 | **Event-Driven Ansible (EDA)** | イベント（監視アラート、Webhook等）を検知し、条件に応じて自動的にアクション（Job Template起動等）を実行する仕組み。2.5以降のUIでは「**Automation Decisions**」メニュー配下に相当する。 |
 | **統合UI** | AAP 2.5以降で採用された、Controller・EDAを1つのナビゲーションに統合したWeb UI。大きく **Automation Execution**（ジョブ / テンプレート / プロジェクト / Infrastructure 配下のインベントリー・認証情報・実行環境）、**Automation Decisions**（ルールブックのアクティベーション / 決定環境 / Event Streams）、**Access Management**（組織 / チーム / ユーザー）に分かれる。日本語UIでの項目名は [画面ラベル対応表](./ui-labels.md) を参照。 |
-| **Automation Hub** | Red Hat公式/社内で管理するCollectionの配布基盤。本資料では対象外（社内PAH未使用の前提）。 |
-| **Automation Mesh** | 複数のExecution Nodeを束ねて、大規模・分散環境でJobを実行するためのネットワーク構成。本資料では深く扱わない。 |
+| **Automation Hub** | Red Hat が提供する Collection の配布基盤。 |
+| **Automation Mesh** | 複数の Execution Node を束ねて Job を実行するネットワーク構成。 |
 
 ---
 
@@ -116,6 +116,6 @@
 | 用語 | 説明 |
 |---|---|
 | **SCM (Source Control Management)** | Gitなどのバージョン管理システムの総称。AAPのProjectはSCMリポジトリと連携して最新のPlaybook/Role/Inventoryファイルを取得する。 |
-| **Source Control認証** | AAPがGitLabを読むときに使うユーザー名とパスワード。この資料ではトークンではなく、GitLabのログインユーザー名とパスワードを登録する。 |
-| **Webhook** | GitLab側でリポジトリへのpush等のイベントが発生した際に、外部URL（AAPのProject Webhook等）へ通知を送信する仕組み。Project側で有効化すると、push時に自動でSCM Syncを実行できる。 |
+| **Source Control認証** | AAPがGitLabを読むときに使う認証情報。GitLabのログインユーザー名とパスワードを登録する。 |
+| **Webhook** | 外部の出来事を HTTP で受け取る仕組み。応用演習9では GitLab の push を Event Stream で受けます。push でプロジェクトの同期は始まりません。 |
 | **.gitlab-ci.yml** | GitLab CI/CDパイプラインの定義ファイル。ansible-lintの自動実行や、Controller API経由でのJob Template起動などに利用できる。 |

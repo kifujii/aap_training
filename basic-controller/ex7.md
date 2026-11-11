@@ -32,7 +32,7 @@ Linux と Windows のそれぞれに `note.txt` を書きます。1つのジョ�
 
 先頭の `SSH password:` と `Vault password:` は、認証情報を渡したときの表示です。パスワードそのものは出ません。その下に Python の WARNING が出ても、この演習では無視して構いません。
 
-ジョブが成功すると、`lin1` の `/var/tmp/aap-training/note.txt` は次の内容になります。`training_note` の既定値は `managed by AAP` です。
+ジョブが成功すると、`lin1` の `/tmp/aap-training/note.txt` は次の内容になります。`training_note` の既定値は `managed by AAP` です。
 
 ```
 hostname: lin1
@@ -60,7 +60,7 @@ note: managed by AAP
 | Playbook | `write_note_windows.yml` |
 | 認証情報 | `windows-psrp` |
 
-起動して成功することを確認します。ファイルは `C:\Users\Public\aap-training\note.txt` です。中身の形は Linux と同じで、1行目は `hostname: win1` です。
+起動して成功することを確認します。ファイルは `C:\temp\aap-training\note.txt` です。中身の形は Linux と同じで、1行目は `hostname: win1` です。
 
 Kerberos の場合は、演習5で `krb5.conf` を置いてから実行します。失敗したら、レルム、KDC、ユーザー名が `ユーザー@レルム` になっているかを確認します。
 

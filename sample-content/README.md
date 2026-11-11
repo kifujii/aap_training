@@ -8,8 +8,8 @@
 |---|---|
 | `inventory.yml` | Linux `lin1` と Windows `win1`。アドレスは例示用の `203.0.113.10` / `203.0.113.11` |
 | `group_vars/all.yml` | `training_note` と、AWS で使うリージョンなどの既定値 |
-| `write_note_linux.yml` | Linux の `/var/tmp/aap-training/note.txt` を書く |
-| `write_note_windows.yml` | Windows の `C:\Users\Public\aap-training\note.txt` を書く |
+| `write_note_linux.yml` | Linux の `/tmp/aap-training/note.txt` を書く |
+| `write_note_windows.yml` | Windows の `C:\temp\aap-training\note.txt` を書く |
 | `verify_note_linux.yml` | Linux の note.txt を読む |
 | `verify_note_windows.yml` | Windows の note.txt を読む |
 | `create_aws_servers.yml` | サーバが無いときだけ実行する。VPC、サブネット、Linux、Windows を作る |

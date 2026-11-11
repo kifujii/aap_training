@@ -44,14 +44,14 @@
 | [応用8 EDAからJob起動](./advanced/ex8.md) | 実施 | 実施 |
 | [応用9 GitLab応用](./advanced/ex9.md) | ランナーがイメージを取得できるとき、CIの節を実施 | 実施 |
 
-サーバがすでにある環境では、演習中にインターネットへ出ない前提で進めます。コレクションの追加取得や、外のコンテナイメージの取得はしません。AWS でサーバを作る場合は、インターネットへ出られる前提です。
+サーバがすでにある環境では、演習中にインターネットへ出ません。コレクションとコンテナイメージは、AAP に入っているものを使います。AWS でサーバを作る場合は、インターネットへ出られます。
 
-作るファイルは次の2か所です。OSの時刻、パッケージ、SSHの設定は変えません。
+作るファイルは次の2か所です。ディレクトリは Playbook が作ります。
 
 | OS | ファイル |
 |---|---|
-| Linux | `/var/tmp/aap-training/note.txt` |
-| Windows | `C:\Users\Public\aap-training\note.txt` |
+| Linux | `/tmp/aap-training/note.txt` |
+| Windows | `C:\temp\aap-training\note.txt` |
 
 Windows への接続方式は PSRP です。ドメインに参加していない Windows（AWS で作るサーバを含む）は NTLM、ドメインに参加している Windows は Kerberos を使います。
 
@@ -59,8 +59,7 @@ Windows への接続方式は PSRP です。ドメインに参加していない
 
 * AAP 2.5 以降（統合UI: **Automation Execution** / **Automation Decisions** / **Access Management**）
 * SCM: GitLab。ファイルの編集は Web IDE を使います
-* カスタム Execution Environment を作る場合は AAP サーバ上で行います。そのための別サーバは作りません
-* Private Automation Hub は対象外です
+* カスタム Execution Environment を作る場合は、AAP サーバ上で行います
 
 ## 画面の見方
 

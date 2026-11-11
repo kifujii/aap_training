@@ -8,8 +8,8 @@
 
 | OS | パス | 権限 |
 |---|---|---|
-| Linux | `/var/tmp/aap-training/secret.txt` | `0600` |
-| Windows | `C:\Users\Public\aap-training\secret.txt` | 接続ユーザーが書き込める場所 |
+| Linux | `/tmp/aap-training/secret.txt` | `0600` |
+| Windows | `C:\temp\aap-training\secret.txt` | 接続ユーザーが書き込める場所 |
 
 ## Section 1: AAPサーバで暗号化する
 
@@ -98,9 +98,9 @@ training_use_vault: true
 
 ![編集画面の Extra variables](../images/aap/extra-variables.png)
 
-起動します。成功すると `/var/tmp/aap-training/secret.txt` の内容は `TrainingSecret1` です。ログには値を出さないようにしてあります。
+起動します。成功すると `/tmp/aap-training/secret.txt` の内容は `TrainingSecret1` です。ログには値を出さないようにしてあります。
 
-`write-note-windows` にも `vault-training` と `windows-psrp` を付け、同じ Extra variables で起動します。ファイルは `C:\Users\Public\aap-training\secret.txt` です。
+`write-note-windows` にも `vault-training` と `windows-psrp` を付け、同じ Extra variables で起動します。ファイルは `C:\temp\aap-training\secret.txt` です。
 
 Extra variables を付け忘れると `secrets.yml` は読まれず、`secret.txt` は作られません。暗号化パスワードが違うと、ジョブは `secrets.yml` の読み込みで失敗します。
 
