@@ -6,13 +6,13 @@
 
 ## Section 1: ソースを作る
 
-`training-inventory` を開き、**ソース** タブでソースを追加します。
+`<name_prefix>-training-inventory` を開き、**ソース** タブでソースを追加します。
 
 | 項目 | 入力値 |
 |---|---|
-| 名前 | `gitlab-inventory` |
+| 名前 | `<name_prefix>-gitlab-inventory` |
 | ソース | `Sourced from a Project` |
-| プロジェクト | `aap-training-content` |
+| プロジェクト | `<name_prefix>-aap-training-content` |
 | Inventory path | `inventory.yml` |
 | Overwrite | 有効 |
 | Overwrite variables | 有効 |
@@ -30,7 +30,7 @@ Overwrite を有効にすると、このソースが前回の同期で取り込�
 
 まだ `203.0.113.10` のままなら、Web IDE で `inventory.yml` を直し、コミットしてから、もう一度同期します。
 
-演習3の `aws-runner` には、このソースを付けません。`localhost` が消えるためです。サーバがすでにある場合、`aws-runner` は作っていないので、この注意は読み飛ばしてください。
+演習3の `<name_prefix>-aws-runner` には、このソースを付けません。`localhost` が消えるためです。サーバがすでにある場合、`<name_prefix>-aws-runner` は作っていないので、この注意は読み飛ばしてください。
 
 ## 次
 

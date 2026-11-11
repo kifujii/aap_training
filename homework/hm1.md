@@ -14,8 +14,8 @@
 2. Windows の接続変数を、自分の環境に合わせる
    * ドメインに参加していない、または AWS で作った: `ansible_psrp_auth: ntlm`、ポート `5985`、プロトコル `http`
    * ドメインに参加している: `ansible_psrp_auth: kerberos`、ポート `5986`、プロトコル `https`。`krb5.conf` のレルムと KDC を自分の値にする
-3. 認証情報 `linux-ssh` と `windows-psrp`、プロジェクト `aap-training-content`、インベントリー `training-inventory`、ソース `gitlab-inventory` を作る
-4. ジョブテンプレート `write-note-linux` と `write-note-windows` を作り、それぞれ1回起動する
+3. 認証情報 `<name_prefix>-linux-ssh` と `<name_prefix>-windows-psrp`、プロジェクト `<name_prefix>-aap-training-content`、インベントリー `<name_prefix>-training-inventory`、ソース `<name_prefix>-gitlab-inventory` を作る
+4. ジョブテンプレート `<name_prefix>-write-note-linux` と `<name_prefix>-write-note-windows` を作り、それぞれ1回起動する
 5. もう一度ずつ起動する
 
 ### 完了
@@ -30,7 +30,7 @@ note: managed by AAP
 
 * `win1` の `C:\temp\aap-training\note.txt` が、同じ形で1行目だけ `hostname: win1` である
 * 2回目のジョブで、note.txt を書くタスクの `changed` が `0` である
-* `verify-note-linux` と `verify-note-windows` が成功する
+* `<name_prefix>-verify-note-linux` と `<name_prefix>-verify-note-windows` が成功する
 
 ## 課題2 - ホストを1台増やす
 
@@ -61,27 +61,27 @@ Web IDE で `create_aws_servers.yml` の Linux を作るタスクをコピーし
 * `name`: `"{{ resource_prefix }}-linux-2"`
 * ユーザーデータはそのまま（ログインユーザーは同じ `ansible`）
 
-`create-aws-servers` を、演習4と同じ `resource_prefix` とパスワードで再実行します。ジョブ末尾のまとめに出るアドレスは、1台目の Linux です。2台目のアドレスは、タスク `Create the second Linux server` の結果にある `public_ip_address` です。`inventory.yml` に `lin2` を足し、そのアドレスを `ansible_host` にします。
+`<name_prefix>-create-aws-servers` を、演習4と同じ `resource_prefix` とパスワードで再実行します。ジョブ末尾のまとめに出るアドレスは、1台目の Linux です。2台目のアドレスは、タスク `Create the second Linux server` の結果にある `public_ip_address` です。`inventory.yml` に `lin2` を足し、そのアドレスを `ansible_host` にします。
 
 ### 完了
 
-* ソース `gitlab-inventory` を同期し、ホスト一覧に `lin2` がある
-* `write-note-linux` を起動し、`lin1` と `lin2` の両方に `/tmp/aap-training/note.txt` がある
+* ソース `<name_prefix>-gitlab-inventory` を同期し、ホスト一覧に `lin2` がある
+* `<name_prefix>-write-note-linux` を起動し、`lin1` と `lin2` の両方に `/tmp/aap-training/note.txt` がある
 * `lin2` の1行目は `hostname: lin2` である
-* `verify-note-linux` が `lin1` と `lin2` の両方で成功する
+* `<name_prefix>-verify-note-linux` が `lin1` と `lin2` の両方で成功する
 
 ## 課題3 - WorkflowとSurvey
 
 ### やること
 
-1. `write-note-linux` と `write-note-windows` の Survey に、質問 `ファイルに書くメモを入力してください`、変数 `training_note`、既定値 `managed by AAP` を作る
-2. ワークフロー `note-workflow` を、次の順で作る
-   * 開始から `write-note-linux` と `write-note-windows`
-   * 両方の成功の先に承認ノード。名前 `note-review`。説明 `note.txt を確認したら承認してください`
-   * 承認の成功から `verify-note-linux` と `verify-note-windows`
-3. ビジュアライザーで `write-note-linux` のノードを開き、**Edit step** から **Survey** まで進む。`ファイルに書くメモを入力してください` に `homework note` と入れ、最後まで進めて保存する。`write-note-windows` のノードも同じ値にする。左上の **Save** を押す。ワークフローの起動画面には、この Survey は出ない
-4. `note-workflow` を起動する
-5. **Workflow Approvals** で `note-review` を承認する
+1. `<name_prefix>-write-note-linux` と `<name_prefix>-write-note-windows` の Survey に、質問 `ファイルに書くメモを入力してください`、変数 `training_note`、既定値 `managed by AAP` を作る
+2. ワークフロー `<name_prefix>-note-workflow` を、次の順で作る
+   * 開始から `<name_prefix>-write-note-linux` と `<name_prefix>-write-note-windows`
+   * 両方の成功の先に承認ノード。名前 `<name_prefix>-note-review`。説明 `note.txt を確認したら承認してください`
+   * 承認の成功から `<name_prefix>-verify-note-linux` と `<name_prefix>-verify-note-windows`
+3. ビジュアライザーで `<name_prefix>-write-note-linux` のノードを開き、**Edit step** から **Survey** まで進む。`ファイルに書くメモを入力してください` に `homework note` と入れ、最後まで進めて保存する。`<name_prefix>-write-note-windows` のノードも同じ値にする。左上の **Save** を押す。ワークフローの起動画面には、この Survey は出ない
+4. `<name_prefix>-note-workflow` を起動する
+5. **Workflow Approvals** で `<name_prefix>-note-review` を承認する
 
 ### 完了
 
@@ -95,14 +95,14 @@ Web IDE で `create_aws_servers.yml` の Linux を作るタスクをコピーし
 
 ### RBAC
 
-1. チーム `ops-team` を作る
-2. `write-note-linux` と `write-note-windows` に、`ops-team` の **JobTemplate Execute** を付ける。`note-workflow` には **WorkflowJobTemplate Execute** を付ける
-3. プロジェクト `aap-training-content` には **Project Read Compat**、インベントリー `training-inventory` には **Inventory Read Compat** だけを付ける
-4. `ops-team` のユーザーでログインする
+1. チーム `<name_prefix>-ops-team` を作る
+2. `<name_prefix>-write-note-linux` と `<name_prefix>-write-note-windows` に、`<name_prefix>-ops-team` の **JobTemplate Execute** を付ける。`<name_prefix>-note-workflow` には **WorkflowJobTemplate Execute** を付ける
+3. プロジェクト `<name_prefix>-aap-training-content` には **Project Read Compat**、インベントリー `<name_prefix>-training-inventory` には **Inventory Read Compat** だけを付ける
+4. `<name_prefix>-ops-team` のユーザーでログインする
 
 完了:
 
-* そのユーザーは `write-note-linux` を起動できる
+* そのユーザーは `<name_prefix>-write-note-linux` を起動できる
 * そのユーザーはテンプレートの Playbook 名を変更できない
 
 ### Vault
@@ -111,12 +111,12 @@ Web IDE で `create_aws_servers.yml` の Linux を作るタスクをコピーし
 
 ```bash
 cd /tmp
-ansible-vault encrypt_string 'TrainingSecret1' --name training_secret | tee /tmp/secrets.yml
+ansible-vault encrypt_string 'TrainingSecret1' --name training_secret | tee '/tmp/<name_prefix>-secrets.yml'
 ```
 
-2. `/tmp/secrets.yml` の先頭が `training_secret: !vault |` になっていることを確認し、その全文を Web IDE で `secrets.yml` としてコミットする。平文の `TrainingSecret1` はコミットしない。ホストに `ansible-vault` が無い場合は、演習9と同じく、名前に `controller` を含むコンテナで `encrypt_string` を実行し、画面に出た全文をコピーする
-3. 認証情報 `vault-training` に、`encrypt_string` のときに入力したパスワードを入れる
-4. `write-note-linux` と `write-note-windows` に `vault-training` を追加し、編集画面の **Extra variables** に `training_use_vault: true` を入れて保存してから起動する
+2. `/tmp/<name_prefix>-secrets.yml` の先頭が `training_secret: !vault |` になっていることを確認し、その全文を Web IDE で `secrets.yml` としてコミットする。平文の `TrainingSecret1` はコミットしない。ホストに `ansible-vault` が無い場合は、演習9と同じく、名前に `controller` を含むコンテナで `encrypt_string` を実行し、画面に出た全文をコピーする
+3. 認証情報 `<name_prefix>-vault-training` に、`encrypt_string` のときに入力したパスワードを入れる
+4. `<name_prefix>-write-note-linux` と `<name_prefix>-write-note-windows` に `<name_prefix>-vault-training` を追加し、編集画面の **Extra variables** に `training_use_vault: true` を入れて保存してから起動する
 
 完了:
 
@@ -130,8 +130,8 @@ ansible-vault encrypt_string 'TrainingSecret1' --name training_secret | tee /tmp
 
 サーバがすでにある場合:
 
-1. Notifier `note-mail` を作り、Notification type は `メール`、ホストは環境内のメールサーバ、Recipient list は自分が見られるアドレス、Sender email は差出人、Port は配布されたポート（無指定なら `25`）にする
-2. `write-note-linux` の失敗時の通知に `note-mail` を付ける
+1. Notifier `<name_prefix>-note-mail` を作り、Notification type は `メール`、ホストは環境内のメールサーバ、Recipient list は自分が見られるアドレス、Sender email は差出人、Port は配布されたポート（無指定なら `25`）にする
+2. `<name_prefix>-write-note-linux` の失敗時の通知に `<name_prefix>-note-mail` を付ける
 3. 制限に `lin-missing` と入れて起動し、失敗させる
 4. メールが届いたら、制限を空に戻して成功させる
 
@@ -139,7 +139,7 @@ ansible-vault encrypt_string 'TrainingSecret1' --name training_secret | tee /tmp
 
 AWS で作った場合:
 
-1. ジョブテンプレート `notify-aws` を作る。インベントリーは `aws-runner`、Playbook は `notify_aws.yml`、認証情報は `aws-training`、**Extra variables** の `resource_prefix` は演習4と同じ値
+1. ジョブテンプレート `<name_prefix>-notify-aws` を作る。インベントリーは `<name_prefix>-aws-runner`、Playbook は `notify_aws.yml`、認証情報は `<name_prefix>-aws-training`、**Extra variables** の `resource_prefix` は演習4と同じ値
 2. **Extra variables** に、`resource_prefix` の行を残したまま次の行を足して保存する。起動画面にはこの欄は出ない
 
 ```yaml
@@ -154,28 +154,30 @@ notify_message: homework notification
 
 ### やること
 
-1. `verify-note-linux` に、名前 `daily-verify-linux`、毎日 `07:00` のスケジュールを作る
-2. `verify-note-windows` に、名前 `daily-verify-windows`、毎日 `07:00` のスケジュールを作る
+1. `<name_prefix>-verify-note-linux` に、名前 `<name_prefix>-daily-verify-linux`、毎日 `07:00` のスケジュールを作る
+2. `<name_prefix>-verify-note-windows` に、名前 `<name_prefix>-daily-verify-windows`、毎日 `07:00` のスケジュールを作る
 3. 動作確認用に、開始時刻を数分後にした予定を1つ追加し、ジョブ一覧に verify が増えることを見る
 4. 動作確認用の予定は削除し、毎日 07:00 の2つだけを残す
 
 完了:
 
-* スケジュール一覧に `daily-verify-linux` と `daily-verify-windows` があり、両方とも有効である
-* 書く方の `write-note-linux` と `write-note-windows` にはスケジュールが無い
+* スケジュール一覧に `<name_prefix>-daily-verify-linux` と `<name_prefix>-daily-verify-windows` があり、両方とも有効である
+* 書く方の `<name_prefix>-write-note-linux` と `<name_prefix>-write-note-windows` にはスケジュールが無い
 
 ### 任意: EDA
 
-[応用演習9](../advanced/ex9.md) まで終わっている場合だけ実施します。
+[応用演習8](../advanced/ex8.md) まで終わっている場合だけ実施します。
 
-Event Stream `check-webhook-stream` へ、次の JSON を送ります。
+Event Stream `<name_prefix>-check-webhook-stream` へ、次の JSON を送ります。
 
 ```json
 {"status":"success","host":"lin1"}
 ```
 
-完了: `verify-note-linux` が自動で始まり、制限が `lin1` である。確認後、Activation `note-webhook-activation` を無効にしてある。
+完了: `<name_prefix>-verify-note-linux` が自動で始まり、制限が `lin1` である。確認後、Activation `<name_prefix>-note-webhook-activation` を無効にしてある。
 
 ## 暗号化前の見本
 
 [example_config/secrets.yml.example](./example_config/secrets.yml.example) は、暗号化する前の形の見本です。課題4で GitLab に置く `secrets.yml` は、`encrypt_string` の出力だけにします。
+
+学習が終わったら、[削除手順](../cleanup.md) で自分の接頭辞のリソースを消します。

@@ -17,14 +17,14 @@ AAP から Linux と Windows へ接続するための一覧を作ります。
 
 | 項目 | 入力値 |
 |---|---|
-| 名前 | `training-inventory` |
+| 名前 | `<name_prefix>-training-inventory` |
 | 組織 | 演習1で確認した組織 |
 
 保存します。
 
 ## Section 2: グループを作る
 
-`training-inventory` を開き、**グループ** タブの **グループの作成** をクリックします。
+`<name_prefix>-training-inventory` を開き、**グループ** タブの **グループの作成** をクリックします。
 
 ![グループの作成。名前だけ入れて、下の変数は空のまま保存する](../images/aap/group-create.png)
 
@@ -36,7 +36,7 @@ AAP から Linux と Windows へ接続するための一覧を作ります。
 
 [演習4](./ex4.md) の作成ジョブは、これから作るサーバの中ではなく、AAP の実行環境の中で動きます。そのための一覧を、ここで先に作ります。Linux と Windows は入れません。ソースも追加しません。
 
-1. **インベントリーの作成** で、名前 `aws-runner`、組織は演習1と同じ、で保存する
+1. **インベントリーの作成** で、名前 `<name_prefix>-aws-runner`、組織は演習1と同じ、で保存する
 2. **ホスト** タブでホストを追加する。名前は `localhost`
 3. ホストの変数に次を入れる
 
@@ -44,7 +44,7 @@ AAP から Linux と Windows へ接続するための一覧を作ります。
 ansible_connection: local
 ```
 
-`aws-runner` は演習4のジョブテンプレートで選びます。`training-inventory` には足しません。
+`<name_prefix>-aws-runner` は演習4のジョブテンプレートで選びます。`<name_prefix>-training-inventory` には足しません。
 
 ここまで終わったら、Section 4 には進まず [演習4](./ex4.md) を実施してください。演習4が終わったあと、下の Section 4 に戻ります。
 
@@ -104,7 +104,7 @@ ansible_psrp_cert_validation: ignore
 
 ### ドメインに参加している Windows の場合
 
-上の変数の代わりに、次を使います。認証は Kerberos です。ユーザー名は演習2の `windows-psrp` に入れた `ユーザー@レルム` です。AWS で作った Windows は、この節ではなく NTLM の変数を使います。
+上の変数の代わりに、次を使います。認証は Kerberos です。ユーザー名は演習2の `<name_prefix>-windows-psrp` に入れた `ユーザー@レルム` です。AWS で作った Windows は、この節ではなく NTLM の変数を使います。
 
 ```yaml
 ansible_host: 203.0.113.11
@@ -119,20 +119,20 @@ ansible_psrp_cert_validation: ignore
 
 レルムと KDC は、[sample-content/krb5.conf.example](../sample-content/krb5.conf.example) を `krb5.conf` という名前で後の演習のプロジェクトに置きます。置き方は [演習5](../basic-controller/ex5.md) でファイルを追加するときで構いません。中の `EXAMPLE.COM` と `dc.example.com` は、自分の環境の値に書き換えます。
 
-Kerberos の場合、アドホック実行では `krb5.conf` を渡せません。`win_ping` は飛ばし、[演習5](../basic-controller/ex5.md) で `krb5.conf` を置いたあと、[演習7](../basic-controller/ex7.md) の `write-note-windows` が成功すれば接続できています。NTLM の場合は、このまま Section 5 で `win_ping` を実行します。
+Kerberos の場合、アドホック実行では `krb5.conf` を渡せません。`win_ping` は飛ばし、[演習5](../basic-controller/ex5.md) で `krb5.conf` を置いたあと、[演習7](../basic-controller/ex7.md) の `<name_prefix>-write-note-windows` が成功すれば接続できています。NTLM の場合は、このまま Section 5 で `win_ping` を実行します。
 
 ## Section 5: 疎通確認
 
 ジョブテンプレートに認証情報を付けるのは [演習7](../basic-controller/ex7.md) です。この演習の疎通確認では、実行時に認証情報を選びます。
 
-`training-inventory` の **ホスト** タブを開き、`lin1` にチェックを入れます。**Run command** をクリックします。
+`<name_prefix>-training-inventory` の **ホスト** タブを開き、`lin1` にチェックを入れます。**Run command** をクリックします。
 
 ![Run command。モジュール名、認証情報、起動ボタンの位置。制限の欄は、選んだホスト名になる](../images/aap/run-command.png)
 
 | 項目 | Linux | Windows |
 |---|---|---|
 | モジュール | `ping` | `win_ping` |
-| 認証情報 | `linux-ssh` | `windows-psrp` |
+| 認証情報 | `<name_prefix>-linux-ssh` | `<name_prefix>-windows-psrp` |
 
 起動し、`SUCCESS` と表示されることを確認します。Windows を NTLM で接続する場合は、`lin1` のチェックを外し、`win1` だけを選んでから実行します。1つの実行に付けられる Machine 認証情報は1つなので、Linux と Windows は別々に確認します。Kerberos の場合は、ここでの `win_ping` は飛ばします。
 

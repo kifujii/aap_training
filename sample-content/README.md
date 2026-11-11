@@ -15,8 +15,9 @@
 | `create_aws_servers.yml` | サーバが無いときだけ実行する。VPC、サブネット、Linux、Windows を作る |
 | `remove_aws_servers.yml` | 上記のリソースを削除する |
 | `notify_aws.yml` | AWS で作った場合の通知確認。S3 に書いて読み戻す |
-| `launch_note.yml` | 応用演習6。既定の実行環境から `write-note-linux` を起動する |
+| `launch_note.yml` | 応用演習5。既定の実行環境から、Extra variables の `name_prefix` を付けた `write-note-linux` を起動する |
 | `show_handed_note.yml` | 演習11。前のジョブが `set_stats` で渡したメモを表示する |
+| `remove_my_lab.yml` | 学習後に、自分の接頭辞の AAP オブジェクトを削除する |
 | `requirements.yml` | **AWS で作る場合だけ** GitLab に置く。`amazon.aws` 10.3.0 |
 | `krb5.conf.example` | ドメイン参加済み Windows を Kerberos で接続するときの見本 |
 
@@ -37,8 +38,8 @@
 <summary>git CLIで行う場合</summary>
 
 ```bash
-git clone https://gitlab.example.local/<namespace>/aap-training-content.git
-cd aap-training-content
+git clone 'https://gitlab.example.local/<namespace>/<name_prefix>-aap-training-content.git'
+cd '<name_prefix>-aap-training-content'
 # このディレクトリのファイルをコピーする。サーバがある環境では requirements.yml をコピーしない
 git add .
 git commit -m "Add training playbooks"

@@ -1,21 +1,87 @@
-# 応用演習 3 - Execution Environment
+# 応用演習 3 - カスタム実行環境
 
 [応用演習2](./ex2.md) | [応用演習4へ](./ex4.md)
 
-この演習が終わると、自分のジョブが使う既定の実行環境の Image 名を言えます。ジョブは、AAP サーバに直接入れた Ansible ではなく、Execution Environment というコンテナイメージの中で動きます。基礎演習のテンプレートは実行環境を空欄にしてあり、空欄のときはこの既定のイメージが使われます。この演習ではイメージは作りません。新しいイメージを足すのは [応用演習4](./ex4.md) です。
+実行環境の欄が空欄のジョブは、システムの既定の実行環境で動きます。使った名前は、ジョブ詳細に出ます。ここでは、その既定にコレクションを足したイメージを1つ作り、テンプレートに付けて、ジョブ詳細の名前が変わることを確認します。定義ファイルは AAP サーバの `/tmp/<name_prefix>-custom-ee` に置きます。確認が終わったら、実行環境は空欄に戻します。
 
-## Section 1: 既定の実行環境を見る
+次のどちらかなら、この演習は飛ばして既定の実行環境のまま [応用演習4](./ex4.md) へ進みます。
 
-**Automation Execution > Infrastructure > 実行環境** を開きます。`Default execution environment` を開き、Image と Pull を見ます。AAP 2.7 の例は `registry.redhat.io/ansible-automation-platform-27/ee-supported-rhel9:latest` です。
+* AAP サーバからコンテナイメージを取得できない
+* `ansible-builder` も `podman` も無い
 
-このイメージには、この資料の Linux / Windows のファイル配置と、`amazon.aws` 10.3.0 が入っています。基礎演習のテンプレートは、実行環境を空欄にしてこの既定を使います。
+## Section 1: AAPサーバでツールを確認する
 
-## Section 2: テンプレートでの指定
+```bash
+ssh <ユーザー>@<AAPサーバ>
+cd /tmp
+ansible-builder --version
+podman --version
+```
 
-`write-note-linux` の編集画面で、実行環境の欄が空欄であることを確認します。空欄のときは、プロジェクトの指定、それも空ならシステムの既定、の順で選ばれます。
+ホストに無い場合は、`podman ps` で controller を含むコンテナを探し、その中に `ansible-builder` があるかを見ます。どちらにも無ければ、この演習はここで終わります。
 
-ジョブの詳細にも、使った実行環境の名前が出ます。
+## Section 2: 定義ファイル
+
+`/tmp/<name_prefix>-custom-ee` を作り、その中に定義ファイルを置きます。
+
+```bash
+mkdir -p '/tmp/<name_prefix>-custom-ee' && cd '/tmp/<name_prefix>-custom-ee'
+```
+
+`requirements.yml`:
+
+```yaml
+---
+collections:
+  - name: community.general
+    version: "8.6.1"
+```
+
+`execution-environment.yml`:
+
+```yaml
+---
+version: 3
+
+images:
+  base_image:
+    name: registry.redhat.io/ansible-automation-platform-27/ee-supported-rhel9:latest
+
+dependencies:
+  galaxy: requirements.yml
+```
+
+ベースは `ee-supported` にします。`ee-minimal` から作ると、既定のイメージに入っている `ansible.windows` や `amazon.aws` が欠けることがあります。`amazon.aws` をこのファイルへ足す場合も、版は `10.3.0` です。
+
+## Section 3: ビルドする
+
+```bash
+cd '/tmp/<name_prefix>-custom-ee'
+ansible-builder build \
+    -f execution-environment.yml \
+    -t '<name_prefix>-custom-ee:1.0' \
+    --container-runtime podman
+podman images | grep '<name_prefix>-custom-ee'
+```
+
+## Section 4: AAPへ登録する
+
+レジストリへ push できる場合は、push したイメージ名を登録します。AAP の実行ノードがこの AAP サーバ自身である場合は、push せずに次の値でも登録できます。
+
+| 項目 | 入力値 |
+|---|---|
+| 名前 | `<name_prefix>-custom-ee` |
+| Image | `localhost/<name_prefix>-custom-ee:1.0` |
+| Pull | `Never` |
+
+**実行環境** の作成画面で保存します。レジストリを使う場合は、認証情報タイプ `Container Registry`、名前 `<name_prefix>-registry` を作り、Pull は `Always`、Image は push した名前にします。
+
+## Section 5: テンプレートへ付ける
+
+`<name_prefix>-write-note-linux` の実行環境に `<name_prefix>-custom-ee` を選び、起動して成功することを確認します。ジョブ詳細の実行環境が `<name_prefix>-custom-ee` になっていれば、指定は効いています。
+
+確認が終わったら、実行環境を空欄に戻します。以降の演習は既定の実行環境で進めます。
 
 ## 次
 
-イメージを追加したい場合だけ [応用演習4](./ex4.md) へ進みます。既定のままで足りる場合は、[応用演習5](./ex5.md) へ進んで構いません。
+[応用演習4](./ex4.md)

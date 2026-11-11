@@ -1,86 +1,65 @@
-# 応用演習 4 - カスタム実行環境
+# 応用演習 4 - REST API
 
 [応用演習3](./ex3.md) | [応用演習5へ](./ex5.md)
 
-実行環境を1つ作り、AAP に登録します。定義ファイルは AAP サーバの `/tmp/custom-ee` に置きます。
+画面の起動を、API からも行います。ここで発行するのは AAP の API トークンです。GitLab のパスワードとは別です。
 
-次のどちらかなら、この演習は飛ばして既定の実行環境のまま [応用演習5](./ex5.md) へ進みます。
-
-* AAP サーバからコンテナイメージを取得できない
-* `ansible-builder` も `podman` も無い
-
-## Section 1: AAPサーバでツールを確認する
+## Section 1: APIの場所
 
 ```bash
-ssh <ユーザー>@<AAPサーバ>
-cd /tmp
-ansible-builder --version
-podman --version
+curl -sk https://<AAPのURL>/api/ | python3 -m json.tool
 ```
 
-ホストに無い場合は、`podman ps` で controller を含むコンテナを探し、その中に `ansible-builder` があるかを見ます。どちらにも無ければ、この演習はここで終わります。
+この資料の例は `https://<AAPのURL>/api/controller/v2` です。`/api/v2/` は、ゲートウェイ構成では 404 になります。以降、このベースを `AAP_API_ROOT` と書きます。
 
-## Section 2: 定義ファイル
+## Section 2: トークン
 
-`/tmp/custom-ee` を作り、その中に定義ファイルを置きます。
+**Access Management > API Tokens** を開き、**Create API token** をクリックします。
 
-```bash
-mkdir -p /tmp/custom-ee && cd /tmp/custom-ee
-```
-
-`requirements.yml`:
-
-```yaml
----
-collections:
-  - name: community.general
-    version: "8.6.1"
-```
-
-`execution-environment.yml`:
-
-```yaml
----
-version: 3
-
-images:
-  base_image:
-    name: registry.redhat.io/ansible-automation-platform-27/ee-supported-rhel9:latest
-
-dependencies:
-  galaxy: requirements.yml
-```
-
-ベースは `ee-supported` にします。`ee-minimal` から作ると、既定のイメージに入っている `ansible.windows` や `amazon.aws` が欠けることがあります。`amazon.aws` をこのファイルへ足す場合も、版は `10.3.0` です。
-
-## Section 3: ビルドする
-
-```bash
-cd /tmp/custom-ee
-ansible-builder build \
-    -f execution-environment.yml \
-    -t custom-ee:1.0 \
-    --container-runtime podman
-podman images | grep custom-ee
-```
-
-## Section 4: AAPへ登録する
-
-レジストリへ push できる場合は、push したイメージ名を登録します。AAP の実行ノードがこの AAP サーバ自身である場合は、push せずに次の値でも登録できます。
+![トークン作成。説明は任意、OAuth application は空欄、Scope は Write。Create token を押す前の画面](../images/aap/api-token-create.png)
 
 | 項目 | 入力値 |
 |---|---|
-| 名前 | `custom-ee` |
-| Image | `localhost/custom-ee:1.0` |
-| Pull | `Never` |
+| 説明 | 空欄で構いません |
+| OAuth application | 空欄 |
+| Scope | `Write` |
 
-**実行環境** の作成画面で保存します。レジストリを使う場合は、認証情報タイプ `Container Registry` を作り、Pull は `Always`、Image は push した名前にします。
+**Create token** を押すと、文字列が1度だけ表示されます。再表示できないので、その場で控えます。この資料の写真には、その文字列は写していません。控えたあと、画面を閉じます。
 
-## Section 5: テンプレートへ付ける
+```bash
+export AAP_TOKEN="<控えたトークン>"
+export AAP_API_ROOT="https://<AAPのURL>/api/controller/v2"
+```
 
-`write-note-linux` の実行環境に `custom-ee` を選び、起動して成功することを確認します。ジョブ詳細の実行環境が `custom-ee` になっていれば、指定は効いています。
+## Section 3: テンプレートのIDを見る
 
-確認が終わったら、実行環境を空欄に戻します。以降の演習は既定の実行環境で進めます。
+```bash
+curl -sk -H "Authorization: Bearer ${AAP_TOKEN}" \
+    "${AAP_API_ROOT}/job_templates/?name=<name_prefix>-write-note-linux" | python3 -m json.tool
+```
+
+`results` の `id` を控えます。以降の `7` は、その数字に置き換えます。
+
+## Section 4: 起動する
+
+```bash
+curl -sk -X POST \
+    -H "Authorization: Bearer ${AAP_TOKEN}" \
+    -H "Content-Type: application/json" \
+    -d '{"extra_vars": {"training_note": "from api"}, "limit": "lin1"}' \
+    "${AAP_API_ROOT}/job_templates/7/launch/" | python3 -m json.tool
+```
+
+応答の `job` がジョブ ID です。
+
+```bash
+curl -sk -H "Authorization: Bearer ${AAP_TOKEN}" \
+    "${AAP_API_ROOT}/jobs/<ジョブID>/" | python3 -m json.tool
+```
+
+`status` が `successful` になるまで、同じコマンドを繰り返します。`lin1` の `note.txt` の `note:` が `from api` になっていれば、API からの Extra variables が届いています。
+
+確認後、Survey から `managed by AAP` を入れて `<name_prefix>-write-note-linux` を一度起動し、メモを戻します。
 
 ## 次
 

@@ -12,8 +12,8 @@
       ansible.builtin.assert:
         that:
           - resource_prefix is defined
-          - resource_prefix is match('^[a-z][a-z0-9-]{0,12}$')
-          - resource_prefix is not match('-$')
+          - resource_prefix is match('^[a-z][a-z0-9-]{1,12}$')
+          - resource_prefix is not match('.*-$')
           - linux_login_password is defined
           - linux_login_password is match('^[A-Za-z0-9]{8,32}$')
           - windows_login_password is defined
@@ -25,7 +25,7 @@
           Extra variables に resource_prefix、linux_login_password、
           windows_login_password を指定してください。
           resource_prefix は小文字で始め、英小文字・数字・ハイフンだけを使い、
-          末尾はハイフンにしないでください（全体で13文字以内）。
+          末尾はハイフンにしないでください（2文字以上、13文字以内）。
           パスワードは英数字の8文字以上32文字以内です。
 
     - name: List availability zones

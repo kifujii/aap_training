@@ -10,12 +10,13 @@
 | ログインユーザー名 / パスワード | 配布されたもの |
 | バージョン | 2.5 以降。画面手順は 2.7 の日本語UIで確認 |
 | 組織名 | 多くの環境では `Default` |
+| 名前の接頭辞 | ログイン名を小文字にし、英小文字・数字・ハイフンだけ、2文字以上13文字以内、末尾はハイフンにしない。例: `tanaka01`。演習1で決め、以降のオブジェクト名の先頭に付ける |
 
 ブラウザでログインし、左メニューに **Automation Execution**、**Automation Decisions**、**Access Management** があることを確認してください。Demo で始まるサンプルがあっても、演習では別名で新規作成します。
 
 AAP のインストールとユーザー作成は、この資料の範囲外です。
 
-Vault の暗号化（[演習9](./basic-controller/ex9.md)）と、カスタム実行環境を作る場合（[応用演習4](./advanced/ex4.md)）は、AAP サーバの `/tmp` で行います。SSH できるユーザーと、`ansible-vault` または `podman` の有無を確認してください。SSH できず、そのどちらも使えない場合は、演習9を飛ばして演習10へ進みます。
+Vault の暗号化（[演習9](./basic-controller/ex9.md)）は `/tmp/<name_prefix>-secrets.yml`、カスタム実行環境を作る場合（[応用演習3](./advanced/ex3.md)）は `/tmp/<name_prefix>-custom-ee` で行います。SSH できるユーザーと、`ansible-vault` または `podman` の有無を確認してください。SSH できず、そのどちらも使えない場合は、演習9を飛ばして演習10へ進みます。
 
 ## 2. 対象サーバ
 

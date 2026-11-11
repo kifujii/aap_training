@@ -25,7 +25,7 @@
 | **Credential** | 接続先ホストへのSSH認証情報や、SCM（GitLab等）、Vault、クラウドAPIキーなど、Job実行に必要な認証情報を保存・管理するオブジェクト。**Credential Type**ごとに入力項目が異なる。 |
 | **Credential Type** | Credentialの種類を定義するテンプレート（例: Machine、Source Control、Vault、Container Registry）。CredentialはいずれかのCredential Typeに基づいて作成される。 |
 | **Project** | 実行対象のPlaybook/Role一式を管理する単位。多くの場合GitLab等のSCMリポジトリと連携（**SCM Project**）し、Sync操作でリポジトリの最新内容を取得する。 |
-| **SCM Sync** | Projectに紐付いたSCMリポジトリの内容を、AAP側に取得・反映する操作。画面の同期で実行します。GitLab の Webhook では同期は始まりません（[応用演習7](./advanced/ex7.md)）。 |
+| **SCM Sync** | Projectに紐付いたSCMリポジトリの内容を、AAP側に取得・反映する操作。画面の同期で実行します。GitLab の Webhook では同期は始まりません（[応用演習6](./advanced/ex6.md)）。 |
 | **Revision** | SCM Sync時に取得したリポジトリのコミットハッシュ。Job実行時にどのリビジョンのPlaybookが使われたかを追跡できる。 |
 | **Inventory** | Job実行対象のホストとグループを定義する単位。手動でHost/Groupを登録する方法と、**Inventory Source**を使って外部（SCM上のYAMLファイル、クラウドAPI等）から取り込む方法がある。 |
 | **Inventory Source** | Inventoryにホスト情報を取り込む方法を定義する設定。本資料では GitLab 上の `inventory.yml` を読む「Sourced from a Project」を使います（[演習6](./basic-controller/ex6.md)）。 |
@@ -91,7 +91,7 @@
 |---|---|
 | **Controller REST API** | AAPのほぼ全機能をHTTP経由で操作できるAPI。UIで行える操作の大部分はAPI経由でも実行可能。 |
 | **APIトークン (OAuth2 Token)** | REST APIを呼び出す際の認証に使うトークン。UIまたはAPI経由で発行し、`Authorization: Bearer <token>` ヘッダーで利用する。 |
-| **ansible.controller collection** | Playbook から Controller API を操作するモジュール群（例: `ansible.controller.job_launch`）。既定の実行環境に入っています。応用演習6では、このコレクションを使う Playbook をジョブとして実行します。 |
+| **ansible.controller collection** | Playbook から Controller API を操作するモジュール群（例: `ansible.controller.job_launch`）。既定の実行環境に入っています。応用演習5では、このコレクションを使う Playbook をジョブとして実行します。 |
 | **CI/CDパイプライン連携** | GitLab CI等から、Controller REST APIやansible.controller collectionを介してJob Templateを起動するなど、外部の自動化パイプラインとAAPを連携させる構成。 |
 
 ---
@@ -117,5 +117,5 @@
 |---|---|
 | **SCM (Source Control Management)** | Gitなどのバージョン管理システムの総称。AAPのProjectはSCMリポジトリと連携して最新のPlaybook/Role/Inventoryファイルを取得する。 |
 | **Source Control認証** | AAPがGitLabを読むときに使う認証情報。GitLabのログインユーザー名とパスワードを登録する。 |
-| **Webhook** | 外部の出来事を HTTP で受けてジョブを起動する仕組み。応用演習7では、ジョブテンプレートの Webhook で GitLab のマージリクエストを受けます。この受信ではプロジェクトの同期は始まりません。EDA の受け口は Event Stream で、応用演習8以降です。 |
+| **Webhook** | 外部の出来事を HTTP で受けてジョブを起動する仕組み。応用演習6では、ジョブテンプレートの Webhook で GitLab のマージリクエストを受けます。この受信ではプロジェクトの同期は始まりません。EDA の受け口は Event Stream で、応用演習7以降です。 |
 | **.gitlab-ci.yml** | GitLab CI/CD パイプラインの定義ファイル。 |

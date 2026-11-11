@@ -10,20 +10,20 @@
 * Linux 1台（SSH、ユーザー `ansible`）
 * Windows 1台（PSRP、NTLM、ユーザー `Administrator`）
 
-名前には、自分専用の `resource_prefix` を付けます。同じアカウントを複数人で使うときに、リソースが混ざらないようにするためです。作ったサーバのアドレスはログに出るので控えます。
+名前には、演習1で決めた接頭辞を `resource_prefix` として付けます。同じアカウントを複数人で使うときに、リソースが混ざらないようにするためです。作ったサーバのアドレスはログに出るので控えます。
 
 ジョブは15分ほどかかることがあります。Windows の PSRP の待ち受けが開くまで待つためです。
 
 パスワードはジョブのログに出ます。研修用の英数字にして、本番で使っているパスワードは入れないでください。
 
-開始前に、[演習3](./ex3.md) の Section 3 まで終わっていることを確認します。ジョブテンプレートのインベントリー欄では、そこで作った `aws-runner` を選びます。この演習でインベントリーは作りません。
+開始前に、[演習3](./ex3.md) の Section 3 まで終わっていることを確認します。ジョブテンプレートのインベントリー欄では、そこで作った `<name_prefix>-aws-runner` を選びます。この演習でインベントリーは作りません。
 
 ## Section 1: PlaybookをGitLabに置く
 
 ここでは、サーバ作成に必要なファイルだけ先に置きます。残りのファイルは [演習5](../basic-controller/ex5.md) で同じ画面に足します。
 
 1. GitLab で **Create new…** > **New project/repository** > **Create blank project** を開く
-2. Project name は `aap-training-content`、Visibility は `Private`。README の初期化は付けたままにする
+2. Project name は `<name_prefix>-aap-training-content`、Visibility は `Private`。README の初期化は付けたままにする
 
 ![空のプロジェクトを作る画面](../images/gitlab/blank-project.png)
 
@@ -44,8 +44,8 @@
 <summary>git CLIで行う場合</summary>
 
 ```bash
-git clone https://gitlab.example.local/<namespace>/aap-training-content.git
-cd aap-training-content
+git clone https://gitlab.example.local/<namespace>/<name_prefix>-aap-training-content.git
+cd <name_prefix>-aap-training-content
 # 上の4ファイルだけをコピーする
 git add create_aws_servers.yml remove_aws_servers.yml requirements.yml group_vars/all.yml
 git commit -m "Add AWS server creation playbooks"
@@ -62,11 +62,11 @@ git push
 
 | 項目 | 入力値 |
 |---|---|
-| 名前 | `aap-training-content` |
+| 名前 | `<name_prefix>-aap-training-content` |
 | ソースコントロールタイプ | Git |
 | ソースコントロールURL | Section 1 の HTTPS の URL |
 | ソースコントロールブランチ | `main` |
-| ソースコントロール認証情報 | `gitlab-scm` |
+| ソースコントロール認証情報 | `<name_prefix>-gitlab-scm` |
 | 起動時のリビジョン更新 | 有効 |
 | クリーン | 有効 |
 
@@ -80,12 +80,12 @@ git push
 
 | 項目 | 入力値 |
 |---|---|
-| 名前 | `create-aws-servers` |
-| インベントリー | `aws-runner` |
-| プロジェクト | `aap-training-content` |
+| 名前 | `<name_prefix>-create-aws-servers` |
+| インベントリー | `<name_prefix>-aws-runner` |
+| プロジェクト | `<name_prefix>-aap-training-content` |
 | Playbook | `create_aws_servers.yml` |
 | 実行環境 | 空欄（既定のまま） |
-| 認証情報 | `aws-training` だけ。Machine は付けない |
+| 認証情報 | `<name_prefix>-aws-training` だけ。Machine は付けない |
 | Extra variables | 下の YAML |
 
 ```yaml
@@ -94,7 +94,7 @@ linux_login_password: TrainingLinux1
 windows_login_password: TrainingWindows1
 ```
 
-`tanaka01` は例です。小文字で始め、英小文字・数字・ハイフンだけにし、13文字以内、末尾はハイフンにしないでください。同じアカウントの他の人と重ならない値にします。パスワードは英数字の8文字以上32文字以内で、自分の値に変えます。
+`tanaka01` は例です。演習1で決めた接頭辞と同じ文字列にします。パスワードは英数字の8文字以上32文字以内で、自分の値に変えます。
 
 リージョンは `group_vars/all.yml` の `ap-northeast-1` のままにします。この演習では変えません。Extra variables に入れるのは、上の3行だけです。
 
@@ -117,14 +117,14 @@ Windowsのユーザー: Administrator
 
 | 名前 | ユーザー名 | パスワード |
 |---|---|---|
-| `linux-ssh` | `ansible` | `linux_login_password` に入れた値 |
-| `windows-psrp` | `Administrator` | `windows_login_password` に入れた値 |
+| `<name_prefix>-linux-ssh` | `ansible` | `linux_login_password` に入れた値 |
+| `<name_prefix>-windows-psrp` | `Administrator` | `windows_login_password` に入れた値 |
 
 権限昇格は空欄です。
 
 ## Section 5: 不要になったら削除する
 
-リソースを残すと課金が続きます。学習が終わったら、同じ要領でジョブテンプレート `remove-aws-servers` を作り、Playbook を `remove_aws_servers.yml` にして実行します。Extra variables の `resource_prefix` は作成時と同じ値にします。パスワードは不要です。認証情報は `aws-training`、インベントリー欄は `aws-runner` です。
+リソースを残すと課金が続きます。学習が終わったら、同じ要領でジョブテンプレート `<name_prefix>-remove-aws-servers` を作り、Playbook を `remove_aws_servers.yml` にして実行します。Extra variables の `resource_prefix` は作成時と同じ値にします。パスワードは不要です。認証情報は `<name_prefix>-aws-training`、インベントリー欄は `<name_prefix>-aws-runner` です。
 
 ## 次
 

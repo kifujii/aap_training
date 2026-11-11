@@ -10,10 +10,10 @@
 
 | 画面上の名前 | 付ける場所 | できること |
 |---|---|---|
-| JobTemplate Execute | `write-note-linux`、`write-note-windows` | 起動できる。編集はできない |
-| WorkflowJobTemplate Execute | `note-workflow` | ワークフローを起動できる |
-| Project Read Compat | `aap-training-content` | プロジェクトを見られる |
-| Inventory Read Compat | `training-inventory` | インベントリーを見られる |
+| JobTemplate Execute | `<name_prefix>-write-note-linux`、`<name_prefix>-write-note-windows` | 起動できる。編集はできない |
+| WorkflowJobTemplate Execute | `<name_prefix>-note-workflow` | ワークフローを起動できる |
+| Project Read Compat | `<name_prefix>-aap-training-content` | プロジェクトを見られる |
+| Inventory Read Compat | `<name_prefix>-training-inventory` | インベントリーを見られる |
 
 ## Section 2: チームを作る
 
@@ -21,18 +21,18 @@
 
 | 項目 | 入力値 |
 |---|---|
-| 名前 | `ops-team` |
+| 名前 | `<name_prefix>-ops-team` |
 | 組織 | 演習1の組織 |
 
 **ユーザー** タブで、実行確認に使うユーザーを追加します。別のユーザーが無い場合は、自分を追加して、あとで権限の差を画面で確認します。
 
 ## Section 3: 実行権限だけを付ける
 
-`write-note-linux` の **Team Access** を開きます。
+`<name_prefix>-write-note-linux` の **Team Access** を開きます。
 
 ![Team Access。Assign teams からチームとロールを選ぶ](../images/aap/team-access.png)
 
-**Assign teams** をクリックし、`ops-team` にチェックを入れて **Next** を押します。
+**Assign teams** をクリックし、`<name_prefix>-ops-team` にチェックを入れて **Next** を押します。
 
 ![チームを選ぶ。チェックを入れて Next](../images/aap/team-access-assign.png)
 
@@ -40,9 +40,9 @@
 
 ![ジョブテンプレートのロール。付けるのは JobTemplate Execute](../images/aap/team-access-roles.png)
 
-`write-note-windows` にも **JobTemplate Execute** を付けます。`note-workflow` の Team Access では、名前が **WorkflowJobTemplate Execute** です。
+`<name_prefix>-write-note-windows` にも **JobTemplate Execute** を付けます。`<name_prefix>-note-workflow` の Team Access では、名前が **WorkflowJobTemplate Execute** です。
 
-プロジェクト `aap-training-content` の Team Access では **Project Read Compat** を付けます。インベントリー `training-inventory` では **Inventory Read Compat** です。
+プロジェクト `<name_prefix>-aap-training-content` の Team Access では **Project Read Compat** を付けます。インベントリー `<name_prefix>-training-inventory` では **Inventory Read Compat** です。
 
 ![プロジェクトのロール。付けるのは Project Read Compat](../images/aap/team-access-project-roles.png)
 
@@ -50,9 +50,9 @@ JobTemplate Execute だけでは、Playbook や認証情報の変更はできま
 
 ## Section 4: 確認する
 
-`ops-team` のユーザーでログインし、次を確認します。
+`<name_prefix>-ops-team` のユーザーでログインし、次を確認します。
 
-* `write-note-linux` の **テンプレートの起動** はできる
+* `<name_prefix>-write-note-linux` の **テンプレートの起動** はできる
 * テンプレートの編集はできない
 * プロジェクトの同期ボタンは押せない
 
