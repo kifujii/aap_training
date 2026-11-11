@@ -25,12 +25,12 @@ command -v ansible-vault
 
 ```bash
 cd /tmp
-ansible-vault encrypt_string 'TrainingSecret1' --name training_secret | tee /tmp/secrets.yml
+ansible-vault encrypt_string 'TrainingSecret1' --name training_secret | tee '/tmp/<name_prefix>-secrets.yml'
 ```
 
 `ansible-vault` が聞くパスワードは、`TrainingSecret1` とは別です。復号用なので、自分だけが知る値を決め、控えます。
 
-`/tmp/secrets.yml` の先頭が `training_secret: !vault |` で、次の行に `$ANSIBLE_VAULT;1.1;AES256` があれば、値だけが暗号化されています。表示された全文をコピーします。
+`/tmp/<name_prefix>-secrets.yml` の先頭が `training_secret: !vault |` で、次の行に `$ANSIBLE_VAULT;1.1;AES256` があれば、値だけが暗号化されています。表示された全文をコピーします。
 
 `ansible-vault` がホストに無く、コンテナで動いている場合は、名前に `controller` を含むコンテナを選びます。`<コンテナ>` は `podman ps` に出た名前です。出力は画面に出るので、全文をコピーします。
 
@@ -51,7 +51,7 @@ GitLab の **Code** を開き、**Web IDE** で、プロジェクトの直下に
 <details>
 <summary>git CLIで行う場合</summary>
 
-`/tmp/secrets.yml` を、clone した作業ディレクトリへコピーしてから push します。
+`/tmp/<name_prefix>-secrets.yml` を、clone した作業ディレクトリへコピーしてから push します。
 
 ```bash
 git add secrets.yml
@@ -61,7 +61,7 @@ git push
 
 </details>
 
-コミットしたあと、AAP のプロジェクト `aap-training-content` を同期します。
+コミットしたあと、AAP のプロジェクト `<name_prefix>-aap-training-content` を同期します。
 
 ## Section 3: Vault認証情報
 
@@ -71,7 +71,7 @@ git push
 
 | 項目 | 入力値 |
 |---|---|
-| 名前 | `vault-training` |
+| 名前 | `<name_prefix>-vault-training` |
 | 認証情報タイプ | `Vault` |
 | Vault Password | Section 1 で `ansible-vault encrypt_string` に入力したパスワード |
 
@@ -79,7 +79,7 @@ git push
 
 ## Section 4: ジョブで復号する
 
-`write-note-linux` の編集で、認証情報に `vault-training` を追加します。`linux-ssh` も付けたままにします。**Extra variables** に次を入れます。起動画面にはこの欄は出ないので、編集画面で保存します。
+`<name_prefix>-write-note-linux` の編集で、認証情報に `<name_prefix>-vault-training` を追加します。`<name_prefix>-linux-ssh` も付けたままにします。**Extra variables** に次を入れます。起動画面にはこの欄は出ないので、編集画面で保存します。
 
 ```yaml
 training_use_vault: true
@@ -91,7 +91,7 @@ training_use_vault: true
 
 起動します。成功すると `/tmp/aap-training/secret.txt` の内容は `TrainingSecret1` です。ログには値を出さないようにしてあります。
 
-`write-note-windows` にも `vault-training` と `windows-psrp` を付け、同じ Extra variables で起動します。ファイルは `C:\temp\aap-training\secret.txt` です。
+`<name_prefix>-write-note-windows` にも `<name_prefix>-vault-training` と `<name_prefix>-windows-psrp` を付け、同じ Extra variables で起動します。ファイルは `C:\temp\aap-training\secret.txt` です。
 
 Extra variables を付け忘れると `secrets.yml` は読まれず、`secret.txt` は作られません。暗号化パスワードが違うと、ジョブは `secrets.yml` の読み込みで失敗します。
 

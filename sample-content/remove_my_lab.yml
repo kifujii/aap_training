@@ -1,0 +1,116 @@
+---
+- name: Remove this student's lab objects
+  hosts: localhost
+  gather_facts: false
+
+  vars:
+    api_host: "{{ lookup('env', 'CONTROLLER_HOST') | regex_replace('/+$', '') }}"
+    api_token: "{{ lookup('env', 'CONTROLLER_OAUTH_TOKEN') }}"
+    lab_objects:
+      - { base: "{{ api_host }}/api/eda/v1", path: activations, name: "{{ name_prefix }}-note-webhook-activation" }
+      - { base: "{{ api_host }}/api/eda/v1", path: event-streams, name: "{{ name_prefix }}-check-webhook-stream" }
+      - { base: "{{ api_host }}/api/controller/v2", path: workflow_job_templates, name: "{{ name_prefix }}-note-workflow" }
+      - { base: "{{ api_host }}/api/controller/v2", path: schedules, name: "{{ name_prefix }}-daily-verify-linux" }
+      - { base: "{{ api_host }}/api/controller/v2", path: schedules, name: "{{ name_prefix }}-daily-verify-windows" }
+      - { base: "{{ api_host }}/api/controller/v2", path: job_templates, name: "{{ name_prefix }}-write-note-linux" }
+      - { base: "{{ api_host }}/api/controller/v2", path: job_templates, name: "{{ name_prefix }}-write-note-windows" }
+      - { base: "{{ api_host }}/api/controller/v2", path: job_templates, name: "{{ name_prefix }}-verify-note-linux" }
+      - { base: "{{ api_host }}/api/controller/v2", path: job_templates, name: "{{ name_prefix }}-verify-note-windows" }
+      - { base: "{{ api_host }}/api/controller/v2", path: job_templates, name: "{{ name_prefix }}-create-aws-servers" }
+      - { base: "{{ api_host }}/api/controller/v2", path: job_templates, name: "{{ name_prefix }}-remove-aws-servers" }
+      - { base: "{{ api_host }}/api/controller/v2", path: job_templates, name: "{{ name_prefix }}-notify-aws" }
+      - { base: "{{ api_host }}/api/controller/v2", path: job_templates, name: "{{ name_prefix }}-launch-note" }
+      - { base: "{{ api_host }}/api/controller/v2", path: job_templates, name: "{{ name_prefix }}-show-handed-note" }
+      - { base: "{{ api_host }}/api/controller/v2", path: notification_templates, name: "{{ name_prefix }}-note-mail" }
+      - { base: "{{ api_host }}/api/controller/v2", path: projects, name: "{{ name_prefix }}-aap-training-content" }
+      - { base: "{{ api_host }}/api/eda/v1", path: projects, name: "{{ name_prefix }}-aap-training-content" }
+      - { base: "{{ api_host }}/api/controller/v2", path: inventories, name: "{{ name_prefix }}-training-inventory" }
+      - { base: "{{ api_host }}/api/controller/v2", path: inventories, name: "{{ name_prefix }}-aws-runner" }
+      - { base: "{{ api_host }}/api/controller/v2", path: credentials, name: "{{ name_prefix }}-linux-ssh" }
+      - { base: "{{ api_host }}/api/controller/v2", path: credentials, name: "{{ name_prefix }}-windows-psrp" }
+      - { base: "{{ api_host }}/api/controller/v2", path: credentials, name: "{{ name_prefix }}-gitlab-scm" }
+      - { base: "{{ api_host }}/api/controller/v2", path: credentials, name: "{{ name_prefix }}-aws-training" }
+      - { base: "{{ api_host }}/api/controller/v2", path: credentials, name: "{{ name_prefix }}-vault-training" }
+      - { base: "{{ api_host }}/api/controller/v2", path: credentials, name: "{{ name_prefix }}-eda-controller" }
+      - { base: "{{ api_host }}/api/eda/v1", path: credentials, name: "{{ name_prefix }}-check-webhook-token" }
+      - { base: "{{ api_host }}/api/eda/v1", path: credentials, name: "{{ name_prefix }}-eda-controller" }
+      - { base: "{{ api_host }}/api/eda/v1", path: credentials, name: "{{ name_prefix }}-gitlab-scm" }
+      - { base: "{{ api_host }}/api/controller/v2", path: teams, name: "{{ name_prefix }}-ops-team" }
+      - { base: "{{ api_host }}/api/controller/v2", path: execution_environments, name: "{{ name_prefix }}-custom-ee" }
+      - { base: "{{ api_host }}/api/controller/v2", path: credentials, name: "{{ name_prefix }}-registry" }
+      - { base: "{{ api_host }}/api/controller/v2", path: job_templates, name: "{{ name_prefix }}-remove-lab" }
+      - { base: "{{ api_host }}/api/controller/v2", path: inventories, name: "{{ name_prefix }}-aap-runner" }
+      - { base: "{{ api_host }}/api/controller/v2", path: credentials, name: "{{ name_prefix }}-aap-api" }
+
+  tasks:
+    - name: Require a prefix before deleting anything
+      ansible.builtin.assert:
+        that:
+          - name_prefix is match('^[a-z][a-z0-9-]{1,12}$')
+          - name_prefix is not match('.*-$')
+          - api_host | length > 0
+          - api_token | length > 0
+        fail_msg: >-
+          name_prefix は演習1の接頭辞にしてください。
+          英小文字で始め、英小文字・数字・ハイフンだけ、2文字以上13文字以内、末尾はハイフンにしないでください。
+          認証情報には Red Hat Ansible Automation Platform を付けます。
+
+    - name: Look up each lab object by its exact name
+      ansible.builtin.uri:
+        url: "{{ item.base }}/{{ item.path }}/?name={{ item.name | urlencode }}"
+        method: GET
+        headers:
+          Authorization: "Bearer {{ api_token }}"
+        validate_certs: false
+        status_code: [200, 401, 403, 404]
+      loop: "{{ lab_objects }}"
+      loop_control:
+        label: "{{ item.name }}"
+      no_log: true
+      register: lookup_results
+
+    - name: Stop when the token is rejected
+      ansible.builtin.assert:
+        that:
+          - lookup_results.results | selectattr('status', 'in', [401, 403]) | list | length == 0
+        fail_msg: >-
+          APIトークンが拒否されました。Scope が Write のトークンを作り直し、
+          認証情報を更新してから、もう一度起動してください。
+
+    - name: Keep only exact name matches
+      ansible.builtin.set_fact:
+        delete_targets: "{{ found_json | from_json }}"
+      vars:
+        found_json: |
+          {%- set ns = namespace(items=[]) -%}
+          {%- for result in lookup_results.results -%}
+          {%- if 'json' in result and result['json'] is mapping and 'results' in result['json'] -%}
+          {%- for found in result['json']['results'] -%}
+          {%- if found.name == result.item.name -%}
+          {%- set row = {
+            'name': found.name,
+            'url': result.item.base ~ '/' ~ result.item.path ~ '/' ~ (found.id | string) ~ '/'
+          } -%}
+          {%- set _ = ns.items.append(row) -%}
+          {%- endif -%}
+          {%- endfor -%}
+          {%- endif -%}
+          {%- endfor -%}
+          {{ ns.items | to_json }}
+
+    - name: Delete the matched objects
+      ansible.builtin.uri:
+        url: "{{ item.url }}"
+        method: DELETE
+        headers:
+          Authorization: "Bearer {{ api_token }}"
+        validate_certs: false
+        status_code: [200, 202, 204]
+      loop: "{{ delete_targets }}"
+      loop_control:
+        label: "{{ item.name }}"
+      no_log: true
+
+    - name: Show what was deleted
+      ansible.builtin.debug:
+        msg: "{{ delete_targets | default([]) | map(attribute='name') | list }}"

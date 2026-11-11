@@ -36,13 +36,12 @@
 | [11 Workflow](./basic-controller/ex11.md) | 実施 | 実施 |
 | [応用1 RBAC](./advanced/ex1.md) | 実施 | 実施 |
 | [応用2 通知](./advanced/ex2.md) | 環境内のメールサーバ | S3に書いてログで確認 |
-| [応用3 EEの確認](./advanced/ex3.md) | 実施 | 実施 |
-| [応用4 カスタムEE](./advanced/ex4.md) | イメージを取得できるときだけ | AAPサーバで実施 |
-| [応用5 API](./advanced/ex5.md) | 実施 | 実施 |
-| [応用6 Playbookから起動](./advanced/ex6.md) | 実施 | 実施 |
-| [応用7 ジョブテンプレートのWebhook](./advanced/ex7.md) | 実施 | 実施 |
-| [応用8 EDA](./advanced/ex8.md) | 実施 | 実施 |
-| [応用9 EDAからJob起動](./advanced/ex9.md) | 実施 | 実施 |
+| [応用3 カスタムEE](./advanced/ex3.md) | イメージを取得できるときだけ | AAPサーバで実施 |
+| [応用4 API](./advanced/ex4.md) | 実施 | 実施 |
+| [応用5 Playbookから起動](./advanced/ex5.md) | 実施 | 実施 |
+| [応用6 Webhook](./advanced/ex6.md) | 実施 | 実施 |
+| [応用7 EDA](./advanced/ex7.md) | 実施 | 実施 |
+| [応用8 EDAからJob起動](./advanced/ex8.md) | 実施 | 実施 |
 
 サーバがすでにある環境では、演習中にインターネットへ出ません。コレクションとコンテナイメージは、AAP に入っているものを使います。AWS でサーバを作る場合は、インターネットへ出られます。
 
@@ -59,7 +58,8 @@ Windows への接続方式は PSRP です。ドメインに参加していない
 
 * AAP 2.5 以降（統合UI: **Automation Execution** / **Automation Decisions** / **Access Management**）
 * SCM: GitLab。ファイルの編集は Web IDE を使います
-* カスタム Execution Environment を作る場合は、AAP サーバの `/tmp` で行います
+* カスタム Execution Environment を作る場合は、AAP サーバの `/tmp/<name_prefix>-custom-ee` で行います
+* 同じ AAP を複数人で使うときは、演習1で決めた接頭辞をオブジェクト名の先頭に付けます。学習後の削除は [削除手順](./cleanup.md) です
 
 ## 画面の見方
 

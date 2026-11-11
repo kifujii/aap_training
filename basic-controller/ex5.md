@@ -11,7 +11,7 @@ Playbook は GitLab に置き、AAP のプロジェクトから読みます。�
 
 ## Section 1: プロジェクトを作る
 
-演習4で `aap-training-content` を作った場合は、Section 2 へ進んでください。
+演習4で `<name_prefix>-aap-training-content` を作った場合は、Section 2 へ進んでください。
 
 GitLab にログインし、**Create new…** > **New project/repository** > **Create blank project** を開きます。
 
@@ -19,7 +19,7 @@ GitLab にログインし、**Create new…** > **New project/repository** > **C
 
 | 項目 | 入力値 |
 |---|---|
-| Project name | `aap-training-content` |
+| Project name | `<name_prefix>-aap-training-content` |
 | Visibility Level | `Private` |
 | Initialize repository with a README | 付けたまま |
 | SAST / Secret Detection | オフのまま |
@@ -55,8 +55,8 @@ GitLab にログインし、**Create new…** > **New project/repository** > **C
 <summary>git CLIで行う場合</summary>
 
 ```bash
-git clone https://gitlab.example.local/<namespace>/aap-training-content.git
-cd aap-training-content
+git clone 'https://gitlab.example.local/<namespace>/<name_prefix>-aap-training-content.git'
+cd '<name_prefix>-aap-training-content'
 # sample-content から必要なファイルをコピーし、inventory.yml のアドレスを直してから
 git add .
 git commit -m "Add note playbooks"
@@ -77,11 +77,11 @@ git push
 
 | 項目 | 入力値 |
 |---|---|
-| 名前 | `aap-training-content` |
+| 名前 | `<name_prefix>-aap-training-content` |
 | ソースコントロールタイプ | Git |
 | ソースコントロールURL | Section 1 の HTTPS URL |
 | ソースコントロールブランチ | `main` |
-| ソースコントロール認証情報 | `gitlab-scm` |
+| ソースコントロール認証情報 | `<name_prefix>-gitlab-scm` |
 | 起動時のリビジョン更新 | 有効 |
 | クリーン | 有効 |
 
@@ -90,7 +90,7 @@ git push
 失敗したときの確認箇所:
 
 * URL が HTTPS で、プロジェクトのパスまで含んでいるか
-* `gitlab-scm` のユーザー名とパスワードが、GitLab のログインと同じか
+* `<name_prefix>-gitlab-scm` のユーザー名とパスワードが、GitLab のログインと同じか
 * ブランチ名が `main` か
 * サーバがある環境なのに `requirements.yml` を置いていないか（置くと、外への取得に失敗します）
 

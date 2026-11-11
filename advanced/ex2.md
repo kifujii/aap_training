@@ -17,7 +17,7 @@
 
 | 項目 | 入力値 |
 |---|---|
-| 名前 | `note-mail` |
+| 名前 | `<name_prefix>-note-mail` |
 | 組織 | 演習1の組織 |
 | Notification type | `メール` |
 | ホスト | 環境内の SMTP サーバ |
@@ -28,7 +28,7 @@
 
 **Save notifier** で保存します。
 
-`write-note-linux` の **通知** タブで、`note-mail` を **失敗時** に付けます。起動時の認証情報を、一時的にパスワード違いの Machine 認証情報へ変えるか、制限に存在しないホスト名 `lin-missing` を入れて起動し、ジョブを失敗させます。受信箱に失敗のメールが届くことを確認します。
+`<name_prefix>-write-note-linux` の **通知** タブで、`<name_prefix>-note-mail` を **失敗時** に付けます。起動時の認証情報を、一時的にパスワード違いの Machine 認証情報へ変えるか、制限に存在しないホスト名 `lin-missing` を入れて起動し、ジョブを失敗させます。受信箱に失敗のメールが届くことを確認します。
 
 確認が終わったら、認証情報と制限を元に戻し、成功することも確認します。
 
@@ -42,12 +42,12 @@ Web IDE で `notify_aws.yml` がプロジェクトにあることを確認し、
 
 | 項目 | 入力値 |
 |---|---|
-| 名前 | `notify-aws` |
-| インベントリー | `aws-runner` |
-| プロジェクト | `aap-training-content` |
+| 名前 | `<name_prefix>-notify-aws` |
+| インベントリー | `<name_prefix>-aws-runner` |
+| プロジェクト | `<name_prefix>-aap-training-content` |
 | Playbook | `notify_aws.yml` |
 | 実行環境 | 空欄 |
-| 認証情報 | `aws-training` |
+| 認証情報 | `<name_prefix>-aws-training` |
 | Extra variables | `resource_prefix: <演習4で使った値>` |
 
 起動します。成功すると、ログの最後に次の3行が出ます。`contents` は `notification from AAP` です。
@@ -64,4 +64,4 @@ contents: notification from AAP
 
 ## 次
 
-[応用演習3](./ex3.md) で、ジョブが動いている実行環境を確認します。
+実行環境を1つ作る場合は [応用演習3](./ex3.md) へ進みます。既定のままでよければ [応用演習4](./ex4.md) へ進みます。

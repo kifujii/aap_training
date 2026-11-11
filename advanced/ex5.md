@@ -1,65 +1,106 @@
-# 応用演習 5 - REST API
+# 応用演習 5 - PlaybookからJobを起動する
 
 [応用演習4](./ex4.md) | [応用演習6へ](./ex6.md)
 
-画面の起動を、API からも行います。ここで発行するのは AAP の API トークンです。GitLab のパスワードとは別です。
+応用演習4の API 呼び出しを、Playbook のジョブとして実行します。既定の実行環境には `ansible.controller` が入っているので、その中から `<name_prefix>-write-note-linux` を起動します。実行環境の欄は空欄のまま、システムの既定を使います。
 
-## Section 1: APIの場所
+## Section 1: 起動用のインベントリー
 
-```bash
-curl -sk https://<AAPのURL>/api/ | python3 -m json.tool
-```
+Playbook は `localhost` で動き、AAP の API を呼びます。接続先の変数は `ansible_connection: local` です。
 
-この資料の例は `https://<AAPのURL>/api/controller/v2` です。`/api/v2/` は、ゲートウェイ構成では 404 になります。以降、このベースを `AAP_API_ROOT` と書きます。
-
-## Section 2: トークン
-
-**Access Management > API Tokens** を開き、**Create API token** をクリックします。
-
-![トークン作成。説明は任意、OAuth application は空欄、Scope は Write。Create token を押す前の画面](../images/aap/api-token-create.png)
+**インベントリーの作成** で `<name_prefix>-aap-runner` を作ります。保存したあと、**ホスト** タブの **ホストの作成** で次を追加します。
 
 | 項目 | 入力値 |
 |---|---|
-| 説明 | 空欄で構いません |
-| OAuth application | 空欄 |
-| Scope | `Write` |
+| 名前 | `localhost` |
+| 変数 | 下の2行 |
 
-**Create token** を押すと、文字列が1度だけ表示されます。再表示できないので、その場で控えます。この資料の写真には、その文字列は写していません。控えたあと、画面を閉じます。
-
-```bash
-export AAP_TOKEN="<控えたトークン>"
-export AAP_API_ROOT="https://<AAPのURL>/api/controller/v2"
+```yaml
+ansible_connection: local
 ```
 
-## Section 3: テンプレートのIDを見る
+ホストの欄名は **変数** です。ジョブテンプレートの Extra variables とは別の欄です。
 
-```bash
-curl -sk -H "Authorization: Bearer ${AAP_TOKEN}" \
-    "${AAP_API_ROOT}/job_templates/?name=write-note-linux" | python3 -m json.tool
+## Section 2: AAPの認証情報
+
+**認証情報の作成** を開きます。タイプは `Red Hat Ansible Automation Platform` です。
+
+| 項目 | 入力値 |
+|---|---|
+| 名前 | `<name_prefix>-aap-api` |
+| Red Hat Ansible Automation Platform | `https://<AAPのURL>` |
+| OAuth Token | [応用演習4](./ex4.md) で控えた API トークン |
+| Verify SSL | チェックを外す |
+
+URL は、ブラウザで開いている AAP のアドレスです。末尾に `/api/controller/` は付けません。Username と Password は空欄にします。Verify SSL を外すのは、演習環境の証明書を実行環境が信頼していない場合に接続できるようにするためです。
+
+## Section 3: Playbookとジョブテンプレート
+
+Web IDE で `launch_note.yml` を開き、次の内容にします。ファイルが無い場合は作ります。トークンはファイルに書きません。ジョブに付けた `<name_prefix>-aap-api` が渡します。
+
+```yaml
+---
+- name: Launch write-note-linux from a playbook
+  hosts: localhost
+  gather_facts: false
+  environment:
+    CONTROLLER_OPTIONAL_API_URLPATTERN_PREFIX: /api/controller/
+
+  tasks:
+    - name: Launch write-note-linux
+      ansible.controller.job_launch:
+        name: "{{ name_prefix }}-write-note-linux"
+        extra_vars:
+          training_note: from controller collection
+      register: launch_result
+
+    - name: Wait for the job
+      ansible.controller.job_wait:
+        job_id: "{{ launch_result.id }}"
+
+    - name: Show the launched job id
+      ansible.builtin.debug:
+        msg: "job {{ launch_result.id }} finished"
 ```
 
-`results` の `id` を控えます。以降の `7` は、その数字に置き換えます。
+`CONTROLLER_OPTIONAL_API_URLPATTERN_PREFIX` は、ゲートウェイ構成の API が `/api/controller/v2/` にあるための指定です。認証情報の URL には、このパスを重ねて書きません。`{{ name_prefix }}` は、このファイルでは書き換えません。
 
-## Section 4: 起動する
+**Commit to main** でコミットし、プロジェクト `<name_prefix>-aap-training-content` を同期します。
 
-```bash
-curl -sk -X POST \
-    -H "Authorization: Bearer ${AAP_TOKEN}" \
-    -H "Content-Type: application/json" \
-    -d '{"extra_vars": {"training_note": "from api"}, "limit": "lin1"}' \
-    "${AAP_API_ROOT}/job_templates/7/launch/" | python3 -m json.tool
-```
-
-応答の `job` がジョブ ID です。
+<details>
+<summary>git CLIで行う場合</summary>
 
 ```bash
-curl -sk -H "Authorization: Bearer ${AAP_TOKEN}" \
-    "${AAP_API_ROOT}/jobs/<ジョブID>/" | python3 -m json.tool
+git add launch_note.yml
+git commit -m "Launch write-note-linux from a playbook"
+git push
 ```
 
-`status` が `successful` になるまで、同じコマンドを繰り返します。`lin1` の `note.txt` の `note:` が `from api` になっていれば、API からの Extra variables が届いています。
+</details>
 
-確認後、Survey から `managed by AAP` を入れて `write-note-linux` を一度起動し、メモを戻します。
+**ジョブテンプレートの作成** で次を作ります。表に無い欄は空欄です。
+
+| 項目 | 入力値 |
+|---|---|
+| 名前 | `<name_prefix>-launch-note` |
+| インベントリー | `<name_prefix>-aap-runner` |
+| プロジェクト | `<name_prefix>-aap-training-content` |
+| Playbook | `launch_note.yml` |
+| 実行環境 | 空欄 |
+| 認証情報 | `<name_prefix>-aap-api` |
+| Extra variables | 下の1行 |
+
+```yaml
+name_prefix: tanaka01
+```
+
+`tanaka01` は演習1で決めた接頭辞にします。起動画面には Extra variables は出ないので、編集画面で保存してから起動します。
+
+認証情報は `<name_prefix>-aap-api` だけにします。`localhost` はローカル接続です。
+
+**テンプレートの起動** で実行します。出力の最後に `job <番号> finished` と出れば、待ちまで終わっています。ジョブ一覧には、この `<name_prefix>-launch-note` と、その中から起動された `<name_prefix>-write-note-linux` の両方が増えます。`lin1` の `note:` が `from controller collection` になっていれば完了です。
+
+終わったら、`<name_prefix>-write-note-linux` を Survey から起動し、メモを `managed by AAP` に戻します。
 
 ## 次
 

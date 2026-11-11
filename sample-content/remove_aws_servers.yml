@@ -10,8 +10,8 @@
       ansible.builtin.assert:
         that:
           - resource_prefix is defined
-          - resource_prefix is match('^[a-z][a-z0-9-]{0,12}$')
-          - resource_prefix is not match('-$')
+          - resource_prefix is match('^[a-z][a-z0-9-]{1,12}$')
+          - resource_prefix is not match('.*-$')
         fail_msg: Extra variables に、作成時と同じ resource_prefix を指定してください。
 
     - name: Find the VPC

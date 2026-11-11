@@ -12,12 +12,12 @@ Linux と Windows のそれぞれに `note.txt` を書きます。1つのジョ�
 
 | 項目 | 入力値 |
 |---|---|
-| 名前 | `write-note-linux` |
-| インベントリー | `training-inventory` |
-| プロジェクト | `aap-training-content` |
+| 名前 | `<name_prefix>-write-note-linux` |
+| インベントリー | `<name_prefix>-training-inventory` |
+| プロジェクト | `<name_prefix>-aap-training-content` |
 | Playbook | `write_note_linux.yml` |
 | 実行環境 | 空欄 |
-| 認証情報 | `linux-ssh` |
+| 認証情報 | `<name_prefix>-linux-ssh` |
 | 制限 | 空欄のまま（Playbook の対象はグループ `linux`） |
 
 表に無い欄は空欄のままにします。**起動プロンプト** には、この時点ではチェックを入れません。実行環境も空欄です。
@@ -46,19 +46,19 @@ note: managed by AAP
 
 ![ジョブタイプを開いたところ。選択肢はチェックと実行。横の起動プロンプトは外したまま](../images/aap/job-type.png)
 
-写真の認証情報に `vault-training` が見えるのは、演習9で足したあとです。この演習の認証情報は `linux-ssh` だけです。
+写真の認証情報に `<name_prefix>-vault-training` が見えるのは、演習9で足したあとです。この演習の認証情報は `<name_prefix>-linux-ssh` だけです。
 
 起動画面には「チェックモード」という項目はありません。ジョブタイプの横の **起動プロンプト** にチェックが無いと、起動画面でジョブタイプを変えても **実行** のままです。この演習では起動画面ではなく、編集画面のジョブタイプを変えます。確認が終わったら、ジョブタイプを **実行** に戻して保存します。
 
 ## Section 2: Windows
 
-`write-note-linux` をコピーできる場合はコピーし、コピーのメニューが無い場合は同じ項目で新規作成します。違う箇所だけ次のとおりです。
+`<name_prefix>-write-note-linux` をコピーできる場合はコピーし、コピーのメニューが無い場合は同じ項目で新規作成します。違う箇所だけ次のとおりです。
 
 | 項目 | 入力値 |
 |---|---|
-| 名前 | `write-note-windows` |
+| 名前 | `<name_prefix>-write-note-windows` |
 | Playbook | `write_note_windows.yml` |
-| 認証情報 | `windows-psrp` |
+| 認証情報 | `<name_prefix>-windows-psrp` |
 
 起動して成功することを確認します。ファイルは `C:\temp\aap-training\note.txt` です。中身の形は Linux と同じで、1行目は `hostname: win1` です。
 
@@ -70,8 +70,8 @@ Kerberos の場合は、演習5で `krb5.conf` を置いてから実行します
 
 | 名前 | Playbook | 認証情報 |
 |---|---|---|
-| `verify-note-linux` | `verify_note_linux.yml` | `linux-ssh` |
-| `verify-note-windows` | `verify_note_windows.yml` | `windows-psrp` |
+| `<name_prefix>-verify-note-linux` | `verify_note_linux.yml` | `<name_prefix>-linux-ssh` |
+| `<name_prefix>-verify-note-windows` | `verify_note_windows.yml` | `<name_prefix>-windows-psrp` |
 
 インベントリーとプロジェクトは、書くときと同じです。両方を起動し、成功することを確認します。`note.txt` にホスト名または `managed by AAP` が無いと、ここで失敗します。
 

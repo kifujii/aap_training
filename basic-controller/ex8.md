@@ -6,7 +6,7 @@
 
 ## Section 1: Extra variables
 
-`write-note-linux` の **テンプレートの編集** を開き、下までスクロールします。入れる欄の名前は **Extra variables** です。「変数」という欄はありません。
+`<name_prefix>-write-note-linux` の **テンプレートの編集** を開き、下までスクロールします。入れる欄の名前は **Extra variables** です。「変数」という欄はありません。
 
 ![Extra variables の位置。横の起動プロンプトは外したまま](../images/aap/extra-variables.png)
 
@@ -28,11 +28,11 @@ training_note: hello from survey
 
 ![制限の右の起動プロンプトにチェックが入っている。ジョブタイプの横は外したまま](../images/aap/job-type.png)
 
-保存して起動すると、実行前に制限の入力欄が出ます。`lin1` と入力して起動し、出力の対象が `lin1` だけであることを確認します。写真の認証情報に `vault-training` が見えるのは演習9のあとです。この演習では `linux-ssh` だけです。
+保存して起動すると、実行前に制限の入力欄が出ます。`lin1` と入力して起動し、出力の対象が `lin1` だけであることを確認します。写真の認証情報に `<name_prefix>-vault-training` が見えるのは演習9のあとです。この演習では `<name_prefix>-linux-ssh` だけです。
 
 ## Section 3: Survey
 
-`write-note-linux` の **Survey** タブを開き、**Create survey question** をクリックします。
+`<name_prefix>-write-note-linux` の **Survey** タブを開き、**Create survey question** をクリックします。
 
 ![Survey の質問。Question、Answer variable name、Default answer](../images/aap/survey-question.png)
 
@@ -50,7 +50,7 @@ training_note: hello from survey
 
 起動すると入力欄が出ます。`second note` と入力して実行し、`note.txt` の `note:` が `second note` になることを確認します。終わったら、もう一度起動して既定の `managed by AAP` に戻します。
 
-`write-note-windows` にも、同じ質問を1つ作り、同じ確認をします。
+`<name_prefix>-write-note-windows` にも、同じ質問を1つ作り、同じ確認をします。
 
 ## 次
 

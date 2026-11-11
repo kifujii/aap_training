@@ -8,7 +8,7 @@
   tasks:
     - name: Launch write-note-linux
       ansible.controller.job_launch:
-        name: write-note-linux
+        name: "{{ name_prefix }}-write-note-linux"
         extra_vars:
           training_note: from controller collection
       register: launch_result
