@@ -6,7 +6,7 @@
 
 ## Section 1: Rulebookを書き換える
 
-Web IDE で `rulebooks/notify_on_webhook.yml` を、次の内容に置き換えます。`<name_prefix>` は演習1の接頭辞に置き換えます。`organization` は演習1で控えた組織名にします。`sources` の名前は、Event Stream `<name_prefix>-check-webhook-stream` と同じです。`ansible.eda.webhook: {}` の行は、応用演習7で書いたものを残します。
+Web IDE で `rulebooks/notify_on_webhook.yml` を、次の内容に置き換えます。`<name_prefix>` は演習1の接頭辞に、`<組織名>` は演習1で控えた組織名に置き換えます。組織が `Default` のときは、`<組織名>` を `Default` にします。`sources` の名前は、Event Stream `<name_prefix>-check-webhook-stream` と同じです。`ansible.eda.webhook: {}` の行は、応用演習7で書いたものを残します。
 
 ```yaml
 ---
@@ -23,7 +23,7 @@ Web IDE で `rulebooks/notify_on_webhook.yml` を、次の内容に置き換え�
       action:
         run_job_template:
           name: <name_prefix>-verify-note-linux
-          organization: Default
+          organization: <組織名>
           job_args:
             limit: "{{ event.payload.host | default(omit) }}"
 ```

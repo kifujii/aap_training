@@ -92,7 +92,7 @@ training_use_vault: true
 
 ![編集画面の Extra variables](../images/aap/extra-variables.png)
 
-写真の Extra variables は `training_use_vault` だけです。自分の画面では、その上に `name_prefix` の行もあります。
+写真の Extra variables は `training_use_vault` だけです。自分の画面では、その上に `name_prefix` の行もあります。制限の起動プロンプトは、演習8で入れたままにします。
 
 起動すると、演習8と同じ **Prompt on Launch** が開きます。**制限** は空欄のまま **Next** を押します。**Survey** は `managed by AAP` のまま **Next** を押し、**Review** で **Finish** を押します。メモの文面は変えません。`Show the note written to note.txt` は `note.txt の note は managed by AAP です` のままです。成功すると、`Show the secret written to secret.txt` に `secret.txt に書いた値は TrainingSecret1 です` と出ます。Section 1 で別の値を暗号化した人は、その値です。ファイルは `/tmp/<name_prefix>-aap-training/secret.txt` で、権限は `0600` です。
 

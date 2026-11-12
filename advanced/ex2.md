@@ -28,9 +28,13 @@
 
 **Save notifier** で保存します。
 
-`<name_prefix>-write-note-linux` の **通知** タブで、`<name_prefix>-note-mail` を **失敗時** に付けます。起動時の認証情報を、一時的にパスワード違いの Machine 認証情報へ変えるか、**Prompt on Launch** の **制限** に存在しないホスト名 `lin-missing` を入れて起動し、ジョブを失敗させます。制限で失敗させるときは、**Survey** は `managed by AAP` のまま **Finish** を押します。受信箱に失敗のメールが届くことを確認します。
+`<name_prefix>-write-note-linux` の **通知** タブで、`<name_prefix>-note-mail` を **失敗時** に付けます。
 
-確認が終わったら、認証情報を戻します。成功の確認では、**制限** は空欄、**Survey** は `managed by AAP` のまま起動します。
+失敗を確認するため、Machine 認証情報をもう1つ作ります。名前は `<name_prefix>-linux-ssh-wrong`、認証情報タイプは `Machine`、ユーザー名は `<name_prefix>-linux-ssh` と同じ、パスワードはそれと違う英数字（例: `WrongPassword1`）です。権限昇格は空欄です。
+
+`<name_prefix>-write-note-linux` の編集で、認証情報の `<name_prefix>-linux-ssh` を外し、`<name_prefix>-linux-ssh-wrong` を付けます。`<name_prefix>-vault-training` を付けている場合は、付けたままにします。保存して起動します。**Prompts** の **制限** は空欄、**Survey** は `managed by AAP` のまま **Finish** を押します。ジョブが失敗し、受信箱に失敗のメールが届くことを確認します。
+
+確認が終わったら、編集で `<name_prefix>-linux-ssh-wrong` を外し、`<name_prefix>-linux-ssh` を付け直して保存します。もう一度起動し、**制限** は空欄、**Survey** は `managed by AAP` のまま **Finish** を押します。ジョブが成功すれば、認証情報は戻っています。
 
 AWS で作った場合は、この Section は飛ばします。
 
