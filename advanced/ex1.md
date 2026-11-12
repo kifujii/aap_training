@@ -68,13 +68,13 @@ JobTemplate Execute だけでは、Playbook や認証情報の変更はできま
 
 ## Section 5: 確認する
 
-右上の自分のユーザー名をクリックし、**ログアウト** を押します。`<name_prefix>-ops` でログインします。
+右上の自分のユーザー名をクリックし、**ログアウト** を押します。`<name_prefix>-ops` でログインします。見るのは、Section 3 で付けた権限ごとに、できることとできないことです。
 
-* `<name_prefix>-write-note-linux` の **テンプレートの起動** はできる
-* **テンプレートの編集** はできない
-* プロジェクト `<name_prefix>-aap-training-content` の同期ボタンは押せない
-
-起動を押すと、演習8と同じ **Prompt on Launch** が開きます。**制限** は空欄、**Survey** は `managed by AAP` のまま **Finish** を押します。ジョブが始まれば、実行の権限は付いています。
+* `<name_prefix>-write-note-linux` の **テンプレートの起動** を押します。演習8と同じ **Prompt on Launch** が開きます。**制限** は空欄、**Survey** は `managed by AAP` のまま **Finish** を押します。ジョブが成功すれば、JobTemplate Execute で起動できています。**テンプレートの編集** は開けません。Execute に編集は含まれません。
+* `<name_prefix>-verify-note-linux` を開きます。**テンプレートの起動** からジョブは始まりません。このテンプレートには Execute を付けていません。
+* `<name_prefix>-note-workflow` の詳細では、起動ができて、編集はできません。WorkflowJobTemplate Execute は起動だけで、編集は含みません。起動は押さないでください。押すと、書くジョブのあと、Execute を付けていない確認用テンプレートで失敗します。
+* プロジェクト `<name_prefix>-aap-training-content` を開きます。同期ボタンは押せません。Project Read Compat は閲覧です。
+* インベントリー `<name_prefix>-training-inventory` は開けます。ホストの追加や、変数の保存はできません。Inventory Read Compat は閲覧です。
 
 右上の `<name_prefix>-ops` をクリックし、**ログアウト** を押します。管理者でログインし直し、`<name_prefix>-write-note-linux` の **テンプレートの編集** が開くことを確認します。
 
