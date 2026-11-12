@@ -57,7 +57,7 @@ curl -sk -H "Authorization: Bearer ${AAP_TOKEN}" \
     "${AAP_API_ROOT}/jobs/<ジョブID>/" | python3 -m json.tool
 ```
 
-`status` が `successful` になるまで、同じコマンドを繰り返します。`lin1` の `note.txt` の `note:` が `from api` になっていれば、API からの Extra variables が届いています。
+`status` が `successful` になるまで、同じコマンドを繰り返します。ジョブ出力の `Show the note written to note.txt` に `note.txt の note は from api です` と出れば、API からの Extra variables が届いています。
 
 確認後、Survey から `managed by AAP` を入れて `<name_prefix>-write-note-linux` を一度起動し、メモを戻します。
 

@@ -21,6 +21,10 @@
       ansible.builtin.set_fact:
         note_text: "{{ note_file.content | b64decode }}"
 
+    - name: Show note.txt
+      ansible.builtin.debug:
+        msg: "{{ note_text }}"
+
     - name: note.txt contains the hostname and the note
       ansible.builtin.assert:
         that:
