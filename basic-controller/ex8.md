@@ -37,9 +37,13 @@ name_prefix: tanaka01
 
 **制限** の右にある **起動プロンプト** にチェックを入れます。ジョブタイプの横の起動プロンプトは外したままです。
 
-![制限の右の起動プロンプトにチェックが入っている。ジョブタイプの横は外したまま](../images/aap/job-type.png)
+![制限の右の起動プロンプトにチェックが入っている。ジョブタイプの横は外したまま](../images/aap/job-limit-prompt.png)
 
-保存して起動すると、**Prompt on Launch** が開きます。この時点の手順は **Prompts** と **Review** です。**制限** に `lin1` と入力して **Next** を押し、**Review** で **Finish** を押します。出力の対象が `lin1` だけであることを確認します。`Show the note written to note.txt` は `note.txt の note は managed by AAP です` のままです。写真の認証情報に `<name_prefix>-vault-training` が見えるのは演習9のあとです。この演習では `<name_prefix>-linux-ssh` だけです。
+保存して起動すると、**Prompt on Launch** が開きます。この時点の手順は **Prompts** と **Review** だけです。Survey は、次の節で作ります。**制限** に `lin1` と入力して **Next** を押し、**Review** で **Finish** を押します。
+
+![Prompt on Launch の Review。制限は lin1。最後のボタンは Finish。手順は Prompts と Review だけ](../images/aap/launch-finish.png)
+
+写真の `tanaka01` は、演習1の例です。自分の接頭辞に読み替えます。出力の対象が `lin1` だけであることを確認します。`Show the note written to note.txt` は `note.txt の note は managed by AAP です` のままです。この演習の認証情報は `<name_prefix>-linux-ssh` だけです。
 
 ## Section 3: Survey
 
