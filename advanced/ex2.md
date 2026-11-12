@@ -28,9 +28,9 @@
 
 **Save notifier** で保存します。
 
-`<name_prefix>-write-note-linux` の **通知** タブで、`<name_prefix>-note-mail` を **失敗時** に付けます。起動時の認証情報を、一時的にパスワード違いの Machine 認証情報へ変えるか、制限に存在しないホスト名 `lin-missing` を入れて起動し、ジョブを失敗させます。受信箱に失敗のメールが届くことを確認します。
+`<name_prefix>-write-note-linux` の **通知** タブで、`<name_prefix>-note-mail` を **失敗時** に付けます。起動時の認証情報を、一時的にパスワード違いの Machine 認証情報へ変えるか、**Prompt on Launch** の **制限** に存在しないホスト名 `lin-missing` を入れて起動し、ジョブを失敗させます。制限で失敗させるときは、**Survey** は `managed by AAP` のまま **Finish** を押します。受信箱に失敗のメールが届くことを確認します。
 
-確認が終わったら、認証情報と制限を元に戻し、成功することも確認します。
+確認が終わったら、認証情報を戻します。成功の確認では、**制限** は空欄、**Survey** は `managed by AAP` のまま起動します。
 
 AWS で作った場合は、この Section は飛ばします。
 
