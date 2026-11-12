@@ -151,7 +151,7 @@ podman images | grep '<name_prefix>-custom-ee'
 
 ## Section 5: テンプレートへ付ける
 
-`<name_prefix>-write-note-linux` の実行環境に `<name_prefix>-custom-ee` を選び、起動して成功することを確認します。ジョブ詳細の実行環境が `<name_prefix>-custom-ee` になっていれば、指定は効いています。ジョブが `image not known` で失敗したときは、Section 3 の `CONTAINERS_STORAGE_CONF` を設定して、ビルドからやり直します。
+`<name_prefix>-write-note-linux` の実行環境に `<name_prefix>-custom-ee` を選び、起動して成功することを確認します。起動画面は演習8と同じ **Prompt on Launch** です。**制限** は空欄、**Survey** は `managed by AAP` のまま **Finish** を押します。ジョブ詳細の実行環境が `<name_prefix>-custom-ee` になっていれば、指定は効いています。ジョブが `image not known` で失敗したときは、Section 3 の `CONTAINERS_STORAGE_CONF` を設定して、ビルドからやり直します。
 
 確認が終わったら、実行環境を空欄に戻します。以降の演習は既定の実行環境で進めます。
 

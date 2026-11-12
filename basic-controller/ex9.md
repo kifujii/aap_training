@@ -94,9 +94,9 @@ training_use_vault: true
 
 写真の Extra variables は `training_use_vault` だけです。自分の画面では、その上に `name_prefix` の行もあります。
 
-起動します。成功すると `/tmp/<name_prefix>-aap-training/secret.txt` の内容は `TrainingSecret1` です。ログには値を出さないようにしてあります。
+起動すると、演習8と同じ **Prompt on Launch** が開きます。**制限** は空欄のまま **Next** を押します。**Survey** は `managed by AAP` のまま **Next** を押し、**Review** で **Finish** を押します。メモの文面は変えません。成功すると `/tmp/<name_prefix>-aap-training/secret.txt` の内容は `TrainingSecret1` です。ログには値を出さないようにしてあります。
 
-`<name_prefix>-write-note-windows` にも `<name_prefix>-vault-training` と `<name_prefix>-windows-psrp` を付けます。Extra variables は、`name_prefix` の行を残したまま `training_use_vault: true` を足して起動します。ファイルは `C:\temp\<name_prefix>-aap-training\secret.txt` です。
+`<name_prefix>-write-note-windows` にも `<name_prefix>-vault-training` と `<name_prefix>-windows-psrp` を付けます。Extra variables は、`name_prefix` の行を残したまま `training_use_vault: true` を足します。起動画面に **Prompts** は出ません。**Survey** は `managed by AAP` のまま **Finish** を押します。ファイルは `C:\temp\<name_prefix>-aap-training\secret.txt` です。
 
 `training_use_vault: true` を足し忘れると `secrets.yml` は読まれず、`secret.txt` は作られません。暗号化パスワードが違うと、ジョブは `secrets.yml` の読み込みで失敗します。
 

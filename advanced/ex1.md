@@ -74,6 +74,8 @@ JobTemplate Execute だけでは、Playbook や認証情報の変更はできま
 * **テンプレートの編集** はできない
 * プロジェクト `<name_prefix>-aap-training-content` の同期ボタンは押せない
 
+起動を押すと、演習8と同じ **Prompt on Launch** が開きます。**制限** は空欄、**Survey** は `managed by AAP` のまま **Finish** を押します。ジョブが始まれば、実行の権限は付いています。
+
 右上の `<name_prefix>-ops` をクリックし、**ログアウト** を押します。管理者でログインし直し、`<name_prefix>-write-note-linux` の **テンプレートの編集** が開くことを確認します。
 
 ## 次
