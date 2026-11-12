@@ -31,13 +31,9 @@ name_prefix: tanaka01
 
 保存すると詳細画面に戻ります。右上の **テンプレートの起動** をクリックします。
 
-起動すると、ジョブの **出力** が開きます。上部に成功か失敗と、Changed の数が出ます。各タスクの行は、変更が無ければ `ok`、ファイルを書いたときは `changed` です。
+起動すると、ジョブの **出力** が開きます。上部に成功か失敗と、Changed の数が出ます。上部の Changed は、変更のあったホストの数です。各タスクの行は、変更が無ければ `ok`、ファイルを書いたときは黄色の `changed` です。
 
-![ジョブの出力。見るのは上部の Changed と、Write note.txt の行。ok は緑、changed は黄](../images/aap/job-output.png)
-
-写真は、後の演習まで進んだあとのログです。`Load secrets.yml` の行が `skipped` でも、この演習では問題ありません。
-
-先頭の `SSH password:` と `Vault password:` は、認証情報を渡したときの表示です。パスワードそのものは出ません。その下に Python の WARNING が出ても、この演習では無視して構いません。
+![成功の出力。Load secrets.yml は skipping。Show the note written to note.txt に、note.txt の note は managed by AAP です と出る](../images/aap/job-output.png)
 
 ジョブが成功すると、出力の `Show the note written to note.txt` に次の行が出ます。`training_note` の既定値は `managed by AAP` です。この行が、ファイルの `note:` に書いた文面です。
 
@@ -45,13 +41,17 @@ name_prefix: tanaka01
 note.txt の note は managed by AAP です
 ```
 
+`Load secrets.yml when vault is enabled`、`Write secret.txt`、`Show the secret written to secret.txt` は `skipping` です。この演習では Vault をまだ使いません。
+
+先頭の `SSH password:` と `Vault password:` は、認証情報を渡したときの表示です。パスワードそのものは出ません。その下に Python の WARNING が出ても、この演習では無視して構いません。
+
 同じテンプレートをもう一度、**テンプレートの起動** から起動します。2回目は、出力の `Write note.txt` の行が `ok` になり、上部の Changed は 0 です。内容が同じなら書き直しません。
 
 ファイルを変えずに結果だけ見るときは、**テンプレートの編集** を開き、**ジョブタイプ** を **チェック** に変えて保存してから起動します。選択肢は **実行** と **チェック** です。ファイルは変わりません。内容が今のファイルと違うタスクは `changed`、同じ内容のタスクは `ok` になります。
 
-![ジョブタイプを開いたところ。選択肢はチェックと実行。横の起動プロンプトは外したまま](../images/aap/job-type.png)
+![ジョブタイプを開いたところ。選択肢はチェックと実行。ジョブタイプと制限の起動プロンプトは外したまま。認証情報は linux-ssh](../images/aap/job-type.png)
 
-写真の認証情報に `<name_prefix>-vault-training` が見えるのは、演習9で足したあとです。この演習の認証情報は `<name_prefix>-linux-ssh` だけです。
+写真の `tanaka01` は、演習1の例です。自分の接頭辞に読み替えます。この演習の認証情報は `<name_prefix>-linux-ssh` だけです。ジョブタイプの横も、制限の横も、**起動プロンプト** は外したままにします。
 
 起動画面には「チェックモード」という項目はありません。ジョブタイプの横の **起動プロンプト** にチェックが無いと、起動画面でジョブタイプを変えても **実行** のままです。この演習では起動画面ではなく、編集画面のジョブタイプを変えます。確認が終わったら、ジョブタイプを **実行** に戻して保存します。
 
