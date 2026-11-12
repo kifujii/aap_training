@@ -1,5 +1,7 @@
 # 学習後に自分のリソースを削除する
 
+[READMEへ](./README.md)
+
 自分の接頭辞が付いたものだけを消します。他の人のオブジェクトと、Demo で始まるサンプルは消しません。接頭辞は演習1で決めた文字列です。例は `tanaka01` です。以降の `<name_prefix>` は、その文字列に置き換えます。
 
 ## Section 1: AWSのサーバを消す
@@ -83,9 +85,9 @@ Activation の削除で失敗した場合は、**Automation Decisions > ルー�
 
 GitLab のプロジェクト `<name_prefix>-aap-training-content` を開きます。**Settings > General** の **Advanced** を展開し、**Delete project** まで進みます。確認欄には、画面が求めるプロジェクト名を入力して削除します。Webhook もこのプロジェクトと一緒に消えます。
 
-## Section 5: AAPサーバの作業ファイルを消す
+## Section 5: 作業ファイルを消す
 
-演習9で暗号化した人、または応用演習3でイメージを作った人だけ、AAP サーバへ SSH します。`<name_prefix>` は自分の接頭辞に置き換えてから実行します。
+演習9で暗号化した人、または応用演習3でイメージを作った人だけ、その作業に使ったサーバへ SSH します。この研修では AAP サーバです。`<name_prefix>` は自分の接頭辞に置き換えてから実行します。
 
 ```bash
 cd /tmp

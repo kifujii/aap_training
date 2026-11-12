@@ -2,7 +2,6 @@
 - name: Check the note file on Windows
   hosts: windows
   gather_facts: false
-  environment: "{{ {'KRB5_CONFIG': playbook_dir + '/krb5.conf'} if (lookup('ansible.builtin.fileglob', playbook_dir + '/krb5.conf') | length > 0) else {} }}"
 
   tasks:
     - name: name_prefix is set

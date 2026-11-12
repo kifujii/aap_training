@@ -4,12 +4,13 @@
   gather_facts: false
 
   tasks:
-    - name: Show the note handed off by write-note-linux
-      ansible.builtin.debug:
-        msg: "note_from_linux={{ note_from_linux }}"
-
     - name: The previous job must have set note_from_linux
       ansible.builtin.assert:
         that:
           - note_from_linux is defined
-          - note_from_linux | length > 0
+          - note_from_linux | default('') | length > 0
+        fail_msg: 前のジョブから note_from_linux が渡っていません。write_note_linux.yml の set_stats と、write-note-linux からこのジョブへの線を確認してください。
+
+    - name: Show the note handed off by write-note-linux
+      ansible.builtin.debug:
+        msg: "note_from_linux={{ note_from_linux }}"

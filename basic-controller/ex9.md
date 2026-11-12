@@ -2,7 +2,7 @@
 
 [演習8](./ex8.md) | [演習10へ](./ex10.md)
 
-`training_secret` の値だけを暗号化して GitLab に置き、ジョブの中で復号してファイルへ書きます。暗号化は AAP サーバの `/tmp` で行います。Web IDE には、`ansible-vault encrypt_string` が表示した文字列を貼ります。Web IDE では `ansible-vault` を実行できません。
+`training_secret` の値だけを暗号化して GitLab に置き、ジョブの中で復号してファイルへ書きます。暗号化は、`ansible-vault` コマンドが使えるサーバで行います。この研修では AAP サーバを使います。作業ディレクトリは、そのサーバの `/tmp` です。Web IDE には、`ansible-vault encrypt_string` が表示した文字列を貼ります。Web IDE では `ansible-vault` を実行できません。
 
 書かれるファイル:
 
@@ -11,9 +11,9 @@
 | Linux | `/tmp/<name_prefix>-aap-training/secret.txt` | `0600` |
 | Windows | `C:\temp\<name_prefix>-aap-training\secret.txt` | 接続ユーザーが書き込める場所 |
 
-## Section 1: AAPサーバの /tmp で値を暗号化する
+## Section 1: ansible-vault が使えるサーバで値を暗号化する
 
-AAP サーバへ SSH します。
+この研修では AAP サーバへ SSH します。
 
 ```bash
 ssh <ユーザー>@<AAPサーバ>
@@ -32,7 +32,7 @@ ansible-vault encrypt_string 'TrainingSecret1' --name training_secret | tee '/tm
 
 `/tmp/<name_prefix>-secrets.yml` の先頭が `training_secret: !vault |` で、次の行に `$ANSIBLE_VAULT;1.1;AES256` があれば、値だけが暗号化されています。表示された全文をコピーします。
 
-`ansible-vault` がホストに無く、コンテナで動いている場合は、名前に `controller` を含むコンテナを選びます。`<コンテナ>` は `podman ps` に出た名前です。出力は画面に出るので、全文をコピーします。
+`ansible-vault` がこのサーバに無く、コンテナで動いている場合は、名前に `controller` を含むコンテナを選びます。`<コンテナ>` は `podman ps` に出た名前です。出力は画面に出るので、全文をコピーします。
 
 ```bash
 cd /tmp
@@ -40,7 +40,7 @@ podman ps
 podman exec -it <コンテナ> ansible-vault encrypt_string 'TrainingSecret1' --name training_secret
 ```
 
-SSH で AAP サーバに入れない、または `ansible-vault` も `podman` も使えない場合は、この演習を全部飛ばして [演習10](./ex10.md) へ進みます。`secret.txt` は作られません。サーバへ入れるようになったら、Section 1 から実施します。
+SSH でこのサーバに入れない、または `ansible-vault` も `podman` も使えない場合は、この演習を全部飛ばして [演習10](./ex10.md) へ進みます。`secret.txt` は作られません。サーバへ入れるようになったら、Section 1 から実施します。
 
 ## Section 2: Web IDEに貼る
 
@@ -79,7 +79,7 @@ git push
 
 ## Section 4: ジョブで復号する
 
-`<name_prefix>-write-note-linux` の編集で、認証情報に `<name_prefix>-vault-training` を追加します。`<name_prefix>-linux-ssh` も付けたままにします。**Extra variables** は、演習7で入れた `name_prefix` の行を残したまま、次の行を足します。起動画面にはこの欄は出ないので、編集画面で保存します。
+`<name_prefix>-write-note-linux` の編集で、認証情報に `<name_prefix>-vault-training` を追加します。`<name_prefix>-linux-ssh` も付けたままにします。**Extra variables** は、演習8で残した `name_prefix` の行を残したまま、次の行を足します。起動画面にはこの欄は出ないので、編集画面で保存します。
 
 ```yaml
 name_prefix: tanaka01

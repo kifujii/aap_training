@@ -15,6 +15,8 @@
 
 ## どの演習をやるか
 
+この学習で作る認証情報、インベントリー、プロジェクト、ジョブテンプレート、GitLab のプロジェクト、AWS で作ったサーバは、最後に [削除手順](./cleanup.md) で消します。名前は各演習に書いてあるものを使います。削除手順は、その名前を探します。
+
 対象の Linux と Windows がすでにある場合と、AWS で新しく作る場合で、やる演習が一部違います。次のどちらかの順に進めてください。
 
 サーバがすでにある場合: 演習1 → 2 → 3（Section 3 は飛ばす）→ 5 → 6 → 7 → 8 → 9 → 10 → 11 → 応用。演習4はしません。
@@ -36,7 +38,7 @@
 | [11 Workflow](./basic-controller/ex11.md) | 実施 | 実施 |
 | [応用1 RBAC](./advanced/ex1.md) | 実施 | 実施 |
 | [応用2 通知](./advanced/ex2.md) | 環境内のメールサーバ | S3に書いてログで確認 |
-| [応用3 カスタムEE](./advanced/ex3.md) | イメージを取得できるときだけ | AAPサーバで実施 |
+| [応用3 カスタムEE](./advanced/ex3.md) | `podman` と `ansible-builder` が使えるときだけ | この研修では AAP サーバ |
 | [応用4 API](./advanced/ex4.md) | 実施 | 実施 |
 | [応用5 Playbookから起動](./advanced/ex5.md) | 実施 | 実施 |
 | [応用6 Webhook](./advanced/ex6.md) | 実施 | 実施 |
@@ -52,7 +54,7 @@
 | Linux | `/tmp/<name_prefix>-aap-training/note.txt` |
 | Windows | `C:\temp\<name_prefix>-aap-training\note.txt` |
 
-`<name_prefix>` は演習1で決める接頭辞です。人ごとにディレクトリが分かれるので、同じサーバを複数人で使えます。
+`<name_prefix>` は [演習1](./basic-intro/ex1.md) で決める接頭辞です。人ごとにディレクトリが分かれるので、同じサーバを複数人で使えます。決め方は、その演習の「名前の接頭辞」に書いてあります。
 
 Windows への接続方式は PSRP です。ドメインに参加していない Windows（AWS で作るサーバを含む）は NTLM、ドメインに参加している Windows は Kerberos を使います。
 
@@ -60,7 +62,7 @@ Windows への接続方式は PSRP です。ドメインに参加していない
 
 * AAP 2.5 以降（統合UI: **Automation Execution** / **Automation Decisions** / **Access Management**）
 * SCM: GitLab。ファイルの編集は Web IDE を使います
-* カスタム Execution Environment を作る場合は、AAP サーバの `/tmp/<name_prefix>-custom-ee` で行います
+* カスタム Execution Environment を作る場合は、`podman` と `ansible-builder` が使えるサーバで行います。この研修では AAP サーバの `/tmp/<name_prefix>-custom-ee` です
 * 同じ AAP を複数人で使うときは、演習1で決めた接頭辞をオブジェクト名の先頭に付けます。学習後の削除は [削除手順](./cleanup.md) です
 
 ## 画面の見方

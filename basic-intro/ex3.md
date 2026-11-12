@@ -117,10 +117,6 @@ ansible_psrp_cert_validation: ignore
 
 この変数で保存します。`win1` をグループ `windows` に入れる手順は、上の「ホストをグループに入れる」と同じです。NTLM の変数で保存済みの場合は、ホストを開いて変数を置き換えてからグループへ入れます。
 
-レルムと KDC は、[sample-content/krb5.conf.example](../sample-content/krb5.conf.example) を `krb5.conf` という名前で後の演習のプロジェクトに置きます。置き方は [演習5](../basic-controller/ex5.md) でファイルを追加するときで構いません。中の `EXAMPLE.COM` と `dc.example.com` は、自分の環境の値に書き換えます。
-
-Kerberos の場合、アドホック実行では `krb5.conf` を渡せません。`win_ping` は飛ばし、[演習5](../basic-controller/ex5.md) で `krb5.conf` を置いたあと、[演習7](../basic-controller/ex7.md) の `<name_prefix>-write-note-windows` が成功すれば接続できています。NTLM の場合は、このまま Section 5 で `win_ping` を実行します。
-
 ## Section 5: 疎通確認
 
 ジョブテンプレートに認証情報を付けるのは [演習7](../basic-controller/ex7.md) です。この演習の疎通確認では、実行時に認証情報を選びます。
@@ -134,7 +130,7 @@ Kerberos の場合、アドホック実行では `krb5.conf` を渡せません�
 | モジュール | `ping` | `win_ping` |
 | 認証情報 | `<name_prefix>-linux-ssh` | `<name_prefix>-windows-psrp` |
 
-起動し、`SUCCESS` と表示されることを確認します。Windows を NTLM で接続する場合は、`lin1` のチェックを外し、`win1` だけを選んでから実行します。1つの実行に付けられる Machine 認証情報は1つなので、Linux と Windows は別々に確認します。Kerberos の場合は、ここでの `win_ping` は飛ばします。
+起動し、`SUCCESS` と表示されることを確認します。Windows は、`lin1` のチェックを外し、`win1` だけを選んでから実行します。1つの実行に付けられる Machine 認証情報は1つなので、Linux と Windows は別々に確認します。NTLM でも Kerberos でも、ここで `win_ping` を実行します。
 
 `ping` が `SUCCESS` なら、SSH のユーザー名とパスワード、アドレスが合っています。`win_ping` が `SUCCESS` なら、PSRP の認証とポートが合っています。
 
