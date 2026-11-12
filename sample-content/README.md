@@ -18,6 +18,7 @@
 | `remove_aws_servers.yml` | 上記のリソースを削除する |
 | `notify_aws.yml` | AWS で作った場合の通知確認。S3 に書いて読み戻す |
 | `launch_note.yml` | 応用演習5。既定の実行環境から、Extra variables の `name_prefix` を付けた `write-note-linux` を起動する |
+| `use_ini_file.yml` | 応用演習3。`community.general.ini_file` で値を書き、カスタム実行環境の前後を比べる |
 | `show_handed_note.yml` | 演習11。前のジョブが `set_stats` で渡したメモを表示する |
 | `remove_my_lab.yml` | 学習後に、自分の接頭辞の AAP オブジェクトを削除する |
 | `requirements.yml` | **AWS で作る場合だけ** GitLab に置く。`amazon.aws` 10.3.0 |

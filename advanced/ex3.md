@@ -149,11 +149,41 @@ podman images | grep '<name_prefix>-custom-ee'
 
 **実行環境** の作成画面で保存します。レジストリを使う場合は、認証情報タイプ `Container Registry`、名前 `<name_prefix>-registry` を作り、Pull は `Always`、Image は push した名前にします。
 
-## Section 5: テンプレートへ付ける
+## Section 5: 既定の実行環境で失敗し、カスタム実行環境で成功する
 
-`<name_prefix>-write-note-linux` の実行環境に `<name_prefix>-custom-ee` を選び、起動して成功することを確認します。起動画面は演習8と同じ **Prompt on Launch** です。**制限** は空欄、**Survey** は `managed by AAP` のまま **Finish** を押します。ジョブ詳細の実行環境が `<name_prefix>-custom-ee` になっていれば、指定は効いています。ジョブが `image not known` で失敗したときは、Section 3 の `CONTAINERS_STORAGE_CONF` を設定して、ビルドからやり直します。
+`community.general` は、既定の実行環境にはありません。先にその状態で失敗することを見てから、Section 4 で登録した実行環境に切り替えます。`<name_prefix>-write-note-linux` の実行環境は空欄のままにします。以降の演習は、その既定の実行環境で進めます。
 
-確認が終わったら、実行環境を空欄に戻します。以降の演習は既定の実行環境で進めます。
+Web IDE で `use_ini_file.yml` をプロジェクトの直下に作り、[sample-content/use_ini_file.yml](../sample-content/use_ini_file.yml) の内容を貼ります。**Commit to main** のあと、AAP のプロジェクトを同期します。
+
+**ジョブテンプレートの作成** で、次を作ります。表に無い欄は空欄です。実行環境も空欄です。
+
+| 項目 | 入力値 |
+|---|---|
+| 名前 | `<name_prefix>-use-ini` |
+| インベントリー | `<name_prefix>-training-inventory` |
+| プロジェクト | `<name_prefix>-aap-training-content` |
+| Playbook | `use_ini_file.yml` |
+| 実行環境 | 空欄 |
+| 認証情報 | `<name_prefix>-linux-ssh` |
+| Extra variables | 下の1行 |
+
+```yaml
+name_prefix: tanaka01
+```
+
+`tanaka01` は、自分の接頭辞にします。**テンプレートの起動** を押します。Survey も制限も出ません。
+
+1回目は失敗します。出力に `community.general.ini_file` があり、`couldn't resolve module` または `was not found` と出ていれば、既定の実行環境にこのコレクションが無い、という確認はできています。対象ホストがいない、と出たときは、同じインベントリーにホスト `localhost` を追加し、変数を `ansible_connection: local` にして、もう一度起動します。
+
+失敗を確認したら、このテンプレートの **テンプレートの編集** で、実行環境に `<name_prefix>-custom-ee` を選んで保存します。もう一度起動します。成功すると、`Show the value written with community.general` に次の行が出ます。
+
+```
+settings.ini の source は custom ee です
+```
+
+ジョブ詳細の実行環境が `<name_prefix>-custom-ee` になっていることも確認します。ジョブが `image not known` で失敗したときは、Section 3 の `CONTAINERS_STORAGE_CONF` を設定して、ビルドからやり直します。
+
+確認が終わったら、`<name_prefix>-use-ini` の実行環境を空欄に戻します。
 
 ## 次
 

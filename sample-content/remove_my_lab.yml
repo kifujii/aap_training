@@ -21,6 +21,7 @@
       - { base: "{{ api_host }}/api/controller/v2", path: job_templates, name: "{{ name_prefix }}-notify-aws" }
       - { base: "{{ api_host }}/api/controller/v2", path: job_templates, name: "{{ name_prefix }}-launch-note" }
       - { base: "{{ api_host }}/api/controller/v2", path: job_templates, name: "{{ name_prefix }}-show-handed-note" }
+      - { base: "{{ api_host }}/api/controller/v2", path: job_templates, name: "{{ name_prefix }}-use-ini" }
       - { base: "{{ api_host }}/api/controller/v2", path: notification_templates, name: "{{ name_prefix }}-note-mail" }
       - { base: "{{ api_host }}/api/controller/v2", path: projects, name: "{{ name_prefix }}-aap-training-content" }
       - { base: "{{ api_host }}/api/eda/v1", path: projects, name: "{{ name_prefix }}-aap-training-content" }
