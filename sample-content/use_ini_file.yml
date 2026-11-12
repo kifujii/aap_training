@@ -1,0 +1,25 @@
+---
+- name: Record a value with community.general
+  hosts: localhost
+  gather_facts: false
+
+  tasks:
+    - name: name_prefix is set
+      ansible.builtin.assert:
+        that:
+          - name_prefix is defined
+          - name_prefix is match('^[a-z][a-z0-9-]{1,12}$')
+          - name_prefix is not match('.*-$')
+        fail_msg: ジョブテンプレートの Extra variables に、演習1で決めた name_prefix を指定してください。
+
+    - name: Write settings.ini with community.general
+      community.general.ini_file:
+        path: "/tmp/{{ name_prefix }}-use-ini.ini"
+        section: note
+        option: source
+        value: custom ee
+        mode: "0644"
+
+    - name: Show the value written with community.general
+      ansible.builtin.debug:
+        msg: "settings.ini の source は custom ee です"
