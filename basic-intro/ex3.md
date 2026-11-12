@@ -7,7 +7,7 @@ AAP から Linux と Windows へ接続するための一覧を作ります。
 | 自分の状況 | この演習で今やる Section | その次 |
 |---|---|---|
 | サーバがすでにある | 1、2、4、5。Section 3 は飛ばす | [演習4](./ex4.md) は飛ばして [演習5](../basic-controller/ex5.md) |
-| サーバが無い | 1、2、3 だけ。アドレスはまだ無い | [演習4](./ex4.md)。サーバができたら、このページの Section 4 に戻る |
+| サーバが無い | 1、2、3 だけ。アドレスはまだ無い | [演習4](./ex4.md)。サーバができたら、このページの Section 4 と Section 5 に戻る |
 
 ## Section 1: インベントリーを作る
 
@@ -46,7 +46,7 @@ ansible_connection: local
 
 `<name_prefix>-aws-runner` は演習4のジョブテンプレートで選びます。`<name_prefix>-training-inventory` には足しません。
 
-ここまで終わったら、Section 4 には進まず [演習4](./ex4.md) を実施してください。演習4が終わったあと、下の Section 4 に戻ります。
+ここまで終わったら、Section 4 には進まず [演習4](./ex4.md) を実施してください。演習4が終わったあと、下の Section 4 でホストを登録し、Section 5 で疎通を確認します。
 
 ## Section 4: ホストを追加する
 
