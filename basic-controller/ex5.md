@@ -46,7 +46,17 @@ GitLab にログインし、**Create new…** > **New project/repository** > **C
 | `create_aws_servers.yml` / `remove_aws_servers.yml` | 置かない | 演習4で置いていればそのままでよい |
 | `requirements.yml` | **置かない** | 演習4で置いたものを残す |
 
-`inventory.yml` の `203.0.113.10` と `203.0.113.11` は、保存前に必ず自分のアドレスへ変えます。Windows の `ansible_psrp_auth` は、演習3で選んだ `ntlm` または `kerberos` に合わせます。
+`inventory.yml` の `203.0.113.10` と `203.0.113.11` は、保存前に必ず自分のアドレスへ変えます。
+
+Windows の接続は、サンプルが NTLM です。演習3で NTLM を選んだ人は、`ansible_psrp_auth`、`ansible_psrp_protocol`、`ansible_psrp_port` をサンプルのままにします。ドメインに参加している Windows は、この3つを下の Kerberos の列に置き換えます。どれか1つだけ変えると、演習6の同期で演習3の変数が上書きされ、`win_ping` が失敗します。
+
+| 項目 | NTLM（サンプルのまま） | Kerberos（3つとも置き換える） |
+|---|---|---|
+| `ansible_psrp_auth` | `ntlm` | `kerberos` |
+| `ansible_psrp_protocol` | `http` | `https` |
+| `ansible_psrp_port` | `5985` | `5986` |
+
+`ansible_connection: psrp` と `ansible_psrp_cert_validation: ignore` は、どちらもサンプルのままです。
 
 **Source Control** を開き、メッセージ（例: `Add note playbooks`）を書いて **Commit to main** をクリックします。
 
