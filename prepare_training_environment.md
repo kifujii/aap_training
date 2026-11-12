@@ -47,7 +47,7 @@ Windows の接続は次のとおりです。
 | Windows の状態 | 認証 | インベントリに書く接続 |
 |---|---|---|
 | ドメインに参加していない（AWS で作るサーバを含む） | NTLM | `ansible_connection: psrp` と `ansible_psrp_auth: ntlm` |
-| ドメインに参加している | Kerberos | `ansible_connection: psrp` と `ansible_psrp_auth: kerberos` |
+| ドメインに参加している | Kerberos | `ansible_connection: psrp`、`ansible_psrp_auth: kerberos`、`ansible_psrp_protocol: https`、`ansible_psrp_port: 5986` |
 
 サンプルのアドレス `203.0.113.10` と `203.0.113.11` は例です。実行前に実在のアドレスへ置き換えます。
 

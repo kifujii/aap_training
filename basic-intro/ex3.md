@@ -117,6 +117,8 @@ ansible_psrp_cert_validation: ignore
 
 この変数で保存します。`win1` をグループ `windows` に入れる手順は、上の「ホストをグループに入れる」と同じです。NTLM の変数で保存済みの場合は、ホストを開いて変数を置き換えてからグループへ入れます。
 
+演習5で置く `inventory.yml` のサンプルは NTLM です。Kerberos のときは、`ansible_psrp_auth`、`ansible_psrp_protocol`、`ansible_psrp_port` の3つを、ここで保存した `kerberos`、`https`、`5986` に置き換えます。
+
 ## Section 5: 疎通確認
 
 ジョブテンプレートに認証情報を付けるのは [演習7](../basic-controller/ex7.md) です。この演習の疎通確認では、実行時に認証情報を選びます。
