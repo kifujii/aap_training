@@ -45,7 +45,6 @@ GitLab にログインし、**Create new…** > **New project/repository** > **C
 | `notify_aws.yml` | 置かない | 置く |
 | `create_aws_servers.yml` / `remove_aws_servers.yml` | 置かない | 演習4で置いていればそのままでよい |
 | `requirements.yml` | **置かない** | 演習4で置いたものを残す |
-| `krb5.conf` | Kerberos のときだけ。example をコピーしてレルムと KDC を書き換える | 置かない |
 
 `inventory.yml` の `203.0.113.10` と `203.0.113.11` は、保存前に必ず自分のアドレスへ変えます。Windows の `ansible_psrp_auth` は、演習3で選んだ `ntlm` または `kerberos` に合わせます。
 

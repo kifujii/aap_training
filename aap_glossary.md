@@ -1,5 +1,7 @@
 # AAP用語集
 
+[READMEへ](./README.md)
+
 ---
 
 ## 1. 基本概念

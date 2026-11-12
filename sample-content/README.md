@@ -1,5 +1,7 @@
 # sample-content
 
+[READMEへ](../README.md)
+
 演習で GitLab に置くファイルです。編集は GitLab の Web IDE を使います。
 
 ## ファイル
@@ -19,7 +21,6 @@
 | `show_handed_note.yml` | 演習11。前のジョブが `set_stats` で渡したメモを表示する |
 | `remove_my_lab.yml` | 学習後に、自分の接頭辞の AAP オブジェクトを削除する |
 | `requirements.yml` | **AWS で作る場合だけ** GitLab に置く。`amazon.aws` 10.3.0 |
-| `krb5.conf.example` | ドメイン参加済み Windows を Kerberos で接続するときの見本 |
 
 `requirements.yml` を置いたプロジェクトを、インターネットへ出られない環境で同期すると失敗します。サーバがすでにある場合は、このファイルを GitLab に置かないでください。
 
