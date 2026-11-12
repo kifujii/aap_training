@@ -99,7 +99,7 @@ name_prefix: tanaka01
 
 認証情報は `<name_prefix>-aap-api` だけにします。`localhost` はローカル接続です。
 
-**テンプレートの起動** で実行します。出力の最後に `job <番号> finished` と出れば、待ちまで終わっています。ジョブ一覧には、この `<name_prefix>-launch-note` と、その中から起動された `<name_prefix>-write-note-linux` の両方が増えます。`lin1` の `note:` が `from controller collection` になっていれば完了です。
+**テンプレートの起動** で実行します。出力の最後に `job <番号> finished` と出れば、待ちまで終わっています。ジョブ一覧には、この `<name_prefix>-launch-note` と、その中から起動された `<name_prefix>-write-note-linux` の両方が増えます。起動されたジョブの `Show the note written to note.txt` に `note.txt の note は from controller collection です` と出れば完了です。
 
 終わったら、`<name_prefix>-write-note-linux` を Survey から起動し、メモを `managed by AAP` に戻します。
 

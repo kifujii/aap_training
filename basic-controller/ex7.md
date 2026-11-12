@@ -39,12 +39,10 @@ name_prefix: tanaka01
 
 先頭の `SSH password:` と `Vault password:` は、認証情報を渡したときの表示です。パスワードそのものは出ません。その下に Python の WARNING が出ても、この演習では無視して構いません。
 
-ジョブが成功すると、`lin1` の `/tmp/<name_prefix>-aap-training/note.txt` は次の内容になります。`training_note` の既定値は `managed by AAP` です。
+ジョブが成功すると、出力の `Show the note written to note.txt` に次の行が出ます。`training_note` の既定値は `managed by AAP` です。この行が、ファイルの `note:` に書いた文面です。
 
 ```
-hostname: lin1
-address: <ansible_host の値>
-note: managed by AAP
+note.txt の note は managed by AAP です
 ```
 
 同じテンプレートをもう一度、**テンプレートの起動** から起動します。2回目は、出力の `Write note.txt` の行が `ok` になり、上部の Changed は 0 です。内容が同じなら書き直しません。
@@ -69,7 +67,7 @@ note: managed by AAP
 
 コピーした場合、Extra variables の `name_prefix` はそのままにします。新規作成の場合は、Linux と同じ1行を入れます。ファイルは `C:\temp\<name_prefix>-aap-training\note.txt` に書かれます。
 
-起動して成功することを確認します。中身の形は Linux と同じで、1行目は `hostname: win1` です。
+起動して成功することを確認します。`Show the note written to note.txt` は Linux と同じ文面です。
 
 Kerberos の場合は、ユーザー名が `ユーザー@レルム` になっているかを確認します。失敗したら、ホスト変数の `ansible_psrp_auth`、ポート、プロトコルが演習3の Kerberos の値かを確認します。
 
@@ -82,7 +80,15 @@ Kerberos の場合は、ユーザー名が `ユーザー@レルム` になって
 | `<name_prefix>-verify-note-linux` | `verify_note_linux.yml` | `<name_prefix>-linux-ssh` |
 | `<name_prefix>-verify-note-windows` | `verify_note_windows.yml` | `<name_prefix>-windows-psrp` |
 
-インベントリーとプロジェクトは、書くときと同じです。コピーした場合、Extra variables の `name_prefix` は残します。新規作成の場合は、書くときと同じ1行を入れます。両方を起動し、成功することを確認します。`note.txt` にホスト名または `managed by AAP` が無いと、ここで失敗します。`name_prefix` の行が無いと、ファイルを読む前に失敗します。
+インベントリーとプロジェクトは、書くときと同じです。コピーした場合、Extra variables の `name_prefix` は残します。新規作成の場合は、書くときと同じ1行を入れます。両方を起動し、成功することを確認します。`Show note.txt` に、ファイルの中身が出ます。Linux は次の形です。アドレスの行は、自分の `lin1` の `ansible_host` です。Windows は、1行目が `hostname: win1` です。
+
+```
+hostname: lin1
+address: <ansible_host の値>
+note: managed by AAP
+```
+
+ホスト名または `managed by AAP` が無いと、その直後の確認タスクが失敗します。`name_prefix` の行が無いと、ファイルを読む前に失敗します。
 
 ## 次
 

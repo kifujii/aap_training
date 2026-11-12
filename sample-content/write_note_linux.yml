@@ -16,7 +16,6 @@
       ansible.builtin.include_vars:
         file: "{{ playbook_dir }}/secrets.yml"
       when: training_use_vault | default(false) | bool
-      no_log: true
 
     - name: Create the note directory
       ansible.builtin.file:
@@ -33,10 +32,18 @@
           address: {{ ansible_host }}
           note: {{ training_note }}
 
+    - name: Show the note written to note.txt
+      ansible.builtin.debug:
+        msg: "note.txt の note は {{ training_note }} です"
+
     - name: Write secret.txt
       ansible.builtin.copy:
         dest: "/tmp/{{ name_prefix }}-aap-training/secret.txt"
         mode: "0600"
         content: "{{ training_secret | default('') }}\n"
       when: training_secret is defined
-      no_log: true
+
+    - name: Show the secret written to secret.txt
+      ansible.builtin.debug:
+        msg: "secret.txt に書いた値は {{ training_secret }} です"
+      when: training_secret is defined
