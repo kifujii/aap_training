@@ -8,9 +8,9 @@
 
 `<name_prefix>-write-note-linux` の **テンプレートの編集** を開き、下までスクロールします。入れる欄の名前は **Extra variables** です。「変数」という欄はありません。
 
-![Extra variables の位置。横の起動プロンプトは外したまま](../images/aap/extra-variables.png)
+![Extra variables に name_prefix と training_note。制限の起動プロンプトは外れたまま](../images/aap/extra-variables-note.png)
 
-この写真の `training_use_vault: true` は、[演習9](./ex9.md) で入れる行です。この演習では、その行は入れません。演習7で保存した `name_prefix` の行は残します。この行が無いと、ファイルを書く前に失敗します。
+演習7で保存した `name_prefix` の行は残します。この行が無いと、ファイルを書く前に失敗します。
 
 欄の中を、次の2行にします。`tanaka01` は、演習7で保存してある自分の接頭辞のままにします。
 

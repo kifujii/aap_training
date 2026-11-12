@@ -38,7 +38,7 @@ curl -sk -H "Authorization: Bearer ${AAP_TOKEN}" \
     "${AAP_API_ROOT}/job_templates/?name=<name_prefix>-write-note-linux" | python3 -m json.tool
 ```
 
-`results` の `id` を控えます。以降の `7` は、その数字に置き換えます。
+`results` の `id` を控えます。以降の `<テンプレートID>` は、その数字に置き換えます。
 
 ## Section 4: 起動する
 
@@ -47,7 +47,7 @@ curl -sk -X POST \
     -H "Authorization: Bearer ${AAP_TOKEN}" \
     -H "Content-Type: application/json" \
     -d '{"extra_vars": {"training_note": "from api"}, "limit": "lin1"}' \
-    "${AAP_API_ROOT}/job_templates/7/launch/" | python3 -m json.tool
+    "${AAP_API_ROOT}/job_templates/<テンプレートID>/launch/" | python3 -m json.tool
 ```
 
 応答の `job` がジョブ ID です。
@@ -59,7 +59,7 @@ curl -sk -H "Authorization: Bearer ${AAP_TOKEN}" \
 
 `status` が `successful` になるまで、同じコマンドを繰り返します。ジョブ出力の `Show the note written to note.txt` に `note.txt の note は from api です` と出れば、API からの Extra variables が届いています。
 
-確認後、Survey から `managed by AAP` を入れて `<name_prefix>-write-note-linux` を一度起動し、メモを戻します。
+確認後、`<name_prefix>-write-note-linux` を起動してメモを戻します。**Prompts** の **制限** は空欄のまま **Next** を押し、**Survey** は `managed by AAP` のまま **Finish** を押します。
 
 ## 次
 

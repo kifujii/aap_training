@@ -101,7 +101,7 @@ name_prefix: tanaka01
 
 **テンプレートの起動** で実行します。出力の最後に `job <番号> finished` と出れば、待ちまで終わっています。ジョブ一覧には、この `<name_prefix>-launch-note` と、その中から起動された `<name_prefix>-write-note-linux` の両方が増えます。起動されたジョブの `Show the note written to note.txt` に `note.txt の note は from controller collection です` と出れば完了です。
 
-終わったら、`<name_prefix>-write-note-linux` を Survey から起動し、メモを `managed by AAP` に戻します。
+終わったら、`<name_prefix>-write-note-linux` を起動してメモを `managed by AAP` に戻します。**Prompts** の **制限** は空欄のまま **Next** を押し、**Survey** は `managed by AAP` のまま **Finish** を押します。
 
 ## 次
 

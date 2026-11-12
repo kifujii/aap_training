@@ -57,6 +57,9 @@
 | チームへ権限を付ける | 対象の **Team Access** > **Assign teams**。最後は **Finish** |
 | Event Streamの作成 | **Automation Decisions > Event Streams** の **Create event stream**。タイプは検索欄で探す |
 | ジョブテンプレートの Webhook | 編集画面の **Webhook の有効化**。サービスは **Webhook service** の `GitLab`。保存後の詳細に **Webhook URL** と **Webhook key** |
+| 通知の新規作成 | **Notifiers** 一覧の **Create notifier**。メールのタイプ名は **メール** |
+| スケジュールの新規作成 | テンプレートの **スケジュール** タブの **Create schedule**。欄は **Schedule name**、**Start date/time**、**Time zone**。繰り返しは **ルール** の **Frequency** を **Daily** にし、**Save rule** のあと **Finish** |
+| Workflowのノード追加 | 空のキャンバスと開始ノードは **Add step**。既存ノードから新しいノードは、点が3つの **Add step and link**。すでにあるノードへ足す線は、矢印をドラッグし、線の **Run on success**。確定は **Save** |
 
 インベントリー詳細のタブは **グループ**、**ホスト**、**ソース** です。Job Template詳細のタブは **詳細**、**Team Access**、**User Access**、**スケジュール**、**ジョブ**、**Survey**、**通知** です。
 
@@ -71,10 +74,5 @@
 | 新規リポジトリ | 右上 **Create new…** > **New project/repository** > **Create blank project** |
 | Web IDE | リポジトリ右上の **Code** を開き、**Web IDE**。メニューが **Edit** の環境ではその中 |
 | AAPがGitLabを読む認証 | 認証情報タイプ **Source Control**。ユーザー名とパスワードは GitLab のログインと同じものを入れる |
-| 通知の新規作成 | **Notifiers** 一覧の **Create notifier**。メールのタイプ名は **メール** |
-| スケジュールの新規作成 | テンプレートの **スケジュール** タブにある **Create schedule** |
-| Workflowのノード追加 | ビジュアライザーの **Add step**。確定は **Save** |
 
-この資料のファイル作成は Web IDE で行います。**Initialize repository with a README** は付けたままで進められます。SAST と Secret Detection はオフのままで構いません。
-
-git CLI で空でないリポジトリへ push する場合は、README 初期化を外してからプロジェクトを作ってください。
+この資料のファイル作成は Web IDE で行います。**Initialize repository with a README** は付けたままで進められます。SAST と Secret Detection はオフのままで構いません。git CLI の手順も、そのリポジトリを clone してから push します。
