@@ -43,7 +43,7 @@ name_prefix: tanaka01
 
 ![Prompt on Launch の Review。制限は lin1。最後のボタンは Finish。手順は Prompts と Review だけ](../images/aap/launch-finish.png)
 
-写真の `tanaka01` は、演習1の例です。自分の接頭辞に読み替えます。出力の対象が `lin1` だけであることを確認します。`Show the note written to note.txt` は `note.txt の note は managed by AAP です` のままです。この演習の認証情報は `<name_prefix>-linux-ssh` だけです。
+写真の `tanaka01` は例です。自分の接頭辞に読み替えます。出力の対象が `lin1` だけであることを確認します。`Show the note written to note.txt` は `note.txt の note は managed by AAP です` のままです。この演習の認証情報は `<name_prefix>-linux-ssh` だけです。
 
 ## Section 3: Survey
 
