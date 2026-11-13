@@ -94,7 +94,7 @@ linux_login_password: TrainingLinux1
 windows_login_password: TrainingWindows1
 ```
 
-`tanaka01` は例です。演習1で決めた接頭辞と同じ文字列にします。パスワードは英数字の8文字以上32文字以内で、自分の値に変えます。
+`tanaka01` は例です。演習1で決めた接頭辞と同じ文字列にします。パスワードは英数字の8文字以上32文字以内で、自分の値に変えます。実行環境は空欄のままにします。Playbook は、システムの既定の実行環境の中で動きます。説明は [AAPのしくみ](../aap_overview.md) に書いてあります。
 
 リージョンは `group_vars/all.yml` の `ap-northeast-1` のままにします。この演習では変えません。Extra variables に入れるのは、上の3行だけです。
 
