@@ -38,6 +38,8 @@ https://<AAPのURL>/
 | **Automation Decisions** | [応用演習7](../advanced/ex7.md) 以降 |
 | **Access Management** | 組織。チームと API Tokens は応用演習 |
 
+各メニューが何をするかは [AAPのしくみ](../aap_overview.md) にまとめてあります。
+
 ### Step 1: Automation Executionを開く
 
 **Automation Execution** を開き、次があることを確認します。
