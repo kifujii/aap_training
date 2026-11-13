@@ -6,6 +6,7 @@
 * **対象:** AAPを使ったことがない方〜運用担当者
 * **前提:** Playbook の `hosts`、`tasks`、モジュール、変数の読み方が分かること。AAP の操作はこの資料だけで進めます
 * **前提環境:** AAP 2.5 以降（画面確認は 2.7 の日本語UI）、GitLab（画面確認は 19 の英語UI）。いずれも構築済みで、ユーザーも作成済み
+* **共有:** 1つの AAP と GitLab、同じ Linux と Windows を複数人で使う前提です。自分が作る認証情報、ジョブテンプレート、サーバ上のディレクトリは、[演習1](./basic-intro/ex1.md) で決める接頭辞 `<name_prefix>` で分けます
 
 ## 事前準備
 
@@ -54,7 +55,7 @@
 | Linux | `/tmp/<name_prefix>-aap-training/note.txt` |
 | Windows | `C:\temp\<name_prefix>-aap-training\note.txt` |
 
-`<name_prefix>` は [演習1](./basic-intro/ex1.md) で決める接頭辞です。人ごとにディレクトリが分かれるので、同じサーバを複数人で使えます。決め方は、その演習の「名前の接頭辞」に書いてあります。
+`<name_prefix>` は [演習1](./basic-intro/ex1.md) で決める接頭辞です。
 
 Windows への接続方式は PSRP です。ドメインに参加していない Windows（AWS で作るサーバを含む）は NTLM、ドメインに参加している Windows は Kerberos を使います。
 
@@ -63,7 +64,6 @@ Windows への接続方式は PSRP です。ドメインに参加していない
 * AAP 2.5 以降（統合UI: **Automation Execution** / **Automation Decisions** / **Access Management**）
 * SCM: GitLab。ファイルの編集は Web IDE を使います
 * カスタム Execution Environment を作る場合は、`podman` と `ansible-builder` が使えるサーバで行います。この研修では AAP サーバの `/tmp/<name_prefix>-custom-ee` です
-* 同じ AAP を複数人で使うときは、演習1で決めた接頭辞をオブジェクト名の先頭に付けます。学習後の削除は [削除手順](./cleanup.md) です
 
 ## 画面の見方
 
