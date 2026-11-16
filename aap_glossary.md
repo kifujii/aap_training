@@ -8,7 +8,7 @@
 
 | 用語 | 説明 |
 |---|---|
-| **Ansible Automation Platform (AAP)** | Red Hatが提供する自動化の統合プラットフォーム。OSS版Ansibleの実行エンジンに、Web UI・RBAC・API・スケジューリング・イベント駆動自動化（EDA）などのエンタープライズ機能を加えたもの。 |
+| **Ansible Automation Platform (AAP)** | Red Hatが提供する自動化の統合プラットフォーム。Ansibleの実行エンジンに、Web UI・RBAC・API・スケジューリング・イベント駆動自動化（EDA）などのエンタープライズ機能を加えたもの。 |
 | **Automation Controller** | AAPの中核コンポーネント。Playbookの実行管理（Job Template、Workflow、Inventory、Credential等）を担う。旧称 Ansible Tower。2.5以降のUIでは「**Automation Execution**」メニュー配下に相当する機能が集約されている。 |
 | **Event-Driven Ansible (EDA)** | イベント（監視アラート、Webhook等）を検知し、条件に応じて自動的にアクション（Job Template起動等）を実行する仕組み。2.5以降のUIでは「**Automation Decisions**」メニュー配下に相当する。 |
 | **統合UI** | AAP 2.5以降で採用された、Controller・EDAを1つのナビゲーションに統合したWeb UI。大きく **Automation Execution**（ジョブ / テンプレート / プロジェクト / Infrastructure 配下のインベントリー・認証情報・実行環境）、**Automation Decisions**（ルールブックのアクティベーション / 決定環境 / Event Streams）、**Access Management**（組織 / チーム / ユーザー）に分かれる。日本語UIでの項目名は [画面ラベル対応表](./ui-labels.md) を参照。 |
@@ -36,7 +36,7 @@
 | **Job** | Job Templateを実際に実行した1回分の記録。実行ログ・PLAY RECAP・ステータス（successful/failed等）を持つ。 |
 | **Workflow Job Template** | 複数のJob Template（またはWorkflow内のApproval等）をノードとして繋ぎ、成功/失敗に応じて分岐させながら実行する仕組み。 |
 | **Workflow Approval** | Workflow内に設置できる「人による承認」ノード。承認されるまで後続ノードの実行を保留する。 |
-| **Ad Hoc Command** | Playbookを介さず、Inventory上のホストに対してモジュールを1回限り直接実行する機能（OSS版の `ansible <host> -m <module>` に相当）。 |
+| **Ad Hoc Command** | Playbookを介さず、Inventory上のホストに対してモジュールを1回限り直接実行する機能（ `ansible <host> -m <module>` に相当）。 |
 
 ---
 
@@ -44,18 +44,18 @@
 
 | 用語 | 説明 |
 |---|---|
-| **Extra Variables (Extra Vars)** | Job Template実行時に渡す追加変数。OSS版の `-e` オプションに相当し、優先順位は非常に高い。 |
-| **Limit** | 実行対象をInventory内の特定ホスト/グループに絞り込む指定。OSS版の `--limit` に相当。 |
-| **Verbosity** | 実行ログの詳細度。OSS版の `-v`〜`-vvvv` に相当するレベルをUI上で選択する。 |
+| **Extra Variables (Extra Vars)** | Job Template実行時に渡す追加変数。CLIでの `-e` オプションに相当し、優先順位は非常に高い。 |
+| **Limit** | 実行対象をInventory内の特定ホスト/グループに絞り込む指定。CLIでの `--limit` に相当。 |
+| **Verbosity** | 実行ログの詳細度。CLIでの `-v`〜`-vvvv` に相当するレベルをUI上で選択する。 |
 | **Forks** | 並列実行するホスト数の上限。 |
-| **Job Type** | Job Templateの実行種別。「Run」（実際に変更を適用）と「Check」（OSS版の `--check` に相当するドライラン）がある。 |
+| **Job Type** | Job Templateの実行種別。「Run」（実際に変更を適用）と「Check」（CLIでの `--check` に相当するドライラン）がある。 |
 | **Prompt on Launch** | Job Template起動時に、Inventory/Credential/Extra Vars/Limit等の値をオペレーターに入力・選択させる設定。Job Template自体には固定値を持たせず、実行時に都度指定したい場合に使う。 |
 | **Survey** | Job Template起動時に、あらかじめ定義した質問フォームを通じて変数値を入力させる機能。入力値はExtra Varsとして渡される。 |
 | **Schedule** | Job Template/Workflow Job TemplateをCron形式の設定で定期実行するための機能。 |
 | **Notification Template** | Jobの開始/成功/失敗等のタイミングで、Email・Slack・Webhook等に通知を送る設定。Organization/Project/Job Template等の単位で割り当てる。 |
 | **Instance Group** | Jobを実行するExecution Nodeの集合。実行負荷の分散や特定ネットワークへの到達性に応じてJobの実行先を制御する際に使う。 |
 | **Job Slicing** | 1つのJob Templateの実行を、Inventory内のホストを分割して複数Jobに並列展開する機能。大規模Inventory向け。 |
-| **PLAY RECAP** | Job詳細画面に表示される、OSS版Ansibleと同じ形式の実行結果サマリー（ok/changed/failed等）。 |
+| **PLAY RECAP** | Job詳細画面に表示される、CLIでのAnsibleと同じ形式の実行結果サマリー（ok/changed/failed等）。 |
 
 ---
 
@@ -102,7 +102,7 @@
 
 | 用語 | 説明 |
 |---|---|
-| **Rulebook** | EDAにおける「どのイベントを」「どんな条件で」「どのアクションに繋げるか」をYAML形式で定義したファイル。OSS版Playbookに相当する存在。 |
+| **Rulebook** | EDAにおける「どのイベントを」「どんな条件で」「どのアクションに繋げるか」をYAML形式で定義したファイル。 |
 | **Source** | Rulebookがイベントを受け取る入力元（例: Webhookの受信、ファイルの変更監視、Kafka等）を定義する部分。 |
 | **Rule** | Sourceから受け取ったイベントに対する条件（condition）と、条件成立時に実行するアクション（action）の組。 |
 | **Condition** | ルールの発火条件。イベントのペイロード内容に対する比較式などで記述する。 |
