@@ -16,23 +16,33 @@
 
 ブラウザでログインし、左メニューに **Automation Execution**、**Automation Decisions**、**Access Management** があることを確認してください。Demo で始まるサンプルがあっても、演習では別名で新規作成します。
 
+AAP のインストールとユーザー作成は、この資料の範囲外です。
+
 ## 2. 対象サーバの情報
 
-演習では、Linux と Windows の決まったディレクトリへファイルを作ります。サーバがすでにある場合は、下のパスへファイルを作れて、下の接続方法が使えることを確認します。ディレクトリ自体は Playbook が作ります。
+演習では対象の Linux と Windows の、決まったディレクトリへファイルを作成します。
+既存サーバを使う場合は、以下のパスにファイルを作成しても問題のないものを使用してください。また、以下の接続方法が許可されているかも確認してください。
 
 | OS | 書くファイル | 接続方法 |
 |---|---|---|
 | Linux | `/tmp/<name_prefix>-aap-training/note.txt` | SSH |
 | Windows | `C:\temp\<name_prefix>-aap-training\note.txt` | PSRP |
 
-Linux と Windows の両方を行います。既存のサーバを使うか、AWS で新しく作るかで、進む演習が変わります。
+Linux と Windows の両方を行います。既存サーバを使用するか、AWSで新規作成するかで演習内容が変わります。
 
 | 状況 | 演習の進み方 | 事前に控えるもの |
 |---|---|---|
-| Linux と Windows がすでにある | [演習4](./basic-intro/ex4.md) は飛ばす | 各サーバのアドレス、ログインユーザー、パスワード。Windows がドメイン参加済みならレルム名 |
-| 対象サーバが無い | [演習3](./basic-intro/ex3.md) の Section 3 のあと、[演習4](./basic-intro/ex4.md) で AWS に作る | AWS のアクセスキー、シークレットキー、リージョン。サーバのパスワードは演習4で自分で決める |
+| Linux と Windows がすでにある | [演習4](./basic-intro/ex4.md) は飛ばす。インターネットへ出ない前提で進める | 各サーバのアドレス、ログインユーザー、パスワード。Windows がドメイン参加済みならレルム名 |
+| 対象サーバが無い | [演習3](./basic-intro/ex3.md) の Section 3 のあと、[演習4](./basic-intro/ex4.md) で AWS に作る。インターネットへ出られる前提 | AWS のアクセスキー、シークレットキー、リージョン。サーバのパスワードは演習4で自分で決める |
 
-Windows の接続の書き方は [演習3](./basic-intro/ex3.md) です。
+すでにサーバがある場合、ログインユーザーが `/tmp` と `C:\temp` の下に自分のディレクトリを作れることを確認します。Playbook が `/tmp/<name_prefix>-aap-training` と `C:\temp\<name_prefix>-aap-training` を作り、その中にファイルを書きます。`<name_prefix>` は、上で控える接頭辞です。
+
+Windows の接続は次のとおりです。
+
+| Windows の状態 | 認証 | インベントリに書く変数 |
+|---|---|---|
+| ドメインに参加していない（AWS で作るサーバを含む） | NTLM | `ansible_connection: psrp` と `ansible_psrp_auth: ntlm` |
+| ドメインに参加している | Kerberos | `ansible_connection: psrp`、`ansible_psrp_auth: kerberos`、`ansible_psrp_protocol: https`、`ansible_psrp_port: 5986` |
 
 サンプルのアドレス `203.0.113.10` と `203.0.113.11` は例です。実行前に実在のアドレスへ置き換えます。
 
@@ -51,10 +61,14 @@ Windows の接続の書き方は [演習3](./basic-intro/ex3.md) です。
 
 ## 4. インターネット接続の有無
 
-| 状況 | 確認すること |
+| 状況 | 扱い |
 |---|---|
-| サーバがすでにある | 演習中にインターネットへ出ません |
-| AWS でサーバを作る | インターネットへ出られます |
+| サーバがすでにある | 演習中にインターネットへ出ない。`requirements.yml` は GitLab に置かない。カスタム実行環境の作成は、この研修では AAP サーバがコンテナイメージを取得できるときだけ行う |
+| AWS でサーバを作る | インターネットへ出られる。`requirements.yml` を置き、AAP 2.7 の既定実行環境に入っている `amazon.aws` 10.3.0 を使う |
+
+## 5. サンプルファイル
+
+[sample-content/](./sample-content/) を、[演習5](./basic-controller/ex5.md) の Web IDE で GitLab に置きます。AWS で作る場合は、[演習4](./basic-intro/ex4.md) で先に一部のファイルだけ置きます。
 
 ## 次
 
