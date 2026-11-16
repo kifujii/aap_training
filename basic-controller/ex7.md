@@ -2,7 +2,7 @@
 
 [演習6](./ex6.md) | [演習8へ](./ex8.md)
 
-Linux と Windows のそれぞれに `note.txt` を書きます。1つのジョブに付けられる Machine 認証情報は1つなので、テンプレートは2つ作ります。
+Linux と Windows のそれぞれに `note.txt` を書くテンプレートを作成します。Windows 用と Linux 用で別々の認証情報を使うため、テンプレートは2つ作ります。これは同じタイプ(Machine)の認証情報がテンプレートに1つしか付けられないためとなります。
 
 ## Section 1: Linux
 
