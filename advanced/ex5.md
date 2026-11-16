@@ -32,7 +32,7 @@ ansible_connection: local
 | OAuth Token | [応用演習4](./ex4.md) で控えた API トークン |
 | Verify SSL | チェックを外す |
 
-URL は、ブラウザで開いている AAP のアドレスです。末尾に `/api/controller/` は付けません。Username と Password は空欄にします。Verify SSL を外すのは、演習環境の証明書を実行環境が信頼していない場合に接続できるようにするためです。
+URL は、ブラウザで開いている AAP のアドレスです。末尾に `/api/controller/` は付けません。Username と Password は空欄にします。Verify SSL を外すのは、自己証明書などで、演習環境の証明書を実行環境が信頼していない場合に接続できるようにするためです。
 
 ## Section 3: Playbookとジョブテンプレート
 
@@ -64,7 +64,7 @@ Web IDE で `launch_note.yml` を開き、次の内容にします。ファイ�
         msg: "job {{ launch_result.id }} finished"
 ```
 
-`CONTROLLER_OPTIONAL_API_URLPATTERN_PREFIX` は、ゲートウェイ構成の API が `/api/controller/v2/` にあるための指定です。認証情報の URL には、このパスを重ねて書きません。認証情報のタイムアウト欄は空欄のままにします。空欄の値は文字列として渡され、モジュールが秒数に変換できず失敗するため、`CONTROLLER_REQUEST_TIMEOUT` で秒数を指定します。`{{ name_prefix }}` は、このファイルでは書き換えません。
+`CONTROLLER_OPTIONAL_API_URLPATTERN_PREFIX` は、ゲートウェイ構成の API が `/api/controller/v2/` にあるための指定です。認証情報の URL には、このパスを書きません。認証情報のタイムアウト欄は空欄のままにします。空欄の値は文字列として渡され、モジュールが秒数に変換できず失敗するため、`CONTROLLER_REQUEST_TIMEOUT` で秒数を指定します。`{{ name_prefix }}` は、このファイルでは書き換えません。
 
 **Commit to main** でコミットし、プロジェクト `<name_prefix>-aap-training-content` を同期します。
 
