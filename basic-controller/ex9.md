@@ -2,6 +2,7 @@
 
 [演習8](./ex8.md) | [演習10へ](./ex10.md)
 
+この演習では文字列の暗号化を取り扱います。
 `training_secret` の値だけを暗号化して GitLab に置き、ジョブの中で復号してファイルへ書きます。暗号化は、`ansible-vault` コマンドが使えるサーバで行います。この研修では AAP サーバを使います。作業ディレクトリは、そのサーバの `/tmp` です。Web IDE には、`ansible-vault encrypt_string` が表示した文字列を貼ります。Web IDE では `ansible-vault` を実行できません。
 
 書かれるファイル:
