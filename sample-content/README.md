@@ -23,7 +23,7 @@
 | `remove_my_lab.yml` | 学習後に、自分の接頭辞の AAP オブジェクトを削除する |
 | `requirements.yml` | **AWS で作る場合だけ** GitLab に置く。`amazon.aws` 10.3.0 |
 
-`requirements.yml` を置いたプロジェクトを、インターネットへ出られない環境で同期すると失敗します。サーバがすでにある場合は、このファイルを GitLab に置かないでください。
+`requirements.yml` を置いたプロジェクトを、インターネットへ出られない環境で同期すると失敗します。既存サーバを使用する場合は、このファイルを GitLab に置かないでください。
 
 パスワードと `resource_prefix` はファイルに書きません。Job 起動時の Extra variables で渡します。
 
@@ -34,7 +34,7 @@
 3. 左のファイル一覧からファイルを作り、このディレクトリの内容を貼り付ける
 4. **Source Control** を開き、メッセージを書いて **Commit to main** をクリックする
 
-サーバがすでにある場合は `requirements.yml` を除きます。AWS で作る場合は含めます。`inventory.yml` の `ansible_host` は、コミット前に自分のサーバのアドレスへ書き換えます。
+既存サーバを使用する場合は `requirements.yml` を除きます。AWS で作る場合は含めます。`inventory.yml` の `ansible_host` は、コミット前に自分のサーバのアドレスへ書き換えます。
 
 <details>
 <summary>git CLIで行う場合</summary>

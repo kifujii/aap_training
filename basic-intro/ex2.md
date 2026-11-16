@@ -8,7 +8,7 @@
 
 | 自分の状況 | この演習で作る | あとに回すもの |
 |---|---|---|
-| サーバがすでにある | Linux 用、Windows 用、GitLab 用 | AWS 用は作らない。次は [演習3](./ex3.md)。[演習4](./ex4.md) は飛ばす |
+| 既存サーバを使用 | Linux 用、Windows 用、GitLab 用 | AWS 用は作らない。次は [演習3](./ex3.md)。[演習4](./ex4.md) は飛ばす |
 | サーバが無く、AWS で作る | AWS 用、GitLab 用 | Linux 用と Windows 用は、演習4でパスワードを決めたあとに作る |
 
 GitLab 用はどちらも作ります。ユーザー名とパスワードは、GitLab のログインに使うものと同じです。
@@ -21,7 +21,7 @@ GitLab 用はどちらも作ります。ユーザー名とパスワードは、G
 
 組織は [演習1](./ex1.md) で控えた名前を選びます。以降も同じ組織です。
 
-## Section 2: Linux用（サーバがすでにある場合）
+## Section 2: Linux用（既存サーバを使用する場合）
 
 | 項目 | 入力値 |
 |---|---|
@@ -33,7 +33,7 @@ GitLab 用はどちらも作ります。ユーザー名とパスワードは、G
 
 保存します。
 
-## Section 3: Windows用（サーバがすでにある場合）
+## Section 3: Windows用（既存サーバを使用する場合）
 
 もう一度 **認証情報の作成** を開き、次を入力します。認証情報タイプは同じく `Machine` です。
 
@@ -59,7 +59,7 @@ PSRP にするか NTLM か Kerberos かは、認証情報ではなく [演習3](
 
 ## Section 5: AWS用（サーバをこれから作る場合だけ）
 
-サーバがすでにある場合は、この Section を飛ばしてください。
+既存サーバを使用する場合は、この Section を飛ばしてください。
 
 ![Amazon Web Services 認証情報。Access Key と Secret Key の欄](../images/aap/credential-aws.png)
 

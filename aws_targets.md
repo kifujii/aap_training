@@ -4,15 +4,15 @@
 
 演習4が作るものは次のとおりです。名前の先頭には、受講者ごとに違う `resource_prefix` が付きます。
 
-| リソース | 名前の例（prefix が `tanaka01` のとき） |
+| リソース | 名前 |
 |---|---|
-| VPC | `tanaka01-vpc` |
-| サブネット | `tanaka01-subnet` |
-| インターネットゲートウェイ | `tanaka01-igw` |
-| ルートテーブル | `tanaka01-rt` |
-| セキュリティグループ | `tanaka01-aap`（TCP 22 と TCP 5985） |
-| Linux | `tanaka01-linux`（ユーザー `ansible`） |
-| Windows | `tanaka01-windows`（ユーザー `Administrator`、PSRP + NTLM） |
+| VPC | `<name_prefix>-vpc` |
+| サブネット | `<name_prefix>-subnet` |
+| インターネットゲートウェイ | `<name_prefix>-igw` |
+| ルートテーブル | `<name_prefix>-rt` |
+| セキュリティグループ | `<name_prefix>-aap`（TCP 22 と TCP 5985） |
+| Linux | `<name_prefix>-linux`（ユーザー `ansible`） |
+| Windows | `<name_prefix>-windows`（ユーザー `Administrator`、PSRP + NTLM） |
 
 Playbook は [sample-content/create_aws_servers.yml](./sample-content/create_aws_servers.yml) です。削除は [sample-content/remove_aws_servers.yml](./sample-content/remove_aws_servers.yml) です。
 
