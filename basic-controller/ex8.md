@@ -2,6 +2,8 @@
 
 [演習7](./ex7.md) | [演習9へ](./ex9.md)
 
+> **前提:** [演習7](./ex7.md) の `<name_prefix>-write-note-linux` と `<name_prefix>-write-note-windows`
+
 この演習では、節ごとにジョブを起動します。Section 1 はメモの文面、Section 2 は対象ホスト、Section 3 は起動時の質問です。`name_prefix` の行は、どの節でも残します。
 
 ## Section 1: Extra variables

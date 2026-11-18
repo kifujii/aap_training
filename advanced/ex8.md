@@ -2,6 +2,8 @@
 
 [応用演習7](./ex7.md) | [削除手順へ](../cleanup.md)
 
+> **前提:** [応用演習7](./ex7.md) の Event Stream と Activation、[演習7](../basic-controller/ex7.md) Section 3 の `<name_prefix>-verify-note-linux`
+
 `status` が `success` のイベントを受けたら、`<name_prefix>-verify-note-linux` を起動します。受け口は、応用演習7で作った Event Stream のままです。
 
 ## Section 1: Rulebookを書き換える
