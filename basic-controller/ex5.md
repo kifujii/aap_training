@@ -2,6 +2,8 @@
 
 [演習3](../basic-intro/ex3.md) | [演習6へ](./ex6.md)
 
+> **前提:** [演習2](../basic-intro/ex2.md) の GitLab 用の認証情報。サーバが無い場合は [演習4](../basic-intro/ex4.md)
+
 Playbook は GitLab に置き、AAP のプロジェクトから読みます。ファイルの作成と編集は Web IDE で行います。サーバが無い場合は、演習4と、演習3の Section 4 まで終わってから、この演習に入ります。
 
 | 自分の状況 | この演習でやること |

@@ -2,6 +2,8 @@
 
 [応用演習4](./ex4.md) | [応用演習6へ](./ex6.md)
 
+> **前提:** [応用演習4](./ex4.md) の API トークン、[演習8](../basic-controller/ex8.md) の制限の起動プロンプトと Survey
+
 応用演習4の API 呼び出しを、Playbook のジョブとして実行します。既定の実行環境には `ansible.controller` が入っているので、その中から `<name_prefix>-write-note-linux` を起動します。実行環境の欄は空欄のまま、システムの既定を使います。
 
 ## Section 1: 起動用のインベントリー

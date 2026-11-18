@@ -2,6 +2,8 @@
 
 [応用演習3](./ex3.md) | [応用演習5へ](./ex5.md)
 
+> **前提:** [演習8](../basic-controller/ex8.md) の制限の起動プロンプトと Survey
+
 ジョブの実行を、API からも行います。ここで発行するのは AAP の API トークンです。GitLab のパスワードとは別です。
 
 ## Section 1: APIの場所

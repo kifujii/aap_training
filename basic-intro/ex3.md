@@ -2,6 +2,8 @@
 
 [演習2](./ex2.md) | [演習4へ](./ex4.md)
 
+> **前提:** [演習1](./ex1.md) の接頭辞。Section 5 は [演習2](./ex2.md) の認証情報
+
 AAP から Linux と Windows へ接続するための一覧を作ります。
 
 | 自分の状況 | この演習で今やる Section | その次 |
@@ -120,6 +122,8 @@ ansible_psrp_cert_validation: ignore
 演習5で置く `inventory.yml` のサンプルは NTLM です。Kerberos のときは、`ansible_psrp_auth`、`ansible_psrp_protocol`、`ansible_psrp_port` の3つを、ここで保存した `kerberos`、`https`、`5986` に置き換えます。
 
 ## Section 5: 疎通確認
+
+<a id="adhoc"></a>
 
 ジョブテンプレートに認証情報を付けるのは [演習7](../basic-controller/ex7.md) です。この演習の疎通確認では、実行時に認証情報を選びます。
 

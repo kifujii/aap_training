@@ -2,6 +2,8 @@
 
 [応用演習5](./ex5.md) | [応用演習7へ](./ex7.md)
 
+> **前提:** [演習5](../basic-controller/ex5.md) の GitLab のプロジェクト、[演習7](../basic-controller/ex7.md) Section 3 の `<name_prefix>-verify-note-linux`
+
 ジョブテンプレートには、GitLab からの HTTP を受けて自分を起動する Webhook があります。ここでは `<name_prefix>-verify-note-linux` に付け、マージリクエストを作成したときにジョブが起動することを確認します。操作は Automation Execution のジョブテンプレートだけです。
 
 マージリクエストを作っても、プロジェクトの同期は始まりません。ジョブが使う Playbook は、すでに同期済みの内容です。

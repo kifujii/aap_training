@@ -2,6 +2,8 @@
 
 [演習3](./ex3.md) | [ホスト登録へ戻る](./ex3.md#add-hosts)
 
+> **前提:** [演習2](./ex2.md) の AWS 用と GitLab 用の認証情報、[演習3](./ex3.md) Section 3 の `<name_prefix>-aws-runner`
+
 対象の Linux と Windows がすでにある場合は、この演習を全部飛ばして [演習5](../basic-controller/ex5.md) へ進んでください。
 
 この演習は、AWS に次を作ります。同じアカウントに他のリソースがあっても、接頭辞で分かれます。

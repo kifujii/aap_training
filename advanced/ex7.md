@@ -2,6 +2,8 @@
 
 [応用演習6](./ex6.md) | [応用演習8へ](./ex8.md)
 
+> **前提:** [演習5](../basic-controller/ex5.md) の GitLab のプロジェクト、[応用演習4](./ex4.md) の API トークン
+
 これまでのジョブは、人が起動するか、スケジュールで起動するか、ジョブテンプレートの Webhook で起動するものでした。EDA は、受け取ったイベントの内容に応じて処理を始めます。AAP 2.5 以降の受け口は Event Stream です。Rulebook の `sources` には、Event Stream と同じ名前と、ソースの種類 `ansible.eda.webhook` を書きます。値は `{}` のままにします。Activation で Event Stream を割り当てると、AAP はこのソースを Event Stream に置き換えて動かします。
 
 | 用語 | 役割 |
