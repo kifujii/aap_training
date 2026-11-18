@@ -93,7 +93,12 @@ Decisions 側に `<name_prefix>-aap-training-content` が無い場合は、先�
 
 URL の末尾は `/api/controller/` です。このパスが無い URL だと、Activation は `/api/v2/config/` を呼び、ゲートウェイ構成では 404 になって起動直後に止まります。Username と Password は空欄で構いません。
 
-応用演習5の `<name_prefix>-aap-api` は、ホストを `https://<AAPのURL>` だけにしています。Playbook 側で `/api/controller/` を足すためです。こちらの Activation は、入力した URL のうしろに `api/v2/` を足します。
+同じタイプ `Red Hat Ansible Automation Platform` の認証情報でも、使う側によって URL の書き方が違います。
+
+| 認証情報 | 使う側 | URL | `/api/controller/` を足すところ |
+|---|---|---|---|
+| `<name_prefix>-aap-api`（応用演習5） | Playbook の `ansible.controller` | `https://<AAPのURL>` | Playbook の `CONTROLLER_OPTIONAL_API_URLPATTERN_PREFIX` |
+| `<name_prefix>-eda-controller`（この演習） | Rulebook Activation | `https://<AAPのURL>/api/controller/` | 認証情報の URL。Activation はこのうしろに `api/v2/` を足す |
 
 ## Section 6: Activation
 
@@ -102,13 +107,14 @@ URL の末尾は `/api/controller/` です。このパスが無い URL だと、
 | 項目 | 入力値 |
 |---|---|
 | 名前 | `<name_prefix>-note-webhook-activation` |
+| 組織 | 演習1で控えた組織 |
 | 決定環境 | Section 2 で控えたもの |
 | プロジェクト | Decisions の `<name_prefix>-aap-training-content` |
-| ルールブック | `rulebooks/notify_on_webhook.yml` |
+| ルールブック | `notify_on_webhook.yml`（`rulebooks/` は付かずに表示されます） |
 | 認証情報 | `<name_prefix>-eda-controller` |
 | Event streams | `<name_prefix>-check-webhook-stream` |
 
-Event streams を選んだあと、Rulebook のソースを置き換える画面が出たら、`<name_prefix>-check-webhook-stream` を同じ名前の Event Stream に割り当てて保存します。
+**Event streams** の欄の右にあるボタンを押すと、**Event streams** の画面が開きます。**Mapping 1** の **Rulebook source** には、ルールブックのソース名 `<name_prefix>-check-webhook-stream` が入っています。**Event stream** で同じ名前の `<name_prefix>-check-webhook-stream` を選び、**Save** を押します。他の人の Event Stream も一覧に出るので、自分の接頭辞のものを選びます。
 
 状態が Running になることを確認します。すぐに失敗して `/api/v2/config/` と出ている場合は、Section 5 の URL を見直してから再起動します。
 

@@ -15,7 +15,7 @@ Playbook は `localhost` で動き、AAP の API を呼びます。接続先の�
 | 項目 | 入力値 |
 |---|---|
 | 名前 | `localhost` |
-| 変数 | 下の2行 |
+| 変数 | 下の1行 |
 
 ```yaml
 ansible_connection: local

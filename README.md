@@ -6,7 +6,7 @@
 * **最初に読む:** [AAPのしくみ](./aap_overview.md)。メニューと、ジョブテンプレートがどの部品の組み合わせかを説明しています
 * **目的から探す:** 使いたい機能や困りごとが決まっている方は [やりたいことから探す](#やりたいことから探す) から章を選べます
 * **対象:** AAPを使ったことがない方〜運用担当者
-* **前提:** Playbook の `hosts`、`tasks`、モジュール、変数の読み方、及びAAPの用語が分かること。AAP の操作はこの資料だけで進めます
+* **前提:** Playbook の `hosts`、`tasks`、モジュール、変数の読み方が分かること。AAP の用語と操作はこの資料だけで進めます
 * **前提環境:** AAP 2.5 以降（画面確認は 2.7 の日本語UI）、GitLab（画面確認は 19 の英語UI）。いずれも構築済みで、ユーザーも作成済み
 * **共有:** 1つの AAP と GitLab、同じ Linux と Windows を複数人で同時に使います。作る認証情報、ジョブテンプレート、サーバ上のディレクトリには [演習1](./basic-intro/ex1.md) の接頭辞 `<name_prefix>` を付け、名前が重ならないようにします。終わったら [削除手順](./cleanup.md) でその接頭辞のついたリソースをまとめて消します
 
@@ -56,6 +56,8 @@
 
 | 章 | 何ができるか | こんなときに見る |
 |---|---|---|
+| [演習7 Section 4 権限昇格](./basic-controller/ex7.md#become) | 認証情報に sudo の方式を入れ、root の権限でジョブを動かす | パッケージやサービスの操作など、root が要る作業を流したい |
+| [演習7 Section 5 ジョブの記録と再起動](./basic-controller/ex7.md#relaunch) | ジョブの実行環境、リビジョン、Extra variables を見て、同じ条件でもう一度起動する。失敗したホストだけ流し直す | 失敗の原因を調べたい。直したあと、失敗したサーバだけ流し直したい |
 | [演習9 Vault](./basic-controller/ex9.md) | パスワードなどを暗号化して Git に置き、ジョブの中で戻す | 秘密の値を平文で Git に置きたくない |
 | [応用演習2 通知](./advanced/ex2.md) | ジョブの失敗をメールなどで知らせる | 夜間のジョブが失敗しても誰も気づかない |
 
@@ -92,8 +94,8 @@
 | 演習 | 既存サーバを使用 | AWSで新しく作る |
 |---|---|---|
 | [1 ログイン](./basic-intro/ex1.md) | 実施 | 実施 |
-| [2 認証情報](./basic-intro/ex2.md) | 実施 | 実施。サーバのログイン情報は演習4のあと |
-| [3 インベントリと疎通](./basic-intro/ex3.md) | 実施。Section 3 は飛ばす | Section 1から3を実施。ホスト登録は演習4のあと |
+| [2 認証情報](./basic-intro/ex2.md) | 実施 | 実施。サーバのログイン情報は演習4の Section 4 で作る |
+| [3 インベントリーと疎通](./basic-intro/ex3.md) | 実施。Section 3 は飛ばす | Section 1から3を実施。ホスト登録は演習4のあと |
 | [4 AWSでサーバを作る](./basic-intro/ex4.md) | **飛ばして演習5へ** | 実施。終わったら演習3の Section 4 へ戻る |
 | [5 GitLab](./basic-controller/ex5.md) | 実施 | 実施。演習4で作ったプロジェクトに残りのファイルを足す |
 | [6 Inventory Source](./basic-controller/ex6.md) | 実施 | 実施 |
@@ -103,15 +105,15 @@
 | [10 スケジュール](./basic-controller/ex10.md) | 実施 | 実施 |
 | [11 Workflow](./basic-controller/ex11.md) | 実施 | 実施 |
 | [応用1 RBAC](./advanced/ex1.md) | 実施 | 実施 |
-| [応用2 通知](./advanced/ex2.md) | 環境内のメールサーバ | S3に書いてログで確認 |
-| [応用3 カスタムEE](./advanced/ex3.md) | `podman` と `ansible-builder` が使えるときだけ | この研修では AAP サーバ |
+| [応用2 通知](./advanced/ex2.md) | 環境内のメールサーバ | `lin1` に入れる検証用メールサーバ（Mailpit） |
+| [応用3 カスタムEE](./advanced/ex3.md) | AAP サーバへ SSH でき、ベースイメージとコレクションを取得できるときだけ | AAP サーバへ SSH できるときだけ |
 | [応用4 API](./advanced/ex4.md) | 実施 | 実施 |
 | [応用5 Playbookから起動](./advanced/ex5.md) | 実施 | 実施 |
 | [応用6 Webhook](./advanced/ex6.md) | 実施 | 実施 |
 | [応用7 EDA](./advanced/ex7.md) | 実施 | 実施 |
 | [応用8 EDAからJob起動](./advanced/ex8.md) | 実施 | 実施 |
 
-既存サーバを使用する環境では、演習中にインターネットへ出ません。コレクションとコンテナイメージは、AAP に入っているものを使います。AWS でサーバを作る場合は、インターネットへ出られます。
+既存サーバを使用する環境では、演習中にインターネットへ出ません。コレクションとコンテナイメージは、AAP に入っているものを使います。例外は応用演習3で、ベースイメージとコレクションを取得するために接続が必要です。AWS でサーバを作る場合は、インターネットへ出られます。
 
 作るファイルは次の2か所です。ディレクトリは Playbook が作ります。
 
@@ -126,7 +128,7 @@ Windows への接続方式は PSRP です。ドメインに参加していない
 
 * AAP 2.5 以降（統合UI: **Automation Execution** / **Automation Decisions** / **Access Management**）
 * SCM: GitLab。ファイルの編集は Web IDE を使います
-* カスタム Execution Environment を作る場合は、`podman` と `ansible-builder` が使えるサーバで行います。この研修では AAP サーバの `/tmp/<name_prefix>-custom-ee` です
+* カスタム Execution Environment は、AAP サーバの `/tmp/<name_prefix>-custom-ee` で作ります。SSH するユーザーは [事前準備](./prepare_training_environment.md) で控えます
 
 ## 画面の見方
 

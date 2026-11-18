@@ -14,8 +14,9 @@ all:
               ansible_host: 203.0.113.11
               ansible_connection: psrp
               # ここから下は NTLM の値です。ドメイン参加の Windows は、演習5のとおり
-              # ansible_psrp_auth、ansible_psrp_protocol、ansible_psrp_port の3つを
-              # kerberos、https、5986 に置き換えます。1つだけ変えないでください。
+              # ansible_host を FQDN にし、ansible_psrp_auth、ansible_psrp_protocol、
+              # ansible_psrp_port の3つを kerberos、https、5986 に置き換えます。
+              # 3つのうち1つだけ変えないでください。
               ansible_psrp_auth: ntlm
               ansible_psrp_protocol: http
               ansible_psrp_port: 5985

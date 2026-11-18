@@ -1,4 +1,4 @@
-# 演習 3 - インベントリと疎通確認
+# 演習 3 - インベントリーと疎通確認
 
 [演習2](./ex2.md) | [演習4へ](./ex4.md)
 
@@ -39,7 +39,7 @@ AAP から Linux と Windows へ接続するための一覧を作ります。
 [演習4](./ex4.md) の作成ジョブは、これから作るサーバの中ではなく、AAP の実行環境の中で動きます。実行環境が何かは [AAPのしくみ](../aap_overview.md) に書いてあります。そのための一覧を、ここで先に作ります。Linux と Windows は入れません。ソースも追加しません。
 
 1. **インベントリーの作成** で、名前 `<name_prefix>-aws-runner`、組織は演習1と同じ、で保存する
-2. **ホスト** タブでホストを追加する。名前は `localhost`
+2. **ホスト** タブの **ホストの作成** で、名前 `localhost` のホストを作る
 3. ホストの変数に次を入れる
 
 ```yaml
@@ -50,13 +50,13 @@ ansible_connection: local
 
 ここまで終わったら、Section 4 には進まず [演習4](./ex4.md) を実施してください。演習4が終わったあと、下の Section 4 でホストを登録し、Section 5 で疎通を確認します。
 
-## Section 4: ホストを追加する
+## Section 4: ホストを作る
 
 <a id="add-hosts"></a>
 
 サーバが無く、演習4のログにアドレスがまだ無い場合は、ここで止めます。アドレスを控えてから戻ってきてください。
 
-**ホスト** タブでホストを追加します。
+**ホスト** タブの **ホストの作成** を押します。
 
 ![ホストの追加。名前、変数の位置](../images/aap/host-add.png)
 
@@ -109,7 +109,7 @@ ansible_psrp_cert_validation: ignore
 上の変数の代わりに、次を使います。認証は Kerberos です。ユーザー名は演習2の `<name_prefix>-windows-psrp` に入れた `ユーザー@レルム` です。AWS で作った Windows は、この節ではなく NTLM の変数を使います。
 
 ```yaml
-ansible_host: 203.0.113.11
+ansible_host: win1.example.com
 ansible_connection: psrp
 ansible_psrp_auth: kerberos
 ansible_psrp_protocol: https
@@ -117,9 +117,11 @@ ansible_psrp_port: 5986
 ansible_psrp_cert_validation: ignore
 ```
 
+`win1.example.com` は例です。Kerberos は IP アドレスでは認証できないので、`ansible_host` には、その Windows のドメイン上のホスト名（FQDN）を入れます。事前準備で控えた FQDN にします。
+
 この変数で保存します。`win1` をグループ `windows` に入れる手順は、上の「ホストをグループに入れる」と同じです。NTLM の変数で保存済みの場合は、ホストを開いて変数を置き換えてからグループへ入れます。
 
-演習5で置く `inventory.yml` のサンプルは NTLM です。Kerberos のときは、`ansible_psrp_auth`、`ansible_psrp_protocol`、`ansible_psrp_port` の3つを、ここで保存した `kerberos`、`https`、`5986` に置き換えます。
+演習5で置く `inventory.yml` のサンプルは NTLM です。Kerberos のときは、`ansible_host` をここで保存した FQDN にし、`ansible_psrp_auth`、`ansible_psrp_protocol`、`ansible_psrp_port` の3つを `kerberos`、`https`、`5986` に置き換えます。
 
 ## Section 5: 疎通確認
 
@@ -127,22 +129,22 @@ ansible_psrp_cert_validation: ignore
 
 ジョブテンプレートに認証情報を付けるのは [演習7](../basic-controller/ex7.md) です。この演習の疎通確認では、実行時に認証情報を選びます。
 
-`<name_prefix>-training-inventory` の **ホスト** タブを開き、`lin1` にチェックを入れます。**Run command** をクリックします。
+`<name_prefix>-training-inventory` の **ホスト** タブを開き、`lin1` にチェックを入れます。**Run command** をクリックします。画面の左に **詳細**、**実行環境**、**認証情報**、**Review** の4つの段階が出ます。
 
-![Run command。モジュール名、認証情報、起動ボタンの位置。制限の欄は、選んだホスト名になる](../images/aap/run-command.png)
+![Run command の詳細。Module は ping、制限は選んだホスト lin1。左に4つの段階](../images/aap/run-command.png)
 
-| 項目 | Linux | Windows |
-|---|---|---|
-| モジュール | `ping` | `win_ping` |
-| 認証情報 | `<name_prefix>-linux-ssh` | `<name_prefix>-windows-psrp` |
+1. **詳細** で、**Module** を選びます。Linux は `ping`、Windows は `win_ping` です。**制限** には、チェックを入れたホスト名が入っています。ほかの欄はそのままにして **Next** を押します
+2. **実行環境** は空欄のまま **Next** を押します。空欄のときは既定の実行環境で動きます
+3. **認証情報** で **認証情報の選択** を開き、Linux は `<name_prefix>-linux-ssh`、Windows は `<name_prefix>-windows-psrp` を選んで **Next** を押します
+4. **Review** で、Module、制限、認証情報を確かめて **Finish** を押します
 
-起動し、`SUCCESS` と表示されることを確認します。Windows は、`lin1` のチェックを外し、`win1` だけを選んでから実行します。1つの実行に付けられる Machine 認証情報は1つなので、Linux と Windows は別々に確認します。NTLM でも Kerberos でも、ここで `win_ping` を実行します。
+写真の `tanaka01` は例です。ジョブの出力に `lin1 | SUCCESS` と出ることを確認します。Windows は、`lin1` のチェックを外し、`win1` だけを選んでから同じ手順で実行します。1つの実行に付けられる Machine 認証情報は1つなので、Linux と Windows は別々に確認します。NTLM でも Kerberos でも、ここで `win_ping` を実行します。
 
 `ping` が `SUCCESS` なら、SSH のユーザー名とパスワード、アドレスが合っています。`win_ping` が `SUCCESS` なら、PSRP の認証とポートが合っています。
 
 失敗したときの確認箇所:
 
-* `ansible_host` が、控えたアドレスと一致しているか
+* `ansible_host` が、控えたアドレスと一致しているか。Kerberos のときは IP アドレスではなく FQDN か
 * 認証情報のユーザー名とパスワード
 * Windows の `ansible_psrp_auth` が、参加状況（NTLM か Kerberos か）と一致しているか
 * ファイアウォールが、AAP から TCP 22（Linux）または 5985（NTLM）または 5986（Kerberos）を許可しているか

@@ -6,6 +6,8 @@
 
 ジョブの実行を、API からも行います。ここで発行するのは AAP の API トークンです。GitLab のパスワードとは別です。
 
+この演習のコマンドは、[事前準備](../prepare_training_environment.md) で控えた作業用サーバで実行します。
+
 ## Section 1: APIの場所
 
 ```bash

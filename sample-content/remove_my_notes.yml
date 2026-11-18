@@ -1,0 +1,38 @@
+---
+# 演習で対象サーバに作ったディレクトリを、中のファイルごと消す。
+# Linux と Windows で認証情報が違うので、ジョブテンプレートの制限で片方ずつ実行する。
+- name: Remove the note directory on Linux
+  hosts: linux
+  gather_facts: false
+
+  tasks:
+    - name: name_prefix is set
+      ansible.builtin.assert:
+        that:
+          - name_prefix is defined
+          - name_prefix is match('^[a-z][a-z0-9-]{1,12}$')
+          - name_prefix is not match('.*-$')
+        fail_msg: ジョブテンプレートの Extra variables に、演習1で決めた name_prefix を指定してください。
+
+    - name: Remove /tmp/<name_prefix>-aap-training
+      ansible.builtin.file:
+        path: "/tmp/{{ name_prefix }}-aap-training"
+        state: absent
+
+- name: Remove the note directory on Windows
+  hosts: windows
+  gather_facts: false
+
+  tasks:
+    - name: name_prefix is set
+      ansible.builtin.assert:
+        that:
+          - name_prefix is defined
+          - name_prefix is match('^[a-z][a-z0-9-]{1,12}$')
+          - name_prefix is not match('.*-$')
+        fail_msg: ジョブテンプレートの Extra variables に、演習1で決めた name_prefix を指定してください。
+
+    - name: Remove C:\temp\<name_prefix>-aap-training
+      ansible.windows.win_file:
+        path: 'C:\temp\{{ name_prefix }}-aap-training'
+        state: absent

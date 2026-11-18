@@ -18,25 +18,32 @@
       - { base: "{{ api_host }}/api/controller/v2", path: job_templates, name: "{{ name_prefix }}-verify-note-windows" }
       - { base: "{{ api_host }}/api/controller/v2", path: job_templates, name: "{{ name_prefix }}-create-aws-servers" }
       - { base: "{{ api_host }}/api/controller/v2", path: job_templates, name: "{{ name_prefix }}-remove-aws-servers" }
-      - { base: "{{ api_host }}/api/controller/v2", path: job_templates, name: "{{ name_prefix }}-notify-aws" }
       - { base: "{{ api_host }}/api/controller/v2", path: job_templates, name: "{{ name_prefix }}-launch-note" }
       - { base: "{{ api_host }}/api/controller/v2", path: job_templates, name: "{{ name_prefix }}-show-handed-note" }
       - { base: "{{ api_host }}/api/controller/v2", path: job_templates, name: "{{ name_prefix }}-use-ini" }
+      - { base: "{{ api_host }}/api/controller/v2", path: job_templates, name: "{{ name_prefix }}-check-become" }
+      - { base: "{{ api_host }}/api/controller/v2", path: job_templates, name: "{{ name_prefix }}-setup-mailpit" }
+      - { base: "{{ api_host }}/api/controller/v2", path: job_templates, name: "{{ name_prefix }}-show-mailpit" }
+      - { base: "{{ api_host }}/api/controller/v2", path: job_templates, name: "{{ name_prefix }}-remove-notes-linux" }
+      - { base: "{{ api_host }}/api/controller/v2", path: job_templates, name: "{{ name_prefix }}-remove-notes-windows" }
       - { base: "{{ api_host }}/api/controller/v2", path: notification_templates, name: "{{ name_prefix }}-note-mail" }
       - { base: "{{ api_host }}/api/controller/v2", path: projects, name: "{{ name_prefix }}-aap-training-content" }
       - { base: "{{ api_host }}/api/eda/v1", path: projects, name: "{{ name_prefix }}-aap-training-content" }
       - { base: "{{ api_host }}/api/controller/v2", path: inventories, name: "{{ name_prefix }}-training-inventory" }
       - { base: "{{ api_host }}/api/controller/v2", path: inventories, name: "{{ name_prefix }}-aws-runner" }
       - { base: "{{ api_host }}/api/controller/v2", path: credentials, name: "{{ name_prefix }}-linux-ssh" }
+      - { base: "{{ api_host }}/api/controller/v2", path: credentials, name: "{{ name_prefix }}-linux-ssh-wrong" }
       - { base: "{{ api_host }}/api/controller/v2", path: credentials, name: "{{ name_prefix }}-windows-psrp" }
       - { base: "{{ api_host }}/api/controller/v2", path: credentials, name: "{{ name_prefix }}-gitlab-scm" }
       - { base: "{{ api_host }}/api/controller/v2", path: credentials, name: "{{ name_prefix }}-aws-training" }
       - { base: "{{ api_host }}/api/controller/v2", path: credentials, name: "{{ name_prefix }}-vault-training" }
       - { base: "{{ api_host }}/api/controller/v2", path: credentials, name: "{{ name_prefix }}-eda-controller" }
-      - { base: "{{ api_host }}/api/eda/v1", path: credentials, name: "{{ name_prefix }}-check-webhook-token" }
-      - { base: "{{ api_host }}/api/eda/v1", path: credentials, name: "{{ name_prefix }}-eda-controller" }
-      - { base: "{{ api_host }}/api/eda/v1", path: credentials, name: "{{ name_prefix }}-gitlab-scm" }
-      - { base: "{{ api_host }}/api/controller/v2", path: teams, name: "{{ name_prefix }}-ops-team" }
+      - { base: "{{ api_host }}/api/eda/v1", path: eda-credentials, name: "{{ name_prefix }}-check-webhook-token" }
+      - { base: "{{ api_host }}/api/eda/v1", path: eda-credentials, name: "{{ name_prefix }}-eda-controller" }
+      - { base: "{{ api_host }}/api/eda/v1", path: eda-credentials, name: "{{ name_prefix }}-gitlab-scm" }
+      # チームとユーザーは Platform Gateway が管理する。controller の API では消さない。
+      - { base: "{{ api_host }}/api/gateway/v1", path: teams, name: "{{ name_prefix }}-ops-team" }
+      - { base: "{{ api_host }}/api/gateway/v1", path: users, name: "{{ name_prefix }}-ops", field: username }
       - { base: "{{ api_host }}/api/controller/v2", path: execution_environments, name: "{{ name_prefix }}-custom-ee" }
       - { base: "{{ api_host }}/api/controller/v2", path: credentials, name: "{{ name_prefix }}-registry" }
       - { base: "{{ api_host }}/api/controller/v2", path: job_templates, name: "{{ name_prefix }}-remove-lab" }
@@ -58,7 +65,7 @@
 
     - name: Look up each lab object by its exact name
       ansible.builtin.uri:
-        url: "{{ item.base }}/{{ item.path }}/?name={{ item.name | urlencode }}"
+        url: "{{ item.base }}/{{ item.path }}/?{{ item.field | default('name') }}={{ item.name | urlencode }}"
         method: GET
         headers:
           Authorization: "Bearer {{ api_token }}"
@@ -87,9 +94,9 @@
           {%- for result in lookup_results.results -%}
           {%- if 'json' in result and result['json'] is mapping and 'results' in result['json'] -%}
           {%- for found in result['json']['results'] -%}
-          {%- if found.name == result.item.name -%}
+          {%- if found[result.item.field | default('name')] == result.item.name -%}
           {%- set row = {
-            'name': found.name,
+            'name': result.item.name,
             'url': result.item.base ~ '/' ~ result.item.path ~ '/' ~ (found.id | string) ~ '/'
           } -%}
           {%- set _ = ns.items.append(row) -%}
@@ -106,12 +113,28 @@
         headers:
           Authorization: "Bearer {{ api_token }}"
         validate_certs: false
-        status_code: [200, 202, 204, 409]
+        # 使用中（409）や権限不足（403、405）でも止めずに、残った名前として最後に出す。
+        status_code: [200, 202, 204, 400, 403, 404, 405, 409]
       loop: "{{ delete_targets }}"
       loop_control:
         label: "{{ item.name }}"
       no_log: true
+      register: delete_results
+      # Activation の削除は少し遅れて終わる。使っていた Event Stream や EDA のプロジェクトは、
+      # その間 409 になるので、間をあけてやり直す。controller の 409（このジョブが使用中）は待たない。
+      until: delete_results.status != 409 or '/api/eda/' not in item.url
+      retries: 6
+      delay: 10
 
-    - name: Show the names that matched
+    - name: Sort the names into deleted and remaining
+      ansible.builtin.set_fact:
+        deleted_names: "{{ delete_results.results | default([]) | selectattr('status', 'in', [200, 202, 204, 404]) | map(attribute='item.name') | list }}"
+        remaining_names: "{{ delete_results.results | default([]) | rejectattr('status', 'in', [200, 202, 204, 404]) | map(attribute='item.name') | list }}"
+
+    - name: Show the names that were deleted
       ansible.builtin.debug:
-        msg: "{{ delete_targets | default([]) | map(attribute='name') | list }}"
+        msg: "{{ deleted_names }}"
+
+    - name: Show the names that remain
+      ansible.builtin.debug:
+        msg: "{{ remaining_names }}"

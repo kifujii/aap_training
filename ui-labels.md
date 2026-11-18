@@ -49,6 +49,7 @@
 | アドホック実行 | インベントリーの **ホスト** タブにある **Run command** |
 | Surveyの質問追加 | **Create survey question**。保存は **Save survey question**。一覧の **Survey enabled** をオンにする |
 | APIトークンの発行 | **API Tokens** の **Create API token**。発行ボタンは **Create token**。Scope は **Write** |
+| ホストの作成 | インベントリーの **ホスト** タブの **ホストの作成** |
 | グループの作成 | インベントリーの **グループ** タブの **グループの作成** |
 | ホストをグループへ入れる | グループの **ホスト** タブ > **Add host** > **Add existing host** > チェック > **Add hosts** |
 | ジョブテンプレートの追加変数 | **Extra variables**。「変数」という欄名はない |

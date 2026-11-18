@@ -13,7 +13,7 @@
 | 画面上の名前 | 付ける場所 | できること |
 |---|---|---|
 | JobTemplate Execute | `<name_prefix>-write-note-linux`、`<name_prefix>-write-note-windows` | 起動できる。編集はできない |
-| WorkflowJobTemplate Execute | `<name_prefix>-note-workflow` | ワークフローを起動できる |
+| WorkflowJobTemplate Execute | `<name_prefix>-note-workflow` | ワークフローを起動できる。中のテンプレートは、その人の権限に関係なく動く。承認はできない |
 | Project Read Compat | `<name_prefix>-aap-training-content` | プロジェクトを見られる |
 | Inventory Read Compat | `<name_prefix>-training-inventory` | インベントリーを見られる |
 
@@ -76,11 +76,13 @@ JobTemplate Execute だけでは、Playbook や認証情報の変更はできま
 
 * `<name_prefix>-write-note-linux` の **テンプレートの起動** を押します。演習8と同じ **Prompt on Launch** が開きます。**制限** は空欄、**Survey** は `managed by AAP` のまま **Finish** を押します。ジョブが成功すれば、JobTemplate Execute で起動できています。**テンプレートの編集** は開けません。Execute に編集は含まれません。
 * テンプレート一覧に `<name_prefix>-verify-note-linux` は出ません。Execute を付けていないためです。アドレスを直接開いても「このアクションを実行する権限がありません」と出て、ジョブは始まりません。
-* `<name_prefix>-note-workflow` の詳細では、起動ができて、編集はできません。WorkflowJobTemplate Execute は起動だけで、編集は含みません。起動は押さないでください。押すと、書くジョブのあと、Execute を付けていない確認用テンプレートで失敗します。
+* `<name_prefix>-note-workflow` の詳細では、起動ができて、編集はできません。WorkflowJobTemplate Execute は起動だけで、編集は含みません。**テンプレートの起動** を押します。書くジョブ2つが成功したあと、承認ノード `<name_prefix>-note-review` で止まります。WorkflowJobTemplate Execute には承認が含まれないので、`<name_prefix>-ops` では承認できません。承認には **WorkflowJobTemplate Approve** が要ります。承認は、このあと管理者に戻ってから行います。
 * プロジェクト `<name_prefix>-aap-training-content` を開きます。同期ボタンは押せません。Project Read Compat は閲覧です。
 * インベントリー `<name_prefix>-training-inventory` は開けます。ホストの追加や、変数の保存はできません。Inventory Read Compat は閲覧です。
 
 右上の `<name_prefix>-ops` をクリックし、**ログアウト** を押します。管理者でログインし直し、`<name_prefix>-write-note-linux` の **テンプレートの編集** が開くことを確認します。
+
+続けて、**Automation Execution > 管理 > Workflow Approvals** で、`<name_prefix>-ops` が起動したワークフローの `<name_prefix>-note-review` を、演習11と同じ手順で承認します。確認用テンプレート2つが成功し、ワークフローが成功で終わります。`<name_prefix>-ops` には確認用テンプレートの Execute を付けていませんが、ワークフローの中のテンプレートは、起動した人の権限に関係なく動きます。ワークフローの Execute を付けるときは、中のテンプレートを実行させてよい人かを考えて付けます。
 
 ## 次
 

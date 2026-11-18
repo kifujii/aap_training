@@ -12,7 +12,7 @@
           - name_prefix is not match('.*-$')
         fail_msg: ジョブテンプレートの Extra variables に、演習1で決めた name_prefix を指定してください。
 
-    - name: Write settings.ini with community.general
+    - name: Write the ini file with community.general
       community.general.ini_file:
         path: "/tmp/{{ name_prefix }}-use-ini.ini"
         section: note
@@ -22,4 +22,4 @@
 
     - name: Show the value written with community.general
       ansible.builtin.debug:
-        msg: "settings.ini の source は custom ee です"
+        msg: "{{ name_prefix }}-use-ini.ini の source は custom ee です"

@@ -4,7 +4,7 @@
 
 > **前提:** [演習2](../basic-intro/ex2.md) の GitLab 用の認証情報。サーバが無い場合は [演習4](../basic-intro/ex4.md)
 
-Playbook は GitLab に置き、AAP のプロジェクトから読みます。ファイルの作成と編集は Web IDE で行います。サーバが無い場合は、演習4と、演習3の Section 4 まで終わってから、この演習に入ります。
+Playbook は GitLab に置き、AAP のプロジェクトから読みます。ファイルの作成と編集は Web IDE で行います。サーバが無い場合は、演習4と、演習3の Section 5（疎通確認）まで終わってから、この演習に入ります。
 
 | 自分の状況 | この演習でやること |
 |---|---|
@@ -26,7 +26,7 @@ GitLab にログインし、**Create new…** > **New project/repository** > **C
 | Initialize repository with a README | 付けたまま |
 | SAST / Secret Detection | オフのまま |
 
-**Create project** のあと、HTTPS のクローン URL を控えます。
+**Create project** のあと、プロジェクトの画面の右上にある **Code** を開き、**Clone with HTTPS** の URL を控えます。Section 3 で使います。SSH キーの案内が出ても、この演習では使いません。
 
 ## Section 2: Web IDEでファイルを置く
 
@@ -44,16 +44,16 @@ GitLab にログインし、**Create new…** > **New project/repository** > **C
 | `write_note_windows.yml` | 置く | 置く |
 | `verify_note_linux.yml` | 置く | 置く |
 | `verify_note_windows.yml` | 置く | 置く |
-| `notify_aws.yml` | 置かない | 置く |
 | `create_aws_servers.yml` / `remove_aws_servers.yml` | 置かない | 演習4で置いていればそのままでよい |
 | `requirements.yml` | **置かない** | 演習4で置いたものを残す |
 
 `inventory.yml` の `203.0.113.10` と `203.0.113.11` は、保存前に必ず自分のアドレスへ変えます。
 
-Windows の接続は、サンプルが NTLM です。演習3で NTLM を選んだ人は、`ansible_psrp_auth`、`ansible_psrp_protocol`、`ansible_psrp_port` をサンプルのままにします。ドメインに参加している Windows は、この3つを下の Kerberos の列に置き換えます。どれか1つだけ変えると、演習6の同期で演習3の変数が上書きされ、`win_ping` が失敗します。
+Windows の接続は、サンプルが NTLM です。演習3で NTLM を選んだ人は、`ansible_psrp_auth`、`ansible_psrp_protocol`、`ansible_psrp_port` をサンプルのままにします。ドメインに参加している Windows は、`ansible_host` を演習3で保存した FQDN にし、この3つを下の Kerberos の列に置き換えます。どれか1つだけ変えると、演習6の同期で演習3の変数が上書きされ、`win_ping` が失敗します。
 
-| 項目 | NTLM（サンプルのまま） | Kerberos（3つとも置き換える） |
+| 項目 | NTLM（サンプルのまま） | Kerberos（すべて置き換える） |
 |---|---|---|
+| `ansible_host` | 自分の Windows のアドレス | 演習3で保存した FQDN |
 | `ansible_psrp_auth` | `ntlm` | `kerberos` |
 | `ansible_psrp_protocol` | `http` | `https` |
 | `ansible_psrp_port` | `5985` | `5986` |
@@ -90,7 +90,7 @@ git push
 |---|---|
 | 名前 | `<name_prefix>-aap-training-content` |
 | ソースコントロールタイプ | Git |
-| ソースコントロールURL | Section 1 の HTTPS URL |
+| ソースコントロールURL | Section 1 で控えた **Clone with HTTPS** の URL |
 | ソースコントロールブランチ | `main` |
 | ソースコントロール認証情報 | `<name_prefix>-gitlab-scm` |
 | 起動時のリビジョン更新 | 有効 |

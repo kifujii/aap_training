@@ -1,0 +1,25 @@
+---
+# 応用演習2（AWS でサーバを作った場合）。Mailpit が受け取ったメールの件名と宛先を表示する。
+- name: Show the mail Mailpit received
+  hosts: linux
+  gather_facts: false
+
+  tasks:
+    - name: Read the latest messages from Mailpit
+      ansible.builtin.uri:
+        url: http://127.0.0.1:8025/api/v1/messages?limit=5
+        return_content: true
+      register: mailpit
+
+    - name: At least one message has arrived
+      ansible.builtin.assert:
+        that:
+          - mailpit.json.messages | length > 0
+        fail_msg: Mailpit にメールが届いていません。Notifier のホストとポート、通知タブの失敗時の設定を確認してください。
+
+    - name: Show the received messages
+      ansible.builtin.debug:
+        msg: "件名: {{ item.Subject }} / 宛先: {{ item.To | map(attribute='Address') | join(', ') }}"
+      loop: "{{ mailpit.json.messages }}"
+      loop_control:
+        label: "{{ item.Created }}"
