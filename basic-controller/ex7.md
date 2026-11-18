@@ -43,7 +43,7 @@ name_prefix: tanaka01
 note.txt の note は managed by AAP です
 ```
 
-`Load secrets.yml when vault is enabled`、`Write secret.txt`、`Show the secret written to secret.txt` は `skipping` です。この演習では Vault をまだ使いません。
+`Load secrets.yml when vault is enabled`、`Write secret.txt`、`Read secret.txt`、`Show the secret written to secret.txt` は `skipping` です。この演習では Vault をまだ使いません。
 
 先頭の `SSH password:` と `Vault password:` は、認証情報を渡したときの表示です。パスワードそのものは出ません。その下に Python の WARNING が出ても、この演習では無視して構いません。
 

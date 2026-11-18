@@ -16,7 +16,7 @@
 
 ジョブは15分ほどかかることがあります。Windows の PSRP の待ち受けが開くまで待つためです。
 
-パスワードは、このあと Extra variables に自分で入れる値です。ログには出ません。研修用の英数字にして、本番で使っているパスワードは入れないでください。
+パスワードは、このあと Extra variables に自分で入れる値です。テンプレートの **詳細** を初期値の `0 (正常)` のまま起動すれば、タスクの出力には、パスワードそのものは出ません。ジョブの詳細の Extra variables と、ジョブテンプレートの Extra variables には、入れた値が平文で残ります。この演習のサーバ専用の値にして、本番で使っているパスワードは入れないでください。ジョブテンプレートに残った値は、Section 3 の最後で消します。実際の運用で起動のたびに秘密の値を渡すときは、Survey の Answer type を Password にします。入れた値は、ジョブの詳細には平文で残りません。作り方は [演習8](../basic-controller/ex8.md) です。
 
 開始前に、[演習3](./ex3.md) の Section 3 まで終わっていることを確認します。ジョブテンプレートのインベントリー欄では、そこで作った `<name_prefix>-aws-runner` を選びます。この演習でインベントリーは作りません。
 
@@ -41,6 +41,8 @@
 5. **Source Control** から **Commit to main** をクリックする
 
 `requirements.yml` は、ジョブが使う `amazon.aws` の版を 10.3.0 に固定するファイルです。AWS で作る場合だけ置きます。置かないとジョブが失敗します。
+
+`group_vars/all.yml` の `allow_cidr` は `0.0.0.0/0` です。作ったサーバの SSH（TCP 22）と PSRP（TCP 5985）を、どの接続元からも許可します。この演習では、この値のまま使います。実際の運用では、接続してくるアドレスだけを書きます。学習が終わったら、Section 5 でサーバを消します。
 
 <details>
 <summary>git CLIで行う場合</summary>
@@ -92,11 +94,16 @@ git push
 
 ```yaml
 resource_prefix: tanaka01
-linux_login_password: TrainingLinux1
-windows_login_password: TrainingWindows1
+linux_login_password: <Linuxのパスワード>
+windows_login_password: <Windowsのパスワード>
 ```
 
-`tanaka01` は例です。演習1で決めた接頭辞と同じ文字列にします。パスワードは英数字の8文字以上32文字以内で、自分の値に変えます。実行環境は空欄のままにします。Playbook は、システムの既定の実行環境の中で動きます。説明は [AAPのしくみ](../aap_overview.md) に書いてあります。
+`tanaka01` は例です。演習1で決めた接頭辞と同じ文字列にします。`<Linuxのパスワード>` と `<Windowsのパスワード>` は、自分で決めた値に置き換えます。`<` と `>` は残しません。パスワードの条件は次のとおりです。条件に合わないと、最初のタスク `Required variables are set` で止まります。
+
+* 英数字だけで、8文字以上32文字以内
+* 英大文字、英小文字、数字を、それぞれ1文字以上含む（Windows は、この3種類が無いパスワードを設定できません）
+
+実行環境は空欄のままにします。Playbook は、システムの既定の実行環境の中で動きます。説明は [AAPのしくみ](../aap_overview.md) に書いてあります。
 
 リージョンは `group_vars/all.yml` の `ap-northeast-1` のままにします。この演習では変えません。Extra variables に入れるのは、上の3行だけです。
 
@@ -113,9 +120,11 @@ Windowsのユーザー: Administrator
 パスワードは、このジョブの Extra variables に入れた値です。
 ```
 
-`tanaka01`、`203.0.113.10`、`203.0.113.11` は例です。ログに出た2つのアドレスと、ユーザー名を控えます。パスワードは、Extra variables に入れた2つの値です。
+`tanaka01`、`203.0.113.10`、`203.0.113.11` は例です。ログに出た2つのアドレスと、ユーザー名を控えます。パスワードは、Extra variables に入れた2つの値です。ジョブの詳細を開くと、その値が Extra variables に残っています。
 
-失敗したときは、失敗したタスクの `msg` を見ます。よくある原因は、`resource_prefix` の文字種、パスワードに記号が入っていること、AWS のキーに EC2 の作成権限が無いことです。
+値を控えたら、`<name_prefix>-create-aws-servers` の **テンプレートの編集** を開き、Extra variables から `linux_login_password` と `windows_login_password` の2行を消して保存します。`resource_prefix` の行は残します。テンプレートを開ける他の人に、パスワードが見えないようにするためです。もう一度このジョブを起動するときは、2行を入れ直します。
+
+失敗したときは、失敗したタスクの `msg` を見ます。よくある原因は、`resource_prefix` の文字種、パスワードの条件（記号が入っている、英大文字・英小文字・数字のどれかが無い）、AWS のキーに EC2 の作成権限が無いこと、VPC の数がアカウントの上限（初期値はリージョンあたり5つ）に達していることです。VPC の上限に達したときは、講師に連絡します。
 
 ## Section 4: ログイン用の認証情報を作る
 

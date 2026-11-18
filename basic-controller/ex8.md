@@ -61,6 +61,8 @@ name_prefix: tanaka01
 | Required | 有効 |
 | Default answer | `managed by AAP` |
 
+Answer type の Password は、入れた値をジョブの詳細に平文で残さないときに使います。この演習のメモは Text のままにします。
+
 **Save survey question** を押します。一覧に戻ったら、左の **Survey enabled** をオンにします。オフのままだと、起動時に質問が出ません。
 
 ![Survey enabled がオンで、質問が1件ある状態](../images/aap/survey-enabled.png)

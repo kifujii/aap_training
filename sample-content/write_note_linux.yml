@@ -36,14 +36,22 @@
       ansible.builtin.debug:
         msg: "note.txt の note は {{ training_note }} です"
 
+    # 復号した値を、ジョブの出力に出さない。
     - name: Write secret.txt
+      no_log: true
       ansible.builtin.copy:
         dest: "/tmp/{{ name_prefix }}-aap-training/secret.txt"
         mode: "0600"
         content: "{{ training_secret | default('') }}\n"
       when: training_secret is defined
 
+    - name: Read secret.txt
+      ansible.builtin.stat:
+        path: "/tmp/{{ name_prefix }}-aap-training/secret.txt"
+      register: secret_stat
+      when: training_secret is defined
+
     - name: Show the secret written to secret.txt
       ansible.builtin.debug:
-        msg: "secret.txt に書いた値は {{ training_secret }} です"
+        msg: "secret.txt を書きました。権限は {{ secret_stat.stat.mode }} です"
       when: training_secret is defined

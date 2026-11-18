@@ -7,6 +7,9 @@ training_note: managed by AAP
 ec2_region: ap-northeast-1
 vpc_cidr: 10.42.0.0/16
 subnet_cidr: 10.42.1.0/24
+# SSH（TCP 22）と PSRP（TCP 5985）を、どの接続元からも許可する。
+# この研修ではこの値のまま使う。実際の運用では、接続してくるアドレスだけを書く。
+# 学習後は、演習4の削除手順でサーバを消す。
 allow_cidr: 0.0.0.0/0
 linux_instance_type: t3.micro
 windows_instance_type: t3.medium
