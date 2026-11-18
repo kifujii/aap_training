@@ -22,6 +22,7 @@
 | `use_ini_file.yml` | 応用演習3。`community.general.ini_file` で値を書き、カスタム実行環境の前後を比べる |
 | `check_become.yml` | 演習7。sudo で `whoami` を実行し、`root` になることを確かめる |
 | `show_handed_note.yml` | 演習11。前のジョブが `set_stats` で渡したメモを表示する |
+| `remove_my_notes.yml` | 学習後に、対象サーバの `/tmp/<name_prefix>-aap-training` と `C:\temp\<name_prefix>-aap-training` を消す |
 | `remove_my_lab.yml` | 学習後に、自分の接頭辞の AAP オブジェクトを削除する |
 | `requirements.yml` | **AWS で作る場合だけ** GitLab に置く。`amazon.aws` 10.3.0 |
 
