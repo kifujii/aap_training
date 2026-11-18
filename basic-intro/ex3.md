@@ -122,6 +122,11 @@ ansible_psrp_cert_validation: ignore
 
 `win1.example.com` は例です。Kerberos は IP アドレスでは認証できないので、`ansible_host` には、事前準備で控えた、その Windows のドメイン上のホスト名（FQDN）を指定します。
 
+<a id="caution-psrp-cert"></a>
+
+> [!CAUTION]
+> **研修だけの設定です。** NTLM と Kerberos のどちらの変数にも `ansible_psrp_cert_validation: ignore` があります。これは Windows の証明書を検証しない指定で、HTTPS（Kerberos の 5986）で接続するときに、なりすました相手へ接続しても気づけません。研修では、自己署名の証明書の Windows にも接続できるよう、検証を外しています。実際の運用では、Windows に信頼できる CA の証明書を入れ、この行を外して検証します。
+
 この変数で保存します。`win1` をグループ `windows` に入れる手順は、上の「ホストをグループに入れる」と同じです。NTLM の変数で保存済みの場合は、ホストを開いて変数を置き換えてからグループへ入れます。
 
 演習5で置く `inventory.yml` のサンプルは NTLM です。Kerberos のときは、`ansible_host` をここで保存した FQDN にし、`ansible_psrp_auth`、`ansible_psrp_protocol`、`ansible_psrp_port` の3つを `kerberos`、`https`、`5986` に置き換えます。

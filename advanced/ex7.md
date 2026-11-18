@@ -130,7 +130,7 @@ curl -sk -o /dev/null -w 'HTTP %{http_code}\n' -X POST "<Event StreamのURL>" \
     -d '{"status":"success","host":"lin1"}'
 ```
 
-`HTTP 200` と出れば、Event Stream が受け付けています。`HTTP 403` のときは Token が違います。`-k` は、AAP の証明書を作業用サーバが信頼していない環境（自己証明書など）でも送れるようにする指定です。
+`HTTP 200` と出れば、Event Stream が受け付けています。`HTTP 403` のときは Token が違います。`-k` は、AAP の証明書を作業用サーバが信頼していない環境（自己証明書など）でも送れるようにする指定です。実際の運用での扱いは、[応用演習4の注意](./ex4.md#caution-curl-k) にあります。
 
 Rulebook のログは、**Automation Decisions > ルールブックのアクティベーション** で `<name_prefix>-note-webhook-activation` を開き、**履歴** タブの一番上の行（`<番号> - <name_prefix>-note-webhook-activation`）を開くと表示されます。次のような行があれば、Event Stream から Rulebook へ届いています。行が多いときは、画面の検索欄に `lin1` と入れます。
 

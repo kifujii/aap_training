@@ -36,6 +36,11 @@ ansible_connection: local
 
 URL には、ブラウザで開いている AAP のアドレスを入れます。末尾に `/api/controller/` は付けません。Username と Password は空欄にします。Verify SSL を外すのは、自己証明書などで、演習環境の証明書を実行環境が信頼していない場合に接続できるようにするためです。
 
+<a id="caution-verify-ssl"></a>
+
+> [!CAUTION]
+> **研修だけの設定です。** Verify SSL を外すと、AAP の証明書を検証せずに API トークンを送ります。[削除手順](../cleanup.md) の認証情報も同じです。実際の運用では、AAP に信頼できる CA の証明書を使い、Verify SSL にはチェックを入れたままにします。
+
 ## Section 3: Playbookとジョブテンプレート
 
 Web IDE で `launch_note.yml` を開き、次の内容にします。ファイルが無い場合は作ります。トークンはファイルに書かず、ジョブテンプレートに付けた認証情報 `<name_prefix>-aap-api` から渡します。

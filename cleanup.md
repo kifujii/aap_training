@@ -52,6 +52,8 @@ Web IDE で、プロジェクト `<name_prefix>-aap-training-content` に [sampl
 | OAuth Token | 下で発行した API トークン |
 | Verify SSL | チェックを外す |
 
+Verify SSL を外す理由と、実際の運用での扱いは、[応用演習5の注意](./advanced/ex5.md#caution-verify-ssl) にあります。
+
 トークンは **Access Management > API Tokens** の **Create API token** で作ります。Scope は `Write` を選び、**Create token** で発行します。トークンの文字列はあとから再表示できないので、その場で控えます。認証情報の Username と Password は空欄のままにし、URL の末尾に `/api/controller/` は付けません。
 
 インベントリー `<name_prefix>-aap-runner` が無い場合は作り、ホスト `localhost` の **変数** に次を入れます。
