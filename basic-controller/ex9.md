@@ -2,7 +2,7 @@
 
 [演習8](./ex8.md) | [演習10へ](./ex10.md)
 
-> **前提:** [演習8](./ex8.md) の制限の起動プロンプトと Survey。暗号化に使うサーバ（この研修では AAP サーバ）へ SSH できること
+> **前提:** [演習8](./ex8.md) の制限の起動プロンプトと Survey。[事前準備](../prepare_training_environment.md) で控えた作業用サーバへ SSH できること
 
 この演習では文字列の暗号化を取り扱います。
 `training_secret` の値だけを暗号化して GitLab に置き、ジョブの中で復号してファイルへ書きます。暗号化は、`ansible-vault` コマンドが使えるサーバで行います。この研修では、[事前準備](../prepare_training_environment.md) で控えた作業用サーバを使います。作業ディレクトリは、そのサーバの `/tmp` です。Web IDE には、`ansible-vault encrypt_string` が表示した文字列を貼ります。Web IDE では `ansible-vault` を実行できません。
