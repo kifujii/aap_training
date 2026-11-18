@@ -43,7 +43,13 @@
         content: "{{ training_secret | default('') }}\n"
       when: training_secret is defined
 
+    - name: Read secret.txt
+      ansible.builtin.stat:
+        path: "/tmp/{{ name_prefix }}-aap-training/secret.txt"
+      register: secret_stat
+      when: training_secret is defined
+
     - name: Show the secret written to secret.txt
       ansible.builtin.debug:
-        msg: "secret.txt に書いた値は {{ training_secret }} です"
+        msg: "secret.txt を書きました。権限は {{ secret_stat.stat.mode }} です"
       when: training_secret is defined
