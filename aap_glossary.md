@@ -29,7 +29,7 @@
 | **Credential** | 接続先ホストへのSSH認証情報や、SCM（GitLab等）、Vault、クラウドAPIキーなど、Job実行に必要な認証情報を保存・管理するオブジェクト。**Credential Type**ごとに入力項目が異なる。 |
 | **Credential Type** | Credentialの種類を定義するテンプレート（例: Machine、Source Control、Vault、Container Registry）。CredentialはいずれかのCredential Typeに基づいて作成される。 |
 | **Project** | 実行対象のPlaybook/Role一式を管理する単位。多くの場合GitLab等のSCMリポジトリと連携（**SCM Project**）し、Sync操作でリポジトリの最新内容を取得する。 |
-| **SCM Sync** | Projectに紐付いたSCMリポジトリの内容を、AAP側に取得・反映する操作。画面の同期で実行します。GitLab の Webhook では同期は始まりません（[応用演習6](./advanced/ex6.md)）。 |
+| **SCM Sync** | Projectに紐付いたSCMリポジトリの内容を、AAP側に取得・反映する操作。画面の同期で実行します。プロジェクトの「起動時のリビジョン更新」が有効なら、ジョブの起動時にも同期します。GitLab の Webhook そのものは同期しません（[応用演習6](./advanced/ex6.md)）。 |
 | **Revision** | SCM Sync時に取得したリポジトリのコミットハッシュ。Job実行時にどのリビジョンのPlaybookが使われたかを追跡できる。 |
 | **Inventory** | Job実行対象のホストとグループを定義する単位。手動でHost/Groupを登録する方法と、**Inventory Source**を使って外部（SCM上のYAMLファイル、クラウドAPI等）から取り込む方法がある。 |
 | **Inventory Source** | Inventoryにホスト情報を取り込む方法を定義する設定。本資料では GitLab 上の `inventory.yml` を読む「Sourced from a Project」を使います（[演習6](./basic-controller/ex6.md)）。 |
@@ -53,7 +53,7 @@
 | **Job Type** | Job Templateの実行種別。「Run」（実際に変更を適用）と「Check」（CLIでの `--check` に相当するドライラン）がある。 |
 | **Prompt on Launch** | Job Template起動時に、Inventory/Credential/Extra Vars/Limit等の値をオペレーターに入力・選択させる設定。Job Template自体には固定値を持たせず、実行時に都度指定したい場合に使う。 |
 | **Survey** | Job Template起動時に、あらかじめ定義した質問フォームを通じて変数値を入力させる機能。入力値はExtra Varsとして渡される。 |
-| **Schedule** | Job Template/Workflow Job TemplateをCron形式の設定で定期実行するための機能。 |
+| **Schedule** | Job Template/Workflow Job TemplateをiCal の RRULE 形式（例: `RRULE:FREQ=DAILY`）の設定で定期実行するための機能。 |
 | **Notification Template** | Jobの開始/成功/失敗等のタイミングで、Email・Slack・Webhook等に通知を送る設定。Organization/Project/Job Template等の単位で割り当てる。 |
 | **Instance Group** | Jobを実行するExecution Nodeの集合。実行負荷の分散や特定ネットワークへの到達性に応じてJobの実行先を制御する際に使う。 |
 | **Job Slicing** | 1つのJob Templateの実行を、Inventory内のホストを分割して複数Jobに並列展開する機能。大規模Inventory向け。 |
@@ -121,5 +121,5 @@
 |---|---|
 | **SCM (Source Control Management)** | Gitなどのバージョン管理システムの総称。AAPのProjectはSCMリポジトリと連携して最新のPlaybook/Role/Inventoryファイルを取得する。 |
 | **Source Control認証** | AAPがGitLabを読むときに使う認証情報。GitLabのログインユーザー名とパスワードを登録する。 |
-| **Webhook** | 外部の出来事を HTTP で受けてジョブを起動する仕組み。応用演習6では、ジョブテンプレートの Webhook で GitLab のマージリクエストを受けます。この受信ではプロジェクトの同期は始まりません。EDA の受け口は Event Stream で、応用演習7以降です。 |
+| **Webhook** | 外部の出来事を HTTP で受けてジョブを起動する仕組み。応用演習6では、ジョブテンプレートの Webhook で GitLab のマージリクエストを受けます。Webhook そのものはプロジェクトを同期しません。起動したジョブは、プロジェクトの「起動時のリビジョン更新」が有効なら同期してから動きます。EDA の受け口は Event Stream で、応用演習7以降です。 |
 | **.gitlab-ci.yml** | GitLab CI/CD パイプラインの定義ファイル。 |

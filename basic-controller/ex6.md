@@ -30,7 +30,7 @@ Overwrite を有効にすると、このソースが前回の同期で取り込�
 
 ## Section 2: 同期する
 
-ソースの同期を実行します。成功すると、グループ `linux` と `windows`、ホスト `lin1` と `win1` が表示されます。`lin1` と `win1` を開き、次がファイルに書いた値になっていることを確認します。
+ソースの同期を実行します。成功すると、グループ `linux` と `windows`、ホスト `lin1` と `win1` が表示されます。`inventory.yml` で2つのグループをまとめている親グループ `targets` も表示されます。`lin1` と `win1` を開き、次がファイルに書いた値になっていることを確認します。
 
 * `ansible_host` が、自分のアドレスである
 * Windows の `ansible_psrp_auth`、`ansible_psrp_protocol`、`ansible_psrp_port` が、演習3で保存した3つと一致している。NTLM のままなら `ntlm`、`http`、`5985` です。Kerberos に置き換えた人は `kerberos`、`https`、`5986` です

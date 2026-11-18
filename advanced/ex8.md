@@ -21,14 +21,16 @@ Web IDE で `rulebooks/notify_on_webhook.yml` を、次の内容に置き換え�
 
   rules:
     - name: Launch <name_prefix>-verify-note-linux
-      condition: event.payload.status == "success"
+      condition: event.payload.status == "success" and event.payload.host is defined
       action:
         run_job_template:
           name: <name_prefix>-verify-note-linux
           organization: <組織名>
           job_args:
-            limit: "{{ event.payload.host | default(omit) }}"
+            limit: "{{ event.payload.host }}"
 ```
+
+`condition` は、`status` が `success` で、かつ `host` があるイベントだけに合います。`host` が無いイベントでは、ジョブは起動しません。
 
 コミットします。Controller のプロジェクトと、Decisions のプロジェクトの両方を同期します。
 

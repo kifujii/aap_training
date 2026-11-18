@@ -92,8 +92,8 @@
 | 演習 | 既存サーバを使用 | AWSで新しく作る |
 |---|---|---|
 | [1 ログイン](./basic-intro/ex1.md) | 実施 | 実施 |
-| [2 認証情報](./basic-intro/ex2.md) | 実施 | 実施。サーバのログイン情報は演習4のあと |
-| [3 インベントリと疎通](./basic-intro/ex3.md) | 実施。Section 3 は飛ばす | Section 1から3を実施。ホスト登録は演習4のあと |
+| [2 認証情報](./basic-intro/ex2.md) | 実施 | 実施。サーバのログイン情報は演習4の Section 4 で作る |
+| [3 インベントリーと疎通](./basic-intro/ex3.md) | 実施。Section 3 は飛ばす | Section 1から3を実施。ホスト登録は演習4のあと |
 | [4 AWSでサーバを作る](./basic-intro/ex4.md) | **飛ばして演習5へ** | 実施。終わったら演習3の Section 4 へ戻る |
 | [5 GitLab](./basic-controller/ex5.md) | 実施 | 実施。演習4で作ったプロジェクトに残りのファイルを足す |
 | [6 Inventory Source](./basic-controller/ex6.md) | 実施 | 実施 |

@@ -18,14 +18,14 @@
 
 ```yaml
 name_prefix: tanaka01
-training_note: hello from survey
+training_note: hello from extra vars
 ```
 
-**ジョブテンプレートの保存** を押し、起動します。出力の `Write note.txt` が `changed` になり、`Show the note written to note.txt` に `note.txt の note は hello from survey です` と出ます。
+**ジョブテンプレートの保存** を押し、起動します。出力の `Write note.txt` が `changed` になり、`Show the note written to note.txt` に `note.txt の note は hello from extra vars です` と出ます。
 
-これは `ansible-playbook write_note_linux.yml -e "training_note=hello from survey"` と同じです。`name_prefix` は、ファイルの置き場所に使われます。
+これは `ansible-playbook write_note_linux.yml -e "name_prefix=tanaka01 training_note='hello from extra vars'"` と同じです。`name_prefix` は、ファイルの置き場所に使われます。
 
-確認が終わったら、`training_note` の行だけを消して保存します。`name_prefix` の行は残します。Survey と Extra variables の両方に `training_note` があると、どちらがメモの文面になるか分かりにくくなります。
+確認が終わったら、`training_note` の行だけを消して保存します。`name_prefix` の行は残します。Section 3 では、同じ `training_note` を Survey で聞きます。
 
 もう一度起動します。`Show the note written to note.txt` は、`group_vars/all.yml` の既定値どおり `note.txt の note は managed by AAP です` に戻ります。
 

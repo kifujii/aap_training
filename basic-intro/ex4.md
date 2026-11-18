@@ -14,7 +14,7 @@
 
 名前には、演習1で決めた接頭辞を `resource_prefix` として付けます。同じアカウントを複数人で使うときに、リソースが混ざらないようにするためです。作ったサーバのアドレスはログに出るので控えます。
 
-ジョブは15分ほどかかることがあります。Windows の PSRP の待ち受けが開くまで待つためです。
+ジョブは数分で終わります。Windows の起動が遅いときは、PSRP の待ち受けが開くまで待つため、15分ほどかかることがあります。
 
 パスワードは、このあと Extra variables に自分で入れる値です。テンプレートの **詳細** を初期値の `0 (正常)` のまま起動すれば、タスクの出力には、パスワードそのものは出ません。ジョブの詳細の Extra variables と、ジョブテンプレートの Extra variables には、入れた値が平文で残ります。この演習のサーバ専用の値にして、本番で使っているパスワードは入れないでください。ジョブテンプレートに残った値は、Section 3 の最後で消します。実際の運用で起動のたびに秘密の値を渡すときは、Survey の Answer type を Password にします。入れた値は、ジョブの詳細には平文で残りません。作り方は [演習8](../basic-controller/ex8.md) です。
 
@@ -39,6 +39,7 @@
    * `requirements.yml`
    * `group_vars/all.yml`
 5. **Source Control** から **Commit to main** をクリックする
+6. プロジェクトの画面に戻り、右上の **Code** を開いて、**Clone with HTTPS** の URL を控える。Section 2 で使う
 
 `requirements.yml` は、ジョブが使う `amazon.aws` の版を 10.3.0 に固定するファイルです。AWS で作る場合だけ置きます。置かないとジョブが失敗します。
 
@@ -68,7 +69,7 @@ git push
 |---|---|
 | 名前 | `<name_prefix>-aap-training-content` |
 | ソースコントロールタイプ | Git |
-| ソースコントロールURL | Section 1 の HTTPS の URL |
+| ソースコントロールURL | Section 1 で控えた **Clone with HTTPS** の URL |
 | ソースコントロールブランチ | `main` |
 | ソースコントロール認証情報 | `<name_prefix>-gitlab-scm` |
 | 起動時のリビジョン更新 | 有効 |
@@ -130,12 +131,12 @@ Windowsのユーザー: Administrator
 
 [演習2](./ex2.md) と同じ作成画面で、Machine 認証情報を2つ作ります。
 
-| 名前 | ユーザー名 | パスワード |
+| 名前 | ユーザ名 | パスワード |
 |---|---|---|
 | `<name_prefix>-linux-ssh` | `ansible` | `linux_login_password` に入れた値 |
 | `<name_prefix>-windows-psrp` | `Administrator` | `windows_login_password` に入れた値 |
 
-権限昇格は空欄です。
+**Privilege Escalation Method** は空欄です。
 
 ## Section 5: 不要になったら削除する
 

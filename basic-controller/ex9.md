@@ -107,7 +107,9 @@ training_use_vault: true
 
 Playbook の `Write secret.txt` には `no_log: true` が付いています。付いていないと、テンプレートの **詳細** を上げて起動したときに、書いた値が出力に出ることがあります。付いていれば、**詳細** を上げても、結果は `the output has been hidden due to the fact that 'no_log: true' was specified for this result` に置き換わります。実際の運用でも、秘密の値を扱うタスクには `no_log: true` を付けます。ファイルは `/tmp/<name_prefix>-aap-training/secret.txt` です。
 
-`training_use_vault: true` を足し忘れると、`Load secrets.yml when vault is enabled`、`Write secret.txt`、`Read secret.txt` は `skipped` になり、`Show the secret written to secret.txt` は出ません。暗号化パスワードが違うと、ジョブは `secrets.yml` の読み込みで失敗します。
+`<name_prefix>-write-note-windows` にも `<name_prefix>-vault-training` と `<name_prefix>-windows-psrp` を付けます。Extra variables は、`name_prefix` の行を残したまま `training_use_vault: true` を足します。起動画面に **Prompts** は出ません。**Survey** は `managed by AAP` のまま **Next** を押し、**Review** で **Finish** を押します。成功すると、`Show the secret written to secret.txt` に `secret.txt を書きました` と出ます。ファイルは `C:\temp\<name_prefix>-aap-training\secret.txt` です。
+
+`training_use_vault: true` を足し忘れると、`Load secrets.yml when vault is enabled`、`Write secret.txt`、`Read secret.txt` は `skipping` になり、`Show the secret written to secret.txt` は出ません。Vault 認証情報のパスワードが Section 1 の復号用パスワードと違うと、`training_secret` を初めて使う `Write secret.txt` が `fatal` になります。このタスクには `no_log: true` が付いているので、失敗の理由も `the output has been hidden due to the fact that 'no_log: true' was specified for this result` に置き換わります。`Write secret.txt` だけが失敗したときは、`<name_prefix>-vault-training` の Vault Password が、Section 1 の `New Vault password:` に入れた値かを確認します。
 
 ## 次
 

@@ -4,7 +4,7 @@
 
 > **前提:** [演習2](../basic-intro/ex2.md) の認証情報、[演習3](../basic-intro/ex3.md) のインベントリー、[演習5](./ex5.md) のプロジェクト
 
-Linux と Windows のそれぞれに `note.txt` を書くテンプレートを作成します。Windows 用と Linux 用で別々の認証情報を使うため、テンプレートは2つ作ります。これは同じタイプ(Machine)の認証情報がテンプレートに1つしか付けられないためとなります。
+Linux と Windows のそれぞれに `note.txt` を書くテンプレートを作成します。Windows 用と Linux 用で別々の認証情報を使うため、テンプレートは2つ作ります。1つのテンプレートには、同じタイプ（Machine）の認証情報を1つしか付けられないからです。
 
 ## Section 1: Linux
 
@@ -45,7 +45,7 @@ note.txt の note は managed by AAP です
 
 `Load secrets.yml when vault is enabled`、`Write secret.txt`、`Read secret.txt`、`Show the secret written to secret.txt` は `skipping` です。この演習では Vault をまだ使いません。
 
-先頭の `SSH password:` と `Vault password:` は、認証情報を渡したときの表示です。パスワードそのものは出ません。その下に Python の WARNING が出ても、この演習では無視して構いません。
+先頭の `SSH password:` は、認証情報を渡したときの表示です。演習9で Vault 認証情報を付けると、`Vault password:` も出ます。パスワードそのものは出ません。その下に Python の WARNING が出ても、この演習では無視して構いません。
 
 同じテンプレートをもう一度、**テンプレートの起動** から起動します。2回目は、出力の `Write note.txt` の行が `ok` になり、上部の Changed は 0 です。内容が同じなら書き直しません。
 
@@ -59,7 +59,7 @@ note.txt の note は managed by AAP です
 
 ## Section 2: Windows
 
-`<name_prefix>-write-note-linux` をコピーできる場合はコピーし、コピーのメニューが無い場合は同じ項目で新規作成します。違う箇所だけ次のとおりです。
+Section 1 と同じく **テンプレートの作成** > **ジョブテンプレートの作成** で新しく作ります。Section 1 と違う箇所だけ次のとおりです。ほかの欄は Section 1 と同じにします。
 
 | 項目 | 入力値 |
 |---|---|
@@ -67,7 +67,7 @@ note.txt の note は managed by AAP です
 | Playbook | `write_note_windows.yml` |
 | 認証情報 | `<name_prefix>-windows-psrp` |
 
-コピーした場合、Extra variables の `name_prefix` はそのままにします。新規作成の場合は、Linux と同じ1行を入れます。ファイルは `C:\temp\<name_prefix>-aap-training\note.txt` に書かれます。
+Extra variables には、Linux と同じ `name_prefix` の1行を入れます。ファイルは `C:\temp\<name_prefix>-aap-training\note.txt` に書かれます。
 
 起動して成功することを確認します。`Show the note written to note.txt` は Linux と同じ文面です。
 
@@ -82,12 +82,10 @@ Kerberos の場合は、ユーザー名が `ユーザー@レルム` になって
 | `<name_prefix>-verify-note-linux` | `verify_note_linux.yml` | `<name_prefix>-linux-ssh` |
 | `<name_prefix>-verify-note-windows` | `verify_note_windows.yml` | `<name_prefix>-windows-psrp` |
 
-インベントリーとプロジェクトは、書くときと同じです。コピーした場合、Extra variables の `name_prefix` は残します。新規作成の場合は、書くときと同じ1行を入れます。両方を起動し、成功することを確認します。`Show note.txt` に、ファイルの中身が出ます。Linux は次の形です。アドレスの行は、自分の `lin1` の `ansible_host` です。Windows は、1行目が `hostname: win1` です。
+インベントリーとプロジェクトは、書くときと同じです。Extra variables には、書くときと同じ `name_prefix` の1行を入れます。両方を起動し、成功することを確認します。`Show note.txt` に、ファイルの中身が1行で出ます。`\n` は改行の意味です。Linux は次の形です。`address:` のあとは、自分の `lin1` の `ansible_host` です。Windows は `hostname: win1` で始まります。
 
 ```
-hostname: lin1
-address: <ansible_host の値>
-note: managed by AAP
+"msg": "hostname: lin1\naddress: <ansible_host の値>\nnote: managed by AAP\n"
 ```
 
 ホスト名または `managed by AAP` が無いと、その直後の確認タスクが失敗します。`name_prefix` の行が無いと、ファイルを読む前に失敗します。

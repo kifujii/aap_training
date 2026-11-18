@@ -4,7 +4,7 @@
 
 > **前提:** [演習2](../basic-intro/ex2.md) の GitLab 用の認証情報。サーバが無い場合は [演習4](../basic-intro/ex4.md)
 
-Playbook は GitLab に置き、AAP のプロジェクトから読みます。ファイルの作成と編集は Web IDE で行います。サーバが無い場合は、演習4と、演習3の Section 4 まで終わってから、この演習に入ります。
+Playbook は GitLab に置き、AAP のプロジェクトから読みます。ファイルの作成と編集は Web IDE で行います。サーバが無い場合は、演習4と、演習3の Section 5（疎通確認）まで終わってから、この演習に入ります。
 
 | 自分の状況 | この演習でやること |
 |---|---|
@@ -26,7 +26,7 @@ GitLab にログインし、**Create new…** > **New project/repository** > **C
 | Initialize repository with a README | 付けたまま |
 | SAST / Secret Detection | オフのまま |
 
-**Create project** のあと、HTTPS のクローン URL を控えます。
+**Create project** のあと、プロジェクトの画面の右上にある **Code** を開き、**Clone with HTTPS** の URL を控えます。Section 3 で使います。SSH キーの案内が出ても、この演習では使いません。
 
 ## Section 2: Web IDEでファイルを置く
 
@@ -90,7 +90,7 @@ git push
 |---|---|
 | 名前 | `<name_prefix>-aap-training-content` |
 | ソースコントロールタイプ | Git |
-| ソースコントロールURL | Section 1 の HTTPS URL |
+| ソースコントロールURL | Section 1 で控えた **Clone with HTTPS** の URL |
 | ソースコントロールブランチ | `main` |
 | ソースコントロール認証情報 | `<name_prefix>-gitlab-scm` |
 | 起動時のリビジョン更新 | 有効 |

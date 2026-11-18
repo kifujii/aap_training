@@ -34,7 +34,7 @@
 3. 左のファイル一覧からファイルを作り、このディレクトリの内容を貼り付ける
 4. **Source Control** を開き、メッセージを書いて **Commit to main** をクリックする
 
-既存サーバを使用する場合は `requirements.yml` を除きます。AWS で作る場合は含めます。`inventory.yml` の `ansible_host` は、コミット前に自分のサーバのアドレスへ書き換えます。
+どのファイルをいつ置くかは、各演習に書いてあります。既存サーバを使用する場合は、`requirements.yml` を置きません。`inventory.yml` の `ansible_host` は、コミット前に自分のサーバのアドレスへ書き換えます。
 
 <details>
 <summary>git CLIで行う場合</summary>

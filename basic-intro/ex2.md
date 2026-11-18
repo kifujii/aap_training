@@ -29,9 +29,9 @@ GitLab 用はどちらも作ります。ユーザー名とパスワードは、G
 |---|---|
 | 名前 | `<name_prefix>-linux-ssh` |
 | 認証情報タイプ | `Machine` |
-| ユーザー名 | Linux へ SSH するユーザー |
+| ユーザ名 | Linux へ SSH するユーザー |
 | パスワード | そのユーザーのパスワード |
-| 権限昇格の方式 | 空欄のまま |
+| Privilege Escalation Method | 空欄のまま |
 
 保存します。
 
@@ -39,12 +39,12 @@ GitLab 用はどちらも作ります。ユーザー名とパスワードは、G
 
 もう一度 **認証情報の作成** を開き、次を入力します。認証情報タイプは同じく `Machine` です。
 
-| Windows の状態 | ユーザー名 | パスワード |
+| Windows の状態 | ユーザ名 | パスワード |
 |---|---|---|
 | ドメインに参加していない | ローカルユーザー | そのパスワード |
 | ドメインに参加している | `ユーザー@レルム`（例: `ops@EXAMPLE.COM`） | そのドメインユーザーのパスワード |
 
-名前は `<name_prefix>-windows-psrp` にします。権限昇格は空欄です。
+名前は `<name_prefix>-windows-psrp` にします。**Privilege Escalation Method** は空欄です。
 
 PSRP にするか NTLM か Kerberos かは、認証情報ではなく [演習3](./ex3.md) のホスト変数で指定します。
 
@@ -54,7 +54,7 @@ PSRP にするか NTLM か Kerberos かは、認証情報ではなく [演習3](
 |---|---|
 | 名前 | `<name_prefix>-gitlab-scm` |
 | 認証情報タイプ | `Source Control` |
-| ユーザー名 | GitLab のログインユーザー名 |
+| ユーザ名 | GitLab のログインユーザー名 |
 | パスワード | GitLab のログインパスワード |
 
 パスワードの欄には、GitLab のログインパスワードを入れます。
@@ -69,9 +69,9 @@ PSRP にするか NTLM か Kerberos かは、認証情報ではなく [演習3](
 |---|---|
 | 名前 | `<name_prefix>-aws-training` |
 | 認証情報タイプ | `Amazon Web Services` |
-| アクセスキー | 配布された Access Key |
-| シークレットキー | 配布された Secret Key |
-| STSトークン | 空欄（一時トークンを渡されているときだけ入力） |
+| Access Key | 配布された Access Key |
+| Secret Key | 配布された Secret Key |
+| STS Token | 空欄（一時トークンを渡されているときだけ入力） |
 
 Linux 用 `<name_prefix>-linux-ssh` と Windows 用 `<name_prefix>-windows-psrp` は、[演習4](./ex4.md) の Section 4 で作ります。ユーザー名は Linux が `ansible`、Windows が `Administrator` です。パスワードは演習4で自分で決めた値です。
 
