@@ -28,8 +28,11 @@ curl -sk https://<AAPのURL>/api/ | python3 -m json.tool
 
 **Create token** を押すと、文字列が1度だけ表示されます。再表示できないので、その場で控えます。この資料の写真には、その文字列は写していません。控えたあと、画面を閉じます。
 
+トークンは、コマンドの引数に書かずに入力します。引数に書くと、シェルの履歴に残ります。1行目を実行すると入力待ちになるので、控えたトークンを貼り付けて Enter を押します。入力した文字は画面に出ません。
+
 ```bash
-export AAP_TOKEN="<控えたトークン>"
+read -rsp 'AAP token: ' AAP_TOKEN; echo
+export AAP_TOKEN
 export AAP_API_ROOT="https://<AAPのURL>/api/controller/v2"
 ```
 

@@ -1,7 +1,7 @@
 ---
 # AWS上に、この演習で使うネットワークとサーバを作る。
-# パスワードは Extra variables で渡す。AAP のジョブログには、その変数として出る。
-# 研修用の英数字を使い、本番のパスワードは入れない。
+# パスワードは Extra variables で渡す。タスクの出力には出ないが、ジョブ詳細の
+# Extra variables には平文で残る。研修用の英数字を使い、本番のパスワードは入れない。
 - name: Create the training network and servers
   hosts: localhost
   connection: local
@@ -15,9 +15,9 @@
           - resource_prefix is match('^[a-z][a-z0-9-]{1,12}$')
           - resource_prefix is not match('.*-$')
           - linux_login_password is defined
-          - linux_login_password is match('^[A-Za-z0-9]{8,32}$')
+          - linux_login_password is match('^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])[A-Za-z0-9]{8,32}$')
           - windows_login_password is defined
-          - windows_login_password is match('^[A-Za-z0-9]{8,32}$')
+          - windows_login_password is match('^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])[A-Za-z0-9]{8,32}$')
           - vpc_cidr is match('^[0-9.]+/[0-9]+$')
           - subnet_cidr is match('^[0-9.]+/[0-9]+$')
           - allow_cidr is match('^[0-9.]+/[0-9]+$')
@@ -26,7 +26,8 @@
           windows_login_password を指定してください。
           resource_prefix は小文字で始め、英小文字・数字・ハイフンだけを使い、
           末尾はハイフンにしないでください（2文字以上、13文字以内）。
-          パスワードは英数字の8文字以上32文字以内です。
+          パスワードは英数字の8文字以上32文字以内で、英大文字、英小文字、数字を
+          それぞれ1文字以上含めてください。Windows はこの3種類が無いと設定できません。
 
     - name: List availability zones
       amazon.aws.aws_az_info:
@@ -223,7 +224,6 @@
           $admin.SetInfo()
           Enable-PSRemoting -Force
           Set-Item -Path WSMan:\localhost\Service\Auth\Negotiate -Value $true
-          Set-Item -Path WSMan:\localhost\Service\AllowUnencrypted -Value $true
           New-NetFirewallRule -Name "AAP-PSRP-HTTP" -DisplayName "AAP PSRP" -Enabled True -Direction Inbound -Protocol TCP -Action Allow -LocalPort 5985 -ErrorAction SilentlyContinue
           Restart-Service WinRM
           </powershell>

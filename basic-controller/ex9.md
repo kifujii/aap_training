@@ -11,8 +11,10 @@
 
 | OS | パス | 権限 |
 |---|---|---|
-| Linux | `/tmp/<name_prefix>-aap-training/secret.txt` | `0600` |
-| Windows | `C:\temp\<name_prefix>-aap-training\secret.txt` | 接続ユーザーが書き込める場所 |
+| Linux | `/tmp/<name_prefix>-aap-training/secret.txt` | `0600`（接続ユーザーだけが読める） |
+| Windows | `C:\temp\<name_prefix>-aap-training\secret.txt` | `C:\temp` の権限を引き継ぐ |
+
+Windows の `secret.txt` は、`C:\temp` の権限をそのまま引き継ぎます。そのサーバにログインできる他のユーザーも読める場合があります。実際の運用では、`ansible.windows.win_acl` で読めるユーザーを絞ります。
 
 ## Section 1: ansible-vault が使えるサーバで値を暗号化する
 
@@ -101,9 +103,9 @@ training_use_vault: true
 
 写真の Extra variables は `training_use_vault` だけです。自分の画面では、その上に `name_prefix` の行もあります。制限の起動プロンプトは、演習8で入れたままにします。
 
-起動すると、演習8と同じ **Prompt on Launch** が開きます。**制限** は空欄のまま **Next** を押します。**Survey** は `managed by AAP` のまま **Next** を押し、**Review** で **Finish** を押します。メモの文面は変えません。`Show the note written to note.txt` は `note.txt の note は managed by AAP です` のままです。成功すると、`Show the secret written to secret.txt` に `secret.txt を書きました。権限は 0600 です` と出ます。ログに出るのは、ファイルを書いたことと権限です。復号した値は出ません。実際の運用でも、復号した値はジョブのログに出しません。ファイルは `/tmp/<name_prefix>-aap-training/secret.txt` です。
+起動すると、演習8と同じ **Prompt on Launch** が開きます。**制限** は空欄のまま **Next** を押します。**Survey** は `managed by AAP` のまま **Next** を押し、**Review** で **Finish** を押します。メモの文面は変えません。`Show the note written to note.txt` は `note.txt の note は managed by AAP です` のままです。成功すると、`Show the secret written to secret.txt` に `secret.txt を書きました。権限は 0600 です` と出ます。ログに出るのは、ファイルを書いたことと権限です。復号した値は出ません。
 
-`<name_prefix>-write-note-windows` にも `<name_prefix>-vault-training` と `<name_prefix>-windows-psrp` を付けます。Extra variables は、`name_prefix` の行を残したまま `training_use_vault: true` を足します。起動画面に **Prompts** は出ません。**Survey** は `managed by AAP` のまま **Finish** を押します。成功すると、`Show the secret written to secret.txt` に `secret.txt を書きました` と出ます。ファイルは `C:\temp\<name_prefix>-aap-training\secret.txt` です。
+Playbook の `Write secret.txt` には `no_log: true` が付いています。付いていないと、テンプレートの **詳細** を上げて起動したときに、書いた値が出力に出ることがあります。付いていれば、**詳細** を上げても、結果は `the output has been hidden due to the fact that 'no_log: true' was specified for this result` に置き換わります。実際の運用でも、秘密の値を扱うタスクには `no_log: true` を付けます。ファイルは `/tmp/<name_prefix>-aap-training/secret.txt` です。
 
 `training_use_vault: true` を足し忘れると、`Load secrets.yml when vault is enabled`、`Write secret.txt`、`Read secret.txt` は `skipped` になり、`Show the secret written to secret.txt` は出ません。暗号化パスワードが違うと、ジョブは `secrets.yml` の読み込みで失敗します。
 

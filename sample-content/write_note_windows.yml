@@ -34,7 +34,9 @@
       ansible.builtin.debug:
         msg: "note.txt の note は {{ training_note }} です"
 
+    # 復号した値を、ジョブの出力に出さない。
     - name: Write secret.txt
+      no_log: true
       ansible.windows.win_copy:
         dest: 'C:\temp\{{ name_prefix }}-aap-training\secret.txt'
         content: "{{ training_secret | default('') }}\n"

@@ -53,14 +53,19 @@ git push
 
 `<name_prefix>-verify-note-linux` の編集画面を開き、**起動プロンプト** の制限にチェックを入れて保存します。このチェックが無いと、Rulebook が渡した制限は無視され、ジョブの制限は空のままです。
 
+応用演習7と同じく、Token は入力待ちで入れます。
+
 ```bash
-curl -X POST "<Event StreamのURL>" \
+read -rsp 'Event stream token: ' EVENT_TOKEN; echo
+curl -sk -o /dev/null -w 'HTTP %{http_code}\n' -X POST "<Event StreamのURL>" \
     -H "Content-Type: application/json" \
-    -H "Authorization: Bearer <応用演習7で控えたToken>" \
+    -H "Authorization: Bearer ${EVENT_TOKEN}" \
     -d '{"status":"success","host":"lin1"}'
 ```
 
-**ジョブ** の一覧に `<name_prefix>-verify-note-linux` が増え、制限が `lin1` になっていれば完了です。Activation のログに、ジョブを起動した記録が出ていることも確認します。
+`HTTP 200` と出れば、Event Stream が受け付けています。
+
+**ジョブ** の一覧に `<name_prefix>-verify-note-linux` が増え、ジョブの **詳細** の **制限** が `lin1` になっていれば完了です。
 
 終わったら `<name_prefix>-note-webhook-activation` を無効にします。無効にしないと、同じ URL へ送るたびにジョブが起動します。
 

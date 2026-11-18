@@ -114,14 +114,23 @@ Event streams を選んだあと、Rulebook のソースを置き換える画面
 
 ## Section 7: イベントを送る
 
+コマンドは、[事前準備](../prepare_training_environment.md) で控えた作業用サーバで実行します。Token はコマンドの引数に書かずに入力します。1行目を実行すると入力待ちになるので、Section 3 で決めた Token を入れて Enter を押します。
+
 ```bash
-curl -X POST "<Event StreamのURL>" \
+read -rsp 'Event stream token: ' EVENT_TOKEN; echo
+curl -sk -o /dev/null -w 'HTTP %{http_code}\n' -X POST "<Event StreamのURL>" \
     -H "Content-Type: application/json" \
-    -H "Authorization: Bearer <Section 3のToken>" \
+    -H "Authorization: Bearer ${EVENT_TOKEN}" \
     -d '{"status":"success","host":"lin1"}'
 ```
 
-`<name_prefix>-note-webhook-activation` のログに `lin1` が出れば、Event Stream から Rulebook へ届いています。確認するのは、このログです。
+`HTTP 200` と出れば、Event Stream が受け付けています。`HTTP 403` のときは Token が違います。`-k` は、AAP の証明書を作業用サーバが信頼していない環境（自己証明書など）でも送れるようにする指定です。
+
+ログは、**Automation Decisions > ルールブックのアクティベーション** で `<name_prefix>-note-webhook-activation` を開き、**履歴** タブの一番上の行（`<番号> - <name_prefix>-note-webhook-activation`）を開くと出ます。次のような行があれば、Event Stream から Rulebook へ届いています。行が多いときは、画面の検索欄に `lin1` と入れます。
+
+```
+イベントを受信しました: {'status': 'success', 'host': 'lin1'}
+```
 
 ここで終わる場合は、`<name_prefix>-note-webhook-activation` を無効にします。[応用演習8](./ex8.md) へ進む場合は、有効なまま次へ進みます。
 
