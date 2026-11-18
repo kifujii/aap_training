@@ -4,7 +4,7 @@
 
 > **前提:** [演習8](../basic-controller/ex8.md) の制限の起動プロンプトと Survey。AWS で作った場合は [演習4](../basic-intro/ex4.md)
 
-ジョブが失敗したときに、メールで知らせる Notifier を作ります。通知の送信に使う SMTP サーバは、対象サーバの用意の仕方で違います。
+この演習では、ジョブが失敗したときにメールで知らせる Notifier を作ります。メールの送信に使う SMTP サーバは、対象サーバをどう用意したかによって異なります。
 
 | 自分の状況 | メールを送るサーバ | 確認方法 |
 |---|---|---|
@@ -16,11 +16,11 @@
 
 ## Section 1: 検証用のメールサーバを入れる（AWS でサーバを作った場合）
 
-Mailpit は、受け取ったメールを保存して見せるだけの SMTP サーバです。外へはメールを送りません。宛先は実在しないアドレスで構いません。メールは `lin1` の中にだけ置かれ、[演習4](../basic-intro/ex4.md) の Section 5 でサーバを消すと一緒に消えます。演習4で作ったセキュリティグループは、Mailpit が受ける TCP 1025 を許可しています。
+Mailpit は、受け取ったメールを保存して表示するだけの SMTP サーバで、外へはメールを送りません。そのため、宛先は実在しないアドレスで構いません。メールは `lin1` の中にだけ置かれ、[演習4](../basic-intro/ex4.md) の Section 5 でサーバを消すと一緒に消えます。Mailpit がメールを受け付ける TCP 1025 は、演習4で作ったセキュリティグループで許可してあります。
 
 Web IDE で、[sample-content/setup_mailpit.yml](../sample-content/setup_mailpit.yml) と [sample-content/show_mailpit_messages.yml](../sample-content/show_mailpit_messages.yml) をプロジェクトの直下に置きます。**Commit to main** のあと、AAP のプロジェクトを同期します。
 
-**ジョブテンプレートの作成** で、次の2つを作ります。表に無い欄は空欄です。
+**ジョブテンプレートの作成** で、次の2つを作ります。表に無い欄は空欄のままにします。
 
 | 項目 | Mailpit を入れる | 届いたメールを見る |
 |---|---|---|
@@ -31,14 +31,14 @@ Web IDE で、[sample-content/setup_mailpit.yml](../sample-content/setup_mailpit
 | 実行環境 | 空欄 | 空欄 |
 | 認証情報 | `<name_prefix>-linux-ssh` | `<name_prefix>-linux-ssh` |
 
-`<name_prefix>-setup-mailpit` を起動します。Mailpit は GitHub から取得し、sudo で入れます。成功すると、出力の最後の `Show the values for the notifier` に、Section 2 で入れるホストとポートが出ます。
+`<name_prefix>-setup-mailpit` を起動します。このジョブは Mailpit を GitHub から取得し、sudo でインストールします。成功すると、出力の最後の `Show the values for the notifier` に、Section 2 で入れるホストとポートが出ます。
 
 ```
 ホスト: 203.0.113.10
 Port: 1025
 ```
 
-`203.0.113.10` は例です。自分の `lin1` のアドレスが出ます。`Download Mailpit` で失敗したときは、`lin1` からインターネットへ出られるかを確認します。
+`203.0.113.10` は例で、実際には自分の `lin1` のアドレスが表示されます。`Download Mailpit` で失敗したときは、`lin1` からインターネットへ出られるかを確認します。
 
 ## Section 2: Notifierを作る
 
@@ -59,13 +59,13 @@ Port: 1025
 | ユーザー名 / パスワード | SMTP 認証が必要なときだけ | 空欄 |
 | Use TLS | 配布された指定に合わせる | チェックを入れない |
 
-`verify.test` の `.test` は、テスト用に予約されていて、実在しないドメインです。**Save notifier** で保存します。
+`verify.test` の `.test` はテスト用に予約されたドメインで、実在しません。**Save notifier** で保存します。
 
 ## Section 3: 失敗させて、メールを受け取る
 
 `<name_prefix>-write-note-linux` の **通知** タブで、`<name_prefix>-note-mail` を **失敗時** に付けます。
 
-失敗を確認するため、Machine 認証情報をもう1つ作ります。名前は `<name_prefix>-linux-ssh-wrong`、認証情報タイプは `Machine`、ユーザ名は `<name_prefix>-linux-ssh` と同じ、パスワードはそれと違う英数字（例: `WrongPassword1`）です。**Privilege Escalation Method** は空欄です。
+ジョブを失敗させるために、パスワードの誤った Machine 認証情報をもう1つ作ります。名前は `<name_prefix>-linux-ssh-wrong`、認証情報タイプは `Machine` にします。ユーザ名は `<name_prefix>-linux-ssh` と同じにし、パスワードにはそれと違う英数字（例: `WrongPassword1`）を入れます。**Privilege Escalation Method** は空欄のままにします。
 
 `<name_prefix>-write-note-linux` の編集で、認証情報の `<name_prefix>-linux-ssh` を外し、`<name_prefix>-linux-ssh-wrong` を付けます。`<name_prefix>-vault-training` を付けている場合は、付けたままにします。保存して起動します。**Prompts** の **制限** は空欄、**Survey** は `managed by AAP` のまま **Finish** を押します。ジョブは失敗します。
 
@@ -78,11 +78,11 @@ Port: 1025
 件名: Job #545 'sample01-write-note-linux' failed: https://... / 宛先: sample01@verify.test
 ```
 
-`545` と `sample01` は例です。失敗したジョブの番号と、自分の接頭辞が出ます。`At least one message has arrived` で失敗したときは、まだメールが届いていません。
+`545` と `sample01` は例で、実際には失敗したジョブの番号と自分の接頭辞が表示されます。`At least one message has arrived` のタスクで失敗したときは、まだメールが届いていません。
 
 メールが届かないときは、**Notifiers** の一覧で `<name_prefix>-note-mail` を開き、ホスト、ポート、差出人アドレスを見直します。`<name_prefix>-write-note-linux` の **通知** タブで、**失敗時** が付いているかも確認します。
 
-確認が終わったら、編集で `<name_prefix>-linux-ssh-wrong` を外し、`<name_prefix>-linux-ssh` を付け直して保存します。もう一度起動し、**制限** は空欄、**Survey** は `managed by AAP` のまま **Finish** を押します。ジョブが成功すれば、認証情報は戻っています。成功したジョブでは、失敗時の Notifier からメールは届きません。
+確認が終わったら、編集で `<name_prefix>-linux-ssh-wrong` を外し、`<name_prefix>-linux-ssh` を付け直して保存します。もう一度起動し、**制限** は空欄、**Survey** は `managed by AAP` のまま **Finish** を押します。ジョブが成功すれば、認証情報は元に戻っています。Notifier は失敗時に付けたので、成功したこのジョブではメールは届きません。
 
 ## 次
 

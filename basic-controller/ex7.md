@@ -4,7 +4,7 @@
 
 > **前提:** [演習2](../basic-intro/ex2.md) の認証情報、[演習3](../basic-intro/ex3.md) のインベントリー、[演習5](./ex5.md) のプロジェクト
 
-Linux と Windows のそれぞれに `note.txt` を書くテンプレートを作成します。Windows 用と Linux 用で別々の認証情報を使うため、テンプレートは2つ作ります。1つのテンプレートには、同じタイプ（Machine）の認証情報を1つしか付けられないからです。
+この演習では、Linux と Windows のそれぞれに `note.txt` を書くジョブテンプレートを作り、実行します。ジョブテンプレートに付けられる Machine 認証情報は1つだけで、Linux と Windows ではログインに使う認証情報が異なります。そのため、ジョブテンプレートは OS ごとに1つずつ、合わせて2つ作ります。
 
 ## Section 1: Linux
 
@@ -27,39 +27,39 @@ Linux と Windows のそれぞれに `note.txt` を書くテンプレートを�
 name_prefix: sample01
 ```
 
-`sample01` は演習1で決めた接頭辞にします。Playbook の中の `{{ name_prefix }}` は書き換えません。ファイルは `/tmp/<name_prefix>-aap-training/note.txt` に書かれます。
+`sample01` は、演習1で決めた自分の接頭辞に置き換えます。Playbook の中の `{{ name_prefix }}` は書き換えません。ファイルは `/tmp/<name_prefix>-aap-training/note.txt` に書き込まれます。
 
-表に無い欄は空欄のままにします。**起動プロンプト** には、この時点ではチェックを入れません。実行環境も空欄です。空欄のときは、システムの既定の実行環境で動きます。実行環境が何かは [AAPのしくみ](../aap_overview.md) に書いてあります。起動画面には Extra variables は出ないので、この編集画面で保存します。
+表に無い欄は空欄のままにし、**起動プロンプト** にも、この時点ではチェックを入れません。実行環境を空欄にすると、ジョブはシステムの既定の実行環境で動きます。実行環境については [AAPのしくみ](../aap_overview.md) で説明しています。Extra variables は起動画面には出ないため、この編集画面で入力して保存します。
 
 保存すると詳細画面に戻ります。右上の **テンプレートの起動** をクリックします。
 
-起動すると、ジョブの **出力** が開きます。上部に成功か失敗と、Changed の数が出ます。上部の Changed は、変更のあったホストの数です。各タスクの行は、変更が無ければ `ok`、ファイルを書いたときは黄色の `changed` です。
+起動すると、ジョブの **出力** が開きます。上部には、成功か失敗かと、変更のあったホストの数（Changed）が出ます。各タスクの行には、変更が無ければ `ok`、ファイルを書き込んだときは黄色の `changed` と出ます。
 
 ![成功の出力。Load secrets.yml は skipping。Show the note written to note.txt に、note.txt の note は managed by AAP です と出る](../images/aap/job-output.png)
 
-ジョブが成功すると、出力の `Show the note written to note.txt` に次の行が出ます。`training_note` の既定値は `managed by AAP` です。この行が、ファイルの `note:` に書いた文面です。
+ジョブが成功すると、出力の `Show the note written to note.txt` に次の行が出ます。`managed by AAP` は `training_note` の既定値で、ファイルの `note:` に書き込まれた文面です。
 
 ```
 note.txt の note は managed by AAP です
 ```
 
-`Load secrets.yml when vault is enabled`、`Write secret.txt`、`Read secret.txt`、`Show the secret written to secret.txt` は `skipping` です。この演習では Vault をまだ使いません。
+この演習ではまだ Vault を使わないため、`Load secrets.yml when vault is enabled`、`Write secret.txt`、`Read secret.txt`、`Show the secret written to secret.txt` は `skipping` になります。
 
-先頭の `SSH password:` は、認証情報を渡したときの表示です。演習9で Vault 認証情報を付けると、`Vault password:` も出ます。パスワードそのものは出ません。その下に `[WARNING]: Platform linux on host lin1 is using the discovered Python interpreter` で始まる WARNING が出ても、この演習では無視して構いません。
+出力の先頭にある `SSH password:` は、認証情報を渡したときの表示で、パスワードそのものは出ません。演習9で Vault 認証情報を付けると、`Vault password:` も出ます。その下に `[WARNING]: Platform linux on host lin1 is using the discovered Python interpreter` で始まる WARNING が出ても、この演習では無視して構いません。
 
-同じテンプレートをもう一度、**テンプレートの起動** から起動します。2回目は、出力の `Write note.txt` の行が `ok` になり、上部の Changed は 0 です。内容が同じなら書き直しません。
+同じテンプレートをもう一度、**テンプレートの起動** から起動します。内容が同じなら書き直さないため、2回目は出力の `Write note.txt` の行が `ok` になり、上部の Changed は 0 になります。
 
-ファイルを変えずに結果だけ見るときは、**テンプレートの編集** を開き、**ジョブタイプ** を **チェック** に変えて保存してから起動します。選択肢は **実行** と **チェック** です。ファイルは変わりません。内容が今のファイルと違うタスクは `changed`、同じ内容のタスクは `ok` になります。
+ファイルを変えずに結果だけ見るときは、**テンプレートの編集** を開き、**ジョブタイプ** を **チェック** に変えて保存してから起動します。ジョブタイプの選択肢は **実行** と **チェック** です。チェックではファイルは変わらず、今のファイルと内容が違うタスクは `changed`、同じ内容のタスクは `ok` になります。
 
 ![ジョブタイプを開いたところ。選択肢はチェックと実行。ジョブタイプと制限の起動プロンプトは外したまま。認証情報は linux-ssh](../images/aap/job-type.png)
 
-写真の `sample01` は例です。自分の接頭辞に読み替えます。この演習の認証情報は `<name_prefix>-linux-ssh` だけです。ジョブタイプの横も、制限の横も、**起動プロンプト** は外したままにします。
+写真の `sample01` は例なので、自分の接頭辞に読み替えます。この演習で付ける認証情報は `<name_prefix>-linux-ssh` だけです。**起動プロンプト** は、ジョブタイプの横も制限の横も外したままにします。
 
-起動画面には「チェックモード」という項目はありません。ジョブタイプの横の **起動プロンプト** にチェックが無いと、起動画面にジョブタイプの欄は出ません。この演習では、編集画面でジョブタイプを変えます。確認が終わったら、ジョブタイプを **実行** に戻して保存します。
+起動画面には「チェックモード」という項目はなく、ジョブタイプの横の **起動プロンプト** にチェックが無ければ、ジョブタイプの欄も出ません。そのため、この演習では編集画面でジョブタイプを変えます。確認が終わったら、ジョブタイプを **実行** に戻して保存します。
 
 ## Section 2: Windows
 
-Section 1 と同じく **テンプレートの作成** > **ジョブテンプレートの作成** で新しく作ります。Section 1 と違う箇所だけ次のとおりです。ほかの欄は Section 1 と同じにします。
+Section 1 と同じく **テンプレートの作成** > **ジョブテンプレートの作成** で新しく作ります。Section 1 と値が違う欄は次のとおりで、ほかの欄は Section 1 と同じにします。
 
 | 項目 | 入力値 |
 |---|---|
@@ -67,22 +67,22 @@ Section 1 と同じく **テンプレートの作成** > **ジョブテンプレ
 | Playbook | `write_note_windows.yml` |
 | 認証情報 | `<name_prefix>-windows-psrp` |
 
-Extra variables には、Linux と同じ `name_prefix` の1行を入れます。ファイルは `C:\temp\<name_prefix>-aap-training\note.txt` に書かれます。
+Extra variables には、Linux と同じ `name_prefix` の1行を入れます。ファイルは `C:\temp\<name_prefix>-aap-training\note.txt` に書き込まれます。
 
-起動して成功することを確認します。`Show the note written to note.txt` は Linux と同じ文面です。
+起動して成功することを確認します。`Show the note written to note.txt` には Linux と同じ文面が出ます。
 
-Kerberos の場合は、ユーザー名が `ユーザー@レルム` になっているかを確認します。失敗したら、ホスト変数の `ansible_psrp_auth`、ポート、プロトコルが演習3の Kerberos の値かを確認します。
+Kerberos の場合は、`<name_prefix>-windows-psrp` の **ユーザ名** が `ユーザー@レルム` の形になっているかを確認します。失敗したら、ホスト変数の `ansible_psrp_auth`、ポート、プロトコルが演習3の Kerberos の値かを確認します。
 
 ## Section 3: 読み取り用テンプレート
 
-同じ手順で、変更しない確認用を2つ作ります。
+同じ手順で、ファイルを変更せずに中身を確認するジョブテンプレートを2つ作ります。
 
 | 名前 | Playbook | 認証情報 |
 |---|---|---|
 | `<name_prefix>-verify-note-linux` | `verify_note_linux.yml` | `<name_prefix>-linux-ssh` |
 | `<name_prefix>-verify-note-windows` | `verify_note_windows.yml` | `<name_prefix>-windows-psrp` |
 
-インベントリーとプロジェクトは、書くときと同じです。Extra variables には、書くときと同じ `name_prefix` の1行を入れます。両方を起動し、成功することを確認します。`Show note.txt` に、ファイルの中身が1行で出ます。`\n` は改行の意味です。Linux は次の形です。`address:` のあとは、自分の `lin1` の `ansible_host` です。Windows は `hostname: win1` で始まります。
+インベントリーとプロジェクトは、Section 1・2 のテンプレートと同じです。Extra variables にも、同じ `name_prefix` の1行を入れます。両方を起動し、成功することを確認します。出力の `Show note.txt` には、ファイルの中身が1行にまとめて出ます（`\n` は改行を表します）。Linux では次の形で出て、`address:` のあとには自分の `lin1` の `ansible_host` の値が入ります。Windows では `hostname: win1` で始まります。
 
 ```
 "msg": "hostname: lin1\naddress: <ansible_host の値>\nnote: managed by AAP\n"
@@ -105,7 +105,7 @@ Web IDE で、[sample-content/check_become.yml](../sample-content/check_become.y
 
 ![認証情報の編集。Privilege Escalation Method は sudo。パスワードは ENCRYPTED と表示される](../images/aap/credential-become.png)
 
-写真の `sample01` は例です。パスワードの欄は、保存済みの値が `ENCRYPTED` と表示されます。触らずにそのままにします。
+写真の `sample01` は例です。パスワードの欄には保存済みの値が `ENCRYPTED` と表示されますが、触らずにそのままにします。
 
 | 項目 | 入力値 |
 |---|---|
@@ -113,7 +113,7 @@ Web IDE で、[sample-content/check_become.yml](../sample-content/check_become.y
 | Privilege Escalation Username | 空欄（空欄のときは `root`） |
 | Privilege Escalation Password | AWS で作った Linux は空欄。既存サーバで sudo にパスワードが要るときは、そのパスワード |
 
-方式を入れても、`become: true` が無い Playbook は sudo を使いません。この演習で作った `write-note-linux` と `verify-note-linux` の動きは変わりません。
+権限昇格の方式を入れても、`become: true` が無い Playbook は sudo を使わないため、この演習で作った `write-note-linux` と `verify-note-linux` の動きは変わりません。
 
 次のジョブテンプレートを作ります。表に無い欄は空欄です。
 

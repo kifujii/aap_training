@@ -4,11 +4,11 @@
 
 > **前提:** [演習7](./ex7.md) の `<name_prefix>-write-note-linux` と `<name_prefix>-write-note-windows`
 
-この演習では、節ごとにジョブを起動します。Section 1 はメモの文面、Section 2 は対象ホスト、Section 3 は起動時の質問です。`name_prefix` の行は、どの節でも残します。
+この演習では、ジョブに渡す値や対象を変えながら、Section ごとにジョブを起動します。Section 1 ではメモの文面を、Section 2 では対象ホストを変え、Section 3 では起動時に質問を出します。Extra variables の `name_prefix` の行は、どの Section でも残します。
 
 ## Section 1: Extra variables
 
-`<name_prefix>-write-note-linux` の **テンプレートの編集** を開き、下までスクロールします。入れる欄の名前は **Extra variables** です。「変数」という欄はありません。
+`<name_prefix>-write-note-linux` の **テンプレートの編集** を開き、下までスクロールします。値を入れる欄の名前は **Extra variables** で、「変数」という欄はありません。
 
 ![Extra variables に name_prefix と training_note。制限の起動プロンプトは外れたまま](../images/aap/extra-variables-note.png)
 
@@ -25,7 +25,7 @@ training_note: hello from extra vars
 
 これは `ansible-playbook write_note_linux.yml -e "name_prefix=sample01 training_note='hello from extra vars'"` と同じです。`name_prefix` は、ファイルの置き場所に使われます。
 
-確認が終わったら、`training_note` の行だけを消して保存します。`name_prefix` の行は残します。Section 3 では、同じ `training_note` を Survey で聞きます。
+確認が終わったら、`training_note` の行だけを消して保存し、`name_prefix` の行は残します。Section 3 では、同じ `training_note` の値を、起動時に Survey で入力します。
 
 もう一度起動します。`Show the note written to note.txt` は、`group_vars/all.yml` の既定値どおり `note.txt の note は managed by AAP です` に戻ります。
 
@@ -41,11 +41,11 @@ name_prefix: sample01
 
 ![制限の右の起動プロンプトにチェックが入っている。ジョブタイプの横は外したまま](../images/aap/job-limit-prompt.png)
 
-保存して起動すると、**Prompt on Launch** が開きます。左に出る段階は、この時点では **Prompts** と **Review** の2つです。Survey は、次の節で作ります。**制限** に `lin1` と入力して **Next** を押し、**Review** で **Finish** を押します。
+保存して起動すると、**Prompt on Launch** が開きます。Survey はまだ作っていないため、左に出る段階は **Prompts** と **Review** の2つです。**制限** に `lin1` と入力して **Next** を押し、**Review** で **Finish** を押します。
 
 ![Prompt on Launch の Review。制限は lin1。最後のボタンは Finish。手順は Prompts と Review だけ](../images/aap/launch-finish.png)
 
-写真の `sample01` は例です。自分の接頭辞に読み替えます。出力の対象が `lin1` だけであることを確認します。`Show the note written to note.txt` は `note.txt の note は managed by AAP です` のままです。この演習の認証情報は `<name_prefix>-linux-ssh` だけです。
+写真の `sample01` は例なので、自分の接頭辞に読み替えます。出力で、対象が `lin1` だけになっていることを確認します。メモは変えていないので、`Show the note written to note.txt` は `note.txt の note は managed by AAP です` のままです。テンプレートに付ける認証情報は、演習7と同じ `<name_prefix>-linux-ssh` だけです。
 
 ## Section 3: Survey
 
@@ -61,17 +61,17 @@ name_prefix: sample01
 | Required | 有効 |
 | Default answer | `managed by AAP` |
 
-Answer type の Password は、入れた値をジョブの詳細に平文で残さないときに使います。この演習のメモは Text のままにします。
+Answer type の Password は、入力した値をジョブの詳細に平文で残したくないときに使います。この演習のメモは Text のままにします。
 
 **Save survey question** を押します。一覧に戻ったら、左の **Survey enabled** をオンにします。オフのままだと、起動時に質問が出ません。
 
 ![Survey enabled がオンで、質問が1件ある状態](../images/aap/survey-enabled.png)
 
-起動すると **Prompt on Launch** が開きます。左に出る段階は **Prompts**、**Survey**、**Review** です。**Prompts** の **制限** は空欄のまま **Next** を押します。空欄のときは、Playbook の `hosts: linux` が対象です。
+起動すると **Prompt on Launch** が開きます。左に出る段階は **Prompts**、**Survey**、**Review** です。**Prompts** の **制限** は空欄のまま **Next** を押します。制限が空欄のときは、Playbook の `hosts: linux` に書いたグループが対象になります。
 
 ![Prompt on Launch の Prompts。制限は空欄](../images/aap/launch-limit.png)
 
-**Survey** の「ファイルに書くメモを入力してください」に `second note` と入力して **Next** を押します。写真は既定の `managed by AAP` のままです。この1回目は、その文字を消して `second note` にします。**Review** の Extra vars に `training_note` が出るのは、この Survey の答えです。テンプレートの Extra variables に書き戻したわけではありません。**Finish** を押すとジョブが始まります。`Show the note written to note.txt` に `note.txt の note は second note です` と出ることを確認します。
+**Survey** の「ファイルに書くメモを入力してください」には、写真のように既定の `managed by AAP` が入っています。この1回目は、その文字を消して `second note` と入力し、**Next** を押します。**Review** の Extra vars に出る `training_note` は、この Survey の答えで、テンプレートの Extra variables に書き戻されたものではありません。**Finish** を押すとジョブが始まります。`Show the note written to note.txt` に `note.txt の note は second note です` と出ることを確認します。
 
 ![Prompt on Launch の Survey。既定の答えは managed by AAP](../images/aap/launch-survey.png)
 
@@ -87,9 +87,9 @@ Answer type の Password は、入れた値をジョブの詳細に平文で残�
 
 Section 1 の行を残したまま Survey に答えても、メモは Survey の答えになります。この演習では、どこで入れた値か分かりやすいように、Section 1 の行を消しています。
 
-この起動画面は、`<name_prefix>-write-note-linux` を起動するたびに出ます。以降の演習でも、制限と Survey は、その演習に書いてある値にします。
+この起動画面は、`<name_prefix>-write-note-linux` を起動するたびに出ます。以降の演習でも、制限と Survey には、その演習で指定する値を入れます。
 
-`<name_prefix>-write-note-windows` の Extra variables にも、演習7で入れた `name_prefix` の行が残っています。同じ質問を1つ作り、同じ2回の起動をします。Windows のテンプレートには制限の起動プロンプトを付けていないので、**Prompts** は出ません。最初の手順は **Survey** です。1回目の `Show the note written to note.txt` は `note.txt の note は second note です`、2回目は `note.txt の note は managed by AAP です` です。
+`<name_prefix>-write-note-windows` にも同じ質問を1つ作り、Linux と同じように2回起動します。Extra variables には、演習7で入れた `name_prefix` の行が残っています。Windows のテンプレートには制限の起動プロンプトを付けていないので、**Prompts** は出ず、**Survey** から始まります。`Show the note written to note.txt` には、1回目は `note.txt の note は second note です`、2回目は `note.txt の note は managed by AAP です` と出ます。
 
 ![write-note-windows の起動。Survey から始まり、制限の欄は無い](../images/aap/launch-survey-windows.png)
 

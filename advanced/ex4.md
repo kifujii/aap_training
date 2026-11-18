@@ -4,21 +4,21 @@
 
 > **前提:** [演習8](../basic-controller/ex8.md) の制限の起動プロンプトと Survey
 
-ジョブの実行を、API からも行います。ここで発行するのは AAP の API トークンです。GitLab のパスワードとは別です。
+この演習では、ジョブの起動を画面からではなく API から行います。API の呼び出しには、この演習で発行する AAP の API トークンを使います。GitLab のパスワードとは別のものです。
 
 この演習のコマンドは、[事前準備](../prepare_training_environment.md) で控えた作業用サーバで実行します。
 
-## Section 1: APIの場所
+## Section 1: APIの場所を確認する
 
 ```bash
 curl -sk https://<AAPのURL>/api/ | python3 -m json.tool
 ```
 
-出力の `apis` に、AAP の中の API の場所が並びます。`-k` は、AAP の証明書を検証しない指定です。自己証明書の環境でも接続できるようにするために付けます。実際の運用では、CA 証明書を指定して検証します。
+出力の `apis` に、AAP が提供する各 API の場所が表示されます。`-k` は AAP の証明書を検証しない指定で、自己証明書の環境でも接続できるように付けています。実際の運用では、CA 証明書を指定して検証します。
 
-この資料の例は `https://<AAPのURL>/api/controller/v2` です。`/api/v2/` は、ゲートウェイ構成では 404 になります。以降、このベースを `AAP_API_ROOT` と書きます。
+この資料の例では、API のベースは `https://<AAPのURL>/api/controller/v2` です。ゲートウェイ構成では、`/api/v2/` を指定すると 404 になります。以降、このベースの URL を `AAP_API_ROOT` と書きます。
 
-## Section 2: トークン
+## Section 2: トークンを発行する
 
 **Access Management > API Tokens** を開き、**Create API token** をクリックします。
 
@@ -32,7 +32,7 @@ curl -sk https://<AAPのURL>/api/ | python3 -m json.tool
 
 **Create token** を押すと、文字列が1度だけ表示されます。再表示できないので、その場で控えます。控えたあと、画面を閉じます。
 
-トークンは、コマンドの引数に書かずに入力します。引数に書くと、シェルの履歴に残ります。1行目を実行すると入力待ちになるので、控えたトークンを貼り付けて Enter を押します。入力した文字は画面に出ません。
+トークンをコマンドの引数に書くとシェルの履歴に残るため、次のコマンドで入力します。1行目を実行すると入力待ちになるので、控えたトークンを貼り付けて Enter を押します。入力した文字は画面に出ません。
 
 ```bash
 read -rsp 'AAP token: ' AAP_TOKEN; echo
@@ -68,7 +68,7 @@ curl -sk -H "Authorization: Bearer ${AAP_TOKEN}" \
 
 `status` が `successful` になるまで、同じコマンドを繰り返します。ジョブ出力の `Show the note written to note.txt` に `note.txt の note は from api です` と出れば、API からの Extra variables が届いています。
 
-確認後、`<name_prefix>-write-note-linux` を起動してメモを戻します。**Prompts** の **制限** は空欄のまま **Next** を押し、**Survey** は `managed by AAP` のまま **Finish** を押します。
+確認が終わったら、`<name_prefix>-write-note-linux` を起動してメモを元に戻します。**Prompts** の **制限** は空欄のまま **Next** を押し、**Survey** は `managed by AAP` のまま **Finish** を押します。
 
 ## 次
 

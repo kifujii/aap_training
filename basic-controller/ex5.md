@@ -4,7 +4,7 @@
 
 > **前提:** [演習2](../basic-intro/ex2.md) の GitLab 用の認証情報。サーバが無い場合は [演習4](../basic-intro/ex4.md)
 
-Playbook は GitLab に置き、AAP のプロジェクトから読みます。ファイルの作成と編集は Web IDE で行います。サーバが無い場合は、演習4と、演習3の Section 5（疎通確認）まで終わってから、この演習に入ります。
+この演習では、Playbook を GitLab に置き、AAP のプロジェクトから読み込めるようにします。ファイルの作成と編集には、GitLab の Web IDE を使います。サーバが無い場合は、演習4と演習3の Section 5（疎通確認）を終えてから、この演習に入ります。
 
 | 自分の状況 | この演習でやること |
 |---|---|
@@ -31,7 +31,7 @@ GitLab にログインし、**Create new…** > **New project/repository** > **C
 
 ## Section 2: Web IDEでファイルを置く
 
-プロジェクト画面の右上 **Code** を開き、**Web IDE** をクリックします。メニューが **Edit** の環境では、その中の **Web IDE** を選びます。SSH キーの案内が出ても、この演習では使いません。最初に Welcome が出たら閉じて、左のファイルを開きます。
+プロジェクト画面の右上 **Code** を開き、**Web IDE** をクリックします。メニューが **Edit** の環境では、その中の **Web IDE** を選びます。SSH キーの案内が出ることがありますが、この演習では使いません。最初に Welcome が出たら閉じて、左のファイルを開きます。
 
 ![Web IDE。左の一覧でファイルを開き、左端の枝のアイコンが Source Control。中央の README は GitLab が最初に置く見本で、演習のファイルは別に作る](../images/gitlab/web-ide.png)
 
@@ -50,7 +50,7 @@ GitLab にログインし、**Create new…** > **New project/repository** > **C
 
 `inventory.yml` の `203.0.113.10` と `203.0.113.11` は、保存前に必ず自分のアドレスへ変えます。
 
-Windows の接続は、サンプルが NTLM です。演習3で NTLM を選んだ人は、`ansible_psrp_auth`、`ansible_psrp_protocol`、`ansible_psrp_port` をサンプルのままにします。ドメインに参加している Windows は、`ansible_host` を演習3で保存した FQDN にし、この3つを下の Kerberos の列に置き換えます。どれか1つだけ変えると、演習6の同期で演習3の変数が上書きされ、`win_ping` が失敗します。
+サンプルの Windows の接続方式は NTLM です。演習3で NTLM を選んだ人は、`ansible_psrp_auth`、`ansible_psrp_protocol`、`ansible_psrp_port` をサンプルのままにします。ドメインに参加している Windows は、`ansible_host` を演習3で保存した FQDN にし、この3つを下の Kerberos の列に置き換えます。どれか1つだけ変えると、演習6の同期で演習3の変数が上書きされ、`win_ping` が失敗します。
 
 | 項目 | NTLM（サンプルのまま） | Kerberos（すべて置き換える） |
 |---|---|---|
@@ -59,7 +59,7 @@ Windows の接続は、サンプルが NTLM です。演習3で NTLM を選ん�
 | `ansible_psrp_protocol` | `http` | `https` |
 | `ansible_psrp_port` | `5985` | `5986` |
 
-`ansible_connection: psrp` と `ansible_psrp_cert_validation: ignore` は、どちらもサンプルのままです。
+`ansible_connection: psrp` と `ansible_psrp_cert_validation: ignore` は、どちらもサンプルのままにします。
 
 **Source Control** を開き、メッセージ（例: `Add note playbooks`）を書いて **Commit to main** をクリックします。
 
@@ -99,7 +99,7 @@ git push
 
 同期が成功することを確認します。
 
-失敗したときの確認箇所:
+同期が失敗したときは、次を確認します。
 
 * URL が HTTPS で、プロジェクトのパスまで含んでいるか
 * `<name_prefix>-gitlab-scm` のユーザー名とパスワードが、GitLab のログインと同じか

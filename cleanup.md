@@ -2,13 +2,13 @@
 
 [READMEへ](./README.md)
 
-自分の接頭辞が付いたものだけを消します。他の人のオブジェクトと、Demo で始まるサンプルは消しません。接頭辞は演習1で決めた文字列です。以降の `<name_prefix>` は、その文字列に置き換えます。
+このページでは、演習で作ったもののうち、自分の接頭辞が付いたものだけを消します。他の人のオブジェクトと、Demo で始まるサンプルは消しません。以降の `<name_prefix>` は、演習1で決めた接頭辞に置き換えます。
 
 ## Section 1: AWSのサーバを消す
 
-演習4でサーバを作った場合だけ、先にこれを実行します。認証情報 `<name_prefix>-aws-training` を消す前に終わらせます。
+演習4でサーバを作った場合だけ、ほかの Section より先に行います。この Section のジョブは認証情報 `<name_prefix>-aws-training` を使うので、この認証情報を消す前に終わらせます。
 
-ジョブテンプレート `<name_prefix>-remove-aws-servers` が無い場合は、`<name_prefix>-create-aws-servers` と同じ項目で作り、Playbook だけ `remove_aws_servers.yml` にします。**Extra variables** の `resource_prefix` は、作成時と同じ接頭辞です。パスワードは不要です。インベントリーは `<name_prefix>-aws-runner`、認証情報は `<name_prefix>-aws-training` です。
+ジョブテンプレート `<name_prefix>-remove-aws-servers` が無い場合は、`<name_prefix>-create-aws-servers` と同じ項目で作り、Playbook だけ `remove_aws_servers.yml` にします。**Extra variables** の `resource_prefix` には作成時と同じ接頭辞を入れます。パスワードは要りません。インベントリーは `<name_prefix>-aws-runner`、認証情報は `<name_prefix>-aws-training` を選びます。
 
 起動して成功すれば、その接頭辞のインスタンス、セキュリティグループ、ルートテーブル、サブネット、インターネットゲートウェイ、VPC は削除されています。応用演習2の Mailpit と受け取ったメールも、Linux サーバと一緒に消えます。
 
@@ -35,7 +35,7 @@ Web IDE で、プロジェクト `<name_prefix>-aap-training-content` に [sampl
 
 `sample01` は自分の接頭辞にします。認証情報が OS ごとに違うので、制限で片方のグループだけを対象にします。
 
-両方を起動します。Linux 用は `Remove /tmp/<name_prefix>-aap-training` が `changed`、Windows 用は `Remove C:\temp\<name_prefix>-aap-training` が `changed` になれば消えています。もう一方の OS の play は、対象ホストが無いので `skipping` です。2回目に起動すると、どちらも `ok` になります。
+両方を起動します。Linux 用は `Remove /tmp/<name_prefix>-aap-training` が `changed`、Windows 用は `Remove C:\temp\<name_prefix>-aap-training` が `changed` になれば消えています。もう一方の OS の play は、対象のホストが無いため `skipping` になります。2回目に起動すると、どちらも `ok` になります。
 
 ## Section 3: AAPのオブジェクトを一括で消す
 
@@ -52,7 +52,7 @@ Web IDE で、プロジェクト `<name_prefix>-aap-training-content` に [sampl
 | OAuth Token | 下で発行した API トークン |
 | Verify SSL | チェックを外す |
 
-トークンは **Access Management > API Tokens** の **Create API token** で作ります。Scope は `Write`、ボタンは **Create token** です。文字列は再表示できないので、その場で控えます。Username と Password は空欄です。URL の末尾に `/api/controller/` は付けません。
+トークンは **Access Management > API Tokens** の **Create API token** で作ります。Scope は `Write` を選び、**Create token** で発行します。トークンの文字列はあとから再表示できないので、その場で控えます。認証情報の Username と Password は空欄のままにし、URL の末尾に `/api/controller/` は付けません。
 
 インベントリー `<name_prefix>-aap-runner` が無い場合は作り、ホスト `localhost` の **変数** に次を入れます。
 
@@ -76,15 +76,15 @@ ansible_connection: local
 name_prefix: sample01
 ```
 
-`sample01` は自分の接頭辞にします。起動画面には Extra variables は出ないので、編集画面で保存してから **テンプレートの起動** を押します。
+`sample01` は自分の接頭辞にします。起動画面には Extra variables の欄が出ないので、値は編集画面で入れて保存してから、**テンプレートの起動** を押します。
 
-成功すると、出力の最後に2つの一覧が出ます。`Show the names that were deleted` は削除できた名前、`Show the names that remain` は見つかったのに削除できなかった名前です。作っていない名前は、どちらにも出ません。このジョブは、実行中の自分自身が使っているプロジェクト、インベントリー `<name_prefix>-aap-runner`、テンプレート `<name_prefix>-remove-lab` を消せません。この3つは「残った名前」に出ます。残った名前は Section 4 で、画面から消します。ジョブが失敗した場合も、Section 4 の検索で残っている行を消します。
+成功すると、出力の最後に2つの一覧が出ます。`Show the names that were deleted` は削除できた名前、`Show the names that remain` は見つかったのに削除できなかった名前です。作っていない名前は、どちらにも出ません。このジョブは、実行中の自分自身が使っているプロジェクト、インベントリー `<name_prefix>-aap-runner`、テンプレート `<name_prefix>-remove-lab` を消せないため、この3つは「残った名前」に出ます。残った名前は、Section 4 で画面から消します。ジョブが失敗した場合も、Section 4 の検索で残っている行を消します。
 
-このジョブをもう一度起動すると、起動時のプロジェクトの同期で失敗します。1回目で GitLab の認証情報 `<name_prefix>-gitlab-scm` を消しているためです。残ったものは、Section 4 の画面で消します。
+1回目の実行で GitLab の認証情報 `<name_prefix>-gitlab-scm` を消しているため、このジョブをもう一度起動すると、起動時のプロジェクトの同期で失敗します。残ったものは、Section 4 の画面で消します。
 
-使った API トークンは、**Access Management > API Tokens** で削除します。トークンは、削除するまで API を呼べる鍵として使えてしまいます。応用演習4で発行し、`<name_prefix>-aap-api` と `<name_prefix>-eda-controller` に入れたトークンと、このページで発行したトークンの両方です。他の人のトークンは、この一覧には出ません。
+API トークンは、削除するまで API を呼べる鍵として使えてしまうため、使ったトークンは **Access Management > API Tokens** で削除します。削除するのは、応用演習4で発行して `<name_prefix>-aap-api` と `<name_prefix>-eda-controller` に入れたトークンと、このページで発行したトークンの両方です。この一覧には、他の人のトークンは出ません。
 
-Activation を消したあとの Event Stream と EDA のプロジェクトは、Activation の削除が終わるまで「使用中」になります。`<name_prefix>-remove-lab` は、数回待ってから削除をやり直します。それでも残ったときは、Section 4 の表の **Automation Decisions** の行で消します。
+Activation を消したあとの Event Stream と EDA のプロジェクトは、Activation の削除が終わるまで「使用中」になります。`<name_prefix>-remove-lab` のジョブは、少し待ってから削除を数回やり直します。それでも残ったときは、Section 4 の表の **Automation Decisions** の行で消します。
 
 ## Section 4: 画面で残りを確認する
 
@@ -113,7 +113,7 @@ Activation を消したあとの Event Stream と EDA のプロジェクトは�
 
 ## Section 5: GitLabのプロジェクトを消す
 
-GitLab のプロジェクト `<name_prefix>-aap-training-content` を開きます。**Settings > General** の **Advanced** を展開し、**Delete project** まで進みます。確認欄には、画面が求めるプロジェクト名を入力して削除します。Webhook もこのプロジェクトと一緒に消えます。GitLab の設定によっては、すぐには消えず、名前の後ろに `-deletion_scheduled-<番号>` が付いた「削除予定」になります。猶予期間が過ぎると消えます。名前が変わるので、同じ名前のプロジェクトを作り直しても重なりません。
+GitLab のプロジェクト `<name_prefix>-aap-training-content` を開きます。**Settings > General** の **Advanced** を展開し、**Delete project** まで進みます。確認欄には、画面が求めるプロジェクト名を入力して削除します。Webhook もこのプロジェクトと一緒に消えます。GitLab の設定によっては、すぐには消えず、名前の後ろに `-deletion_scheduled-<番号>` が付いた「削除予定」になり、猶予期間が過ぎてから消えます。削除予定の間は名前が変わるので、同じ名前のプロジェクトを作り直しても重なりません。
 
 ## Section 6: 作業ファイルを消す
 

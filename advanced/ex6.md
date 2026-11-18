@@ -4,7 +4,7 @@
 
 > **前提:** [演習5](../basic-controller/ex5.md) の GitLab のプロジェクト、[演習7](../basic-controller/ex7.md) Section 3 の `<name_prefix>-verify-note-linux`
 
-ジョブテンプレートの Webhook を有効にすると、GitLab から HTTP リクエストを受けたときに、そのテンプレートが起動します。ここでは `<name_prefix>-verify-note-linux` に付け、マージリクエストを作成したときにジョブが起動することを確認します。操作は Automation Execution のジョブテンプレートだけです。
+ジョブテンプレートの Webhook を有効にすると、GitLab から HTTP リクエストを受けたときに、そのテンプレートが起動します。この演習では、`<name_prefix>-verify-note-linux` の Webhook を有効にし、GitLab でマージリクエストを作成したときにジョブが起動することを確認します。AAP 側で操作するのは、Automation Execution のジョブテンプレートだけです。
 
 マージリクエストを作っただけでは、プロジェクトは同期されません。ただし、プロジェクト `<name_prefix>-aap-training-content` は演習4または演習5で **起動時のリビジョン更新** を有効にしているので、Webhook でジョブが起動したときに、`main` ブランチで同期してから Playbook を動かします。
 
@@ -19,7 +19,7 @@
 | Webhook service | `GitLab` |
 | Webhook credential | 空欄 |
 
-**ジョブテンプレートの保存** をクリックします。詳細画面に **Webhook URL** と **Webhook key** が出ます。両方を控えます。Webhook key は、GitLab の Secret token に入れる文字列です。
+**ジョブテンプレートの保存** をクリックすると、詳細画面に **Webhook URL** と **Webhook key** が表示されるので、両方を控えます。Webhook key は、Section 2 で GitLab の Secret token に入れる文字列です。
 
 ## Section 2: GitLabに受け口を登録する
 
@@ -31,7 +31,7 @@ GitLab のプロジェクト `<name_prefix>-aap-training-content` で **Settings
 | Secret token | Section 1 の Webhook key |
 | Trigger | **Merge request events** だけオン |
 
-Push events が最初からオンなら外します。**Add webhook** をクリックします。`Requests to the local network are not allowed` と出て追加できないときは、GitLab の管理者設定でローカルネットワークへの Webhook が許可されていません。[事前準備](../prepare_training_environment.md) の GitLab の設定を、GitLab の管理者に依頼します。設定されるまでは、この演習を飛ばして [応用演習7](./ex7.md) へ進みます。
+Push events が最初からオンになっている場合は、オフにします。**Add webhook** をクリックします。`Requests to the local network are not allowed` と出て追加できないときは、GitLab の管理者設定でローカルネットワークへの Webhook が許可されていません。[事前準備](../prepare_training_environment.md) の GitLab の設定を、GitLab の管理者に依頼します。設定されるまでは、この演習を飛ばして [応用演習7](./ex7.md) へ進みます。
 
 追加された Webhook の **Recent Deliveries** は、この時点では空で構いません。
 
@@ -46,9 +46,9 @@ Web IDE を開きます。
 
 ## Section 4: ジョブを確認する
 
-AAP の **ジョブ** を開きます。起動ボタンを押していない `<name_prefix>-verify-note-linux` が増えていれば、Webhook で起動しています。マージリクエストを作ったときの `open` と、そのあと GitLab が送る `update` で、ジョブが2件増えることがあります。そのジョブの詳細を開き、Extra variables に `awx_webhook_payload` があること、その中の `object_kind` が `merge_request` であることを確認します。
+AAP の **ジョブ** を開きます。自分で起動ボタンを押していない `<name_prefix>-verify-note-linux` のジョブが増えていれば、Webhook で起動しています。マージリクエストを作ったときの `open` と、そのあと GitLab が送る `update` のイベントで、ジョブが2件増えることがあります。そのジョブの詳細を開き、Extra variables に `awx_webhook_payload` があること、その中の `object_kind` が `merge_request` であることを確認します。
 
-ジョブが増えない場合は、GitLab の Webhook の **Recent Deliveries** を見ます。失敗しているときは、URL と Secret token を、AAP の Webhook URL、Webhook key と見比べます。証明書のエラーなら、GitLab 側の **Enable SSL verification** を外して保存し（実際の運用では、AAP の証明書を GitLab に信頼させ、検証は有効のままにします）、マージリクエストの説明に1文字足して保存します。Merge request events がもう一度送られます。
+ジョブが増えない場合は、GitLab の Webhook の **Recent Deliveries** を見ます。失敗しているときは、URL と Secret token を、AAP の Webhook URL、Webhook key と見比べます。証明書のエラーの場合は、GitLab 側の **Enable SSL verification** を外して保存します（実際の運用では、AAP の証明書を GitLab に信頼させ、検証は有効のままにします）。そのあと、マージリクエストの説明に1文字足して保存すると、Merge request events がもう一度送られます。
 
 確認が終わったら、`<name_prefix>-verify-note-linux` の **Webhook の有効化** を外して保存します。外したあとは、同じ URL へ送ってもジョブは起動しません。
 

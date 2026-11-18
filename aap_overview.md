@@ -2,36 +2,40 @@
 
 [READMEへ](./README.md)
 
-演習に入る前に、画面のメニューと、1回のジョブが何の組み合わせかを読みます。用語を引くときは [AAP用語集](./aap_glossary.md)、ボタン名は [画面ラベル対応表](./ui-labels.md) です。操作の手順は各演習にあります。
+このページでは、演習を始める前に知っておきたい AAP の全体像として、画面のメニューの構成と、ジョブが何から組み立てられているかを説明します。操作の手順は各演習に書いてあります。用語の意味は [AAP用語集](./aap_glossary.md)、ボタンや欄の名前は [画面ラベル対応表](./ui-labels.md) で確認できます。
 
-## Ansible を画面から実行する
+## AAP でできること
 
-手元では `ansible-playbook` で Playbook を実行します。AAP（Ansible Automation Platform）は、その実行を Web の画面に置いたものです。Playbook と `inventory.yml` は GitLab に置きます。認証情報と、実行したログは AAP に残ります。
+手元で Ansible を使うときは、`ansible-playbook` コマンドで Playbook を実行します。AAP（Ansible Automation Platform）を使うと、同じ実行を Web の画面から行えます。さらに、誰がいつ何を実行したかの記録、ログイン情報の安全な保管、実行できる人の制限、決まった時刻の自動実行なども、画面から扱えます。
 
-この資料の題材は、Linux と Windows の決まったディレクトリへファイルを書くことです。
+この資料では、Playbook とインベントリーのファイルを GitLab に置き、AAP がそれを読み込んで実行します。サーバへのログインに使う認証情報と、実行の記録は AAP に保存されます。
 
-## 3つのメニュー
+演習の題材は、Linux と Windows の決まったディレクトリにファイルを書くことです。
 
-ログイン後の左メニューは、次の3つです。
+## 画面のメニュー
 
-| メニュー | 役割 | この資料で使うとき |
+ログインすると、左に次の3つのメニューが表示されます。
+
+| メニュー | 役割 | この資料で使い始める演習 |
 |---|---|---|
-| **Automation Execution** | Playbook を実行する。ジョブ、テンプレート、プロジェクト、インベントリー、認証情報、実行環境 | [演習2](./basic-intro/ex2.md) から |
-| **Automation Decisions** | 届いたイベントの内容を見て、ジョブを起動する | [応用演習7](./advanced/ex7.md) から |
-| **Access Management** | ログインするユーザー、組織、チーム | [演習1](./basic-intro/ex1.md) で組織名。[応用演習1](./advanced/ex1.md) で権限 |
+| **Automation Execution** | Playbook の実行を管理します。ジョブ、テンプレート、プロジェクト、インベントリー、認証情報、実行環境はここにあります | [演習2](./basic-intro/ex2.md) |
+| **Automation Decisions** | 外から届いたイベントの内容に応じて、ジョブを起動します | [応用演習7](./advanced/ex7.md) |
+| **Access Management** | ログインするユーザー、組織、チームを管理します | [演習1](./basic-intro/ex1.md)（組織名の確認）、[応用演習1](./advanced/ex1.md)（権限） |
 
-作るオブジェクトは、すべていずれかの組織に属します。この資料では、演習1で控える組織を選びます。
+AAP で作るものは、すべていずれかの組織に属します。この資料では、演習1で確認する組織を選びます。
 
 ## ジョブテンプレートとジョブ
 
-ジョブテンプレートは、次の4つを1つにまとめた実行の定義です。**テンプレートの起動** を押すたびに、ジョブが1件できます。ジョブには出力と、成功か失敗が残ります。
+AAP で Playbook を実行するには、まずジョブテンプレートを作ります。ジョブテンプレートは、「どの Playbook を」「どのサーバに」「どのログイン情報で」「どの Ansible の環境で」実行するかを1つにまとめた定義です。
 
-| 部品 | 画面の名前 | この資料での中身 |
+ジョブテンプレートの **テンプレートの起動** を押すと、Playbook が実行され、その1回分の記録がジョブとして残ります。ジョブには、実行の出力と、成功したか失敗したかが記録されます。
+
+| まとめる内容 | 画面での名前 | この資料で使うもの |
 |---|---|---|
-| どの Playbook か | プロジェクト、Playbook | GitLab の `<name_prefix>-aap-training-content` |
-| どのホストか | インベントリー | `<name_prefix>-training-inventory` の `lin1` と `win1` |
-| どうログインするか | 認証情報 | 種類ごとに欄が違います。サーバへは `Machine`、GitLab を読むときは `Source Control`、暗号の解除は `Vault` |
-| どの Ansible で動かすか | 実行環境 | 空欄なら、システムの既定の実行環境 |
+| どの Playbook を | プロジェクトと Playbook | GitLab のプロジェクト `<name_prefix>-aap-training-content` にある Playbook |
+| どのサーバに | インベントリー | `<name_prefix>-training-inventory` に登録した `lin1` と `win1` |
+| どのログイン情報で | 認証情報 | サーバへのログインは `Machine`、GitLab の読み取りは `Source Control`、暗号の復号は `Vault` の種類を使います |
+| どの Ansible の環境で | 実行環境 | 空欄にして、システムの既定の実行環境を使います |
 
 ```
 プロジェクトの Playbook
@@ -39,50 +43,50 @@
   + 認証情報
   + 実行環境（空欄なら既定）
         ↓
-  ジョブテンプレートを起動
+  ジョブテンプレートを起動する
         ↓
-  ジョブ（1回の出力）
+  ジョブ（1回分の実行の記録）
 ```
 
-手元のコマンドとの対応は、次のとおりです。
+`ansible-playbook` コマンドのオプションは、AAP では次の場所で指定します。
 
-| 手元 | AAP |
+| コマンドでの指定 | AAP での指定場所 |
 |---|---|
 | `ansible-playbook write_note_linux.yml -i inventory` | ジョブテンプレートの Playbook とインベントリー |
-| `-e name_prefix=<name_prefix>` | **Extra variables**。起動時に質問する形が Survey（[演習8](./basic-controller/ex8.md)） |
+| `-e name_prefix=<name_prefix>` | **Extra variables**。起動のたびに質問して値を受け取る方法として、Survey もあります（[演習8](./basic-controller/ex8.md)） |
 | `--limit lin1` | **制限** |
 | `--check` | **ジョブタイプ** の **チェック** |
 
-1つのジョブに付けられる Machine 認証情報は1つです。Linux と Windows は、別のジョブテンプレートにします。
+1つのジョブテンプレートに付けられる Machine 認証情報は1つだけです。Linux と Windows ではログイン情報が違うので、この資料ではジョブテンプレートを OS ごとに分けて作ります。
 
 ## 実行環境
 
-Playbook は、実行環境の中で動きます。実行環境は、Ansible 本体とコレクションが入ったコンテナイメージです。画面では **Automation Execution > Infrastructure > 実行環境** に一覧があります。
+AAP では、Playbook は実行環境の中で動きます。実行環境とは、Ansible 本体とコレクションが入ったコンテナイメージのことです。一覧は **Automation Execution > Infrastructure > 実行環境** で確認できます。
 
-ジョブテンプレートの実行環境を空欄にすると、システムの既定の実行環境で動きます。使った名前は、ジョブ詳細に出ます。この資料でファイルを書くジョブは、実行環境を空欄のまま進めます。
+ジョブテンプレートの実行環境を空欄にすると、システムの既定の実行環境が使われます。実際に使われた実行環境の名前は、ジョブの詳細画面に表示されます。この資料でファイルを書くジョブテンプレートは、実行環境を空欄のまま使います。
 
-この資料で空欄のまま使う既定の実行環境には、`ansible.controller` と `amazon.aws` が入っています。`community.general` は入っていません。入っていないコレクションを使うときは、イメージを追加して実行環境として登録します。その確認は [応用演習3](./advanced/ex3.md) です。
+既定の実行環境には、`ansible.controller` と `amazon.aws` のコレクションが入っています。`community.general` は入っていません。既定に無いコレクションを使いたいときは、コレクションを足したイメージを作り、実行環境として登録します。その手順は [応用演習3](./advanced/ex3.md) で扱います。
 
-AWS でサーバを作るジョブも、この実行環境の中で動きます。作ったサーバへログインするのは、そのあとの演習です。
+AWS でサーバを作るジョブ（[演習4](./basic-intro/ex4.md)）も、この既定の実行環境の中で動きます。
 
-## あとの演習で足すもの
+## このあとの演習で使う機能
 
-基本の4つに、次を足していきます。
+ここまでの4つの組み合わせを土台に、演習が進むにつれて次の機能を足していきます。
 
-| 機能 | 何をするか | 演習 |
+| 機能 | できること | 演習 |
 |---|---|---|
-| インベントリソース | GitLab の `inventory.yml` を、インベントリーへ取り込む | [演習6](./basic-controller/ex6.md) |
-| Survey | 起動時に質問し、答えを Extra variables として渡す | [演習8](./basic-controller/ex8.md) |
-| Vault | 秘密の値を暗号化したまま GitLab に置く。復号のパスワードは Vault 認証情報 | [演習9](./basic-controller/ex9.md) |
-| スケジュール | 決めた時刻に、ジョブテンプレートを起動する | [演習10](./basic-controller/ex10.md) |
-| ワークフロー | 複数のジョブテンプレートを線でつなぐ。途中に人の承認も置ける | [演習11](./basic-controller/ex11.md) |
-| チームとロール | 起動できる人と、編集できる人を分ける | [応用演習1](./advanced/ex1.md) |
-| 通知 | 失敗を、メールで知らせる | [応用演習2](./advanced/ex2.md) |
-| API | 画面と同じ起動を、HTTP で行う。Playbook からも起動できる | [応用演習4](./advanced/ex4.md)、[応用演習5](./advanced/ex5.md) |
-| Webhook と EDA | 外から届いたイベントでジョブを起動する | [応用演習6](./advanced/ex6.md) から [応用演習8](./advanced/ex8.md) |
+| インベントリソース | GitLab の `inventory.yml` から、ホストとグループをインベントリーに取り込みます | [演習6](./basic-controller/ex6.md) |
+| Survey | 起動のたびに質問を出し、答えを Extra variables としてジョブに渡します | [演習8](./basic-controller/ex8.md) |
+| Vault | パスワードなどの秘密の値を、暗号化したまま GitLab に置きます。復号に使うパスワードは、Vault の認証情報に保存します | [演習9](./basic-controller/ex9.md) |
+| スケジュール | 決めた時刻に、ジョブテンプレートを自動で起動します | [演習10](./basic-controller/ex10.md) |
+| ワークフロー | 複数のジョブテンプレートを線でつなぎ、順番に実行します。途中に人の承認を挟むこともできます | [演習11](./basic-controller/ex11.md) |
+| チームとロール | ジョブを起動できる人と、設定を編集できる人を分けます | [応用演習1](./advanced/ex1.md) |
+| 通知 | ジョブの失敗をメールで知らせます | [応用演習2](./advanced/ex2.md) |
+| API | 画面と同じ起動を、HTTP のリクエストや Playbook から行います | [応用演習4](./advanced/ex4.md)、[応用演習5](./advanced/ex5.md) |
+| Webhook と EDA | GitLab や監視ツールなど、外から届いたイベントをきっかけにジョブを起動します | [応用演習6](./advanced/ex6.md)〜[応用演習8](./advanced/ex8.md) |
 
-EDA のルールブックは、**決定環境** という別のコンテナイメージの中で待ちます。ジョブを起動したあとの Playbook は、実行環境の中で動きます。
+EDA でイベントを待ち受けるルールブックは、ジョブの実行環境とは別の、**決定環境** というコンテナイメージの中で動きます。ルールブックがジョブを起動したあとの Playbook は、通常のジョブと同じく実行環境の中で動きます。
 
 ## 次
 
-[事前準備](./prepare_training_environment.md) で値を控え、[演習1](./basic-intro/ex1.md) へ進みます。
+[事前準備](./prepare_training_environment.md) で使う値を控え、[演習1](./basic-intro/ex1.md) へ進みます。
