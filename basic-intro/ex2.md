@@ -60,7 +60,8 @@ GitLab 用はどちらも作ります。ユーザー名とパスワードは、G
 
 ## Section 5: AWS用（サーバをこれから作る場合だけ）
 
-既存サーバを使用する場合は、この Section を飛ばしてください。
+> [!IMPORTANT]
+> **既存サーバを使用する場合は、この Section を飛ばして [演習3](./ex3.md) へ進みます。**
 
 ![Amazon Web Services 認証情報。Access Key と Secret Key の欄](../images/aap/credential-aws.png)
 

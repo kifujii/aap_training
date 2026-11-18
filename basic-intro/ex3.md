@@ -34,7 +34,8 @@ AAP から Linux と Windows へ接続するための一覧を作ります。
 
 ## Section 3: AWS用の実行場所（サーバが無い場合だけ）
 
-既存サーバを使用する場合は、この Section を飛ばして Section 4 へ進みます。
+> [!IMPORTANT]
+> **既存サーバを使用する場合は、この Section を飛ばして [Section 4](#add-hosts) へ進みます。**
 
 [演習4](./ex4.md) の作成ジョブは、これから作るサーバの中ではなく、AAP の実行環境の中で動きます。実行環境が何かは [AAPのしくみ](../aap_overview.md) に書いてあります。そのための一覧を、ここで先に作ります。入れるホストは `localhost` の1つだけです。
 
@@ -48,13 +49,15 @@ ansible_connection: local
 
 `<name_prefix>-aws-runner` は演習4のジョブテンプレートで選びます。`<name_prefix>-training-inventory` には足しません。
 
-ここまで終わったら、Section 4 には進まず [演習4](./ex4.md) を実施してください。演習4が終わったあと、下の Section 4 でホストを登録し、Section 5 で疎通を確認します。
+> [!IMPORTANT]
+> **AWS でサーバを作る場合は、ここで Section 4 には進まず、[演習4](./ex4.md) へ進みます。** 演習4でサーバができたら、このページの Section 4 に戻ってホストを登録し、Section 5 で疎通を確認します。
 
 ## Section 4: ホストを作る
 
 <a id="add-hosts"></a>
 
-サーバが無く、演習4のログにアドレスがまだ無い場合は、ここで止めます。アドレスを控えてから戻ってきてください。
+> [!IMPORTANT]
+> **AWS でサーバを作る場合、[演習4](./ex4.md) がまだ終わっていなければ、ここから先には進みません。** 演習4でサーバのアドレスを控えてから戻ってきます。
 
 **ホスト** タブの **ホストの作成** を押します。
 
@@ -151,4 +154,7 @@ ansible_psrp_cert_validation: ignore
 
 ## 次
 
-Section 5 まで終わったら、[演習5](../basic-controller/ex5.md) へ進みます。サーバが無い人で Section 3 で止まっている場合は、先に [演習4](./ex4.md) です。
+| 今の状況 | 次に進む先 |
+|---|---|
+| Section 5 の疎通確認まで終わった（既存サーバを使用、または演習4のあとに戻ってきた） | [演習5](../basic-controller/ex5.md) |
+| AWS でサーバを作る場合で、Section 3 まで終わった | [演習4](./ex4.md) |

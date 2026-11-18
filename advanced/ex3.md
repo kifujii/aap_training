@@ -8,12 +8,13 @@
 
 AAP はジョブを起動するたびに、ジョブを動かすサーバの `podman` で、実行環境のイメージからコンテナを起動します。この演習では、AAP サーバに、AAP のコンテナを動かしているユーザーで SSH してビルドします。できたイメージはそのサーバの `podman` に入るので、AAP はそのまま使えます。定義ファイルは、そのサーバの `/tmp/<name_prefix>-custom-ee` に置きます。実際の運用では、ビルドしたイメージをコンテナレジストリに置き、AAP はそこから取ります。
 
-次のどれかなら、この演習は飛ばして既定の実行環境のまま [応用演習4](./ex4.md) へ進みます。
-
-* [事前準備](../prepare_training_environment.md) で、AAP サーバへ SSH するユーザーを控えていない
-* AAP サーバから `registry.redhat.io` と Ansible Galaxy へ接続できない
-* AAP サーバで `podman` が無い、または `ansible-builder` を入れられない
-* ジョブを動かすサーバ（実行ノード）が、AAP サーバのほかにもある。そのサーバにはイメージが無いので、ジョブが `image not known` で失敗することがある
+> [!IMPORTANT]
+> **次のどれかに当てはまる場合は、この演習を飛ばして [応用演習4](./ex4.md) へ進みます。** 実行環境は既定のままで、以降の演習を進められます。
+>
+> * [事前準備](../prepare_training_environment.md) で、AAP サーバへ SSH するユーザーを控えていない
+> * AAP サーバから `registry.redhat.io` と Ansible Galaxy へ接続できない
+> * AAP サーバで `podman` が無い、または `ansible-builder` を入れられない
+> * ジョブを動かすサーバ（実行ノード）が、AAP サーバのほかにもある。そのサーバにはイメージが無いので、ジョブが `image not known` で失敗することがある
 
 ## Section 1: サーバでツールを確認する
 

@@ -26,7 +26,9 @@ cd /tmp
 command -v ansible-vault
 ```
 
-コマンドが表示された場合は、その場で次を実行します。暗号化する文字列は、コマンドの引数には書きません。引数に書くと、シェルの履歴に残ります。
+`ansible-vault` のパス（例: `/usr/bin/ansible-vault`）が表示された場合は、その場で次を実行します。何も表示されなかった場合は、この Section の最後にある「AAP のコンテナで暗号化する場合」の手順で暗号化します。
+
+暗号化する文字列は、コマンドの引数には書きません。引数に書くと、シェルの履歴に残ります。
 
 ```bash
 cd /tmp
@@ -45,7 +47,10 @@ ansible-vault encrypt_string --prompt --output '/tmp/<name_prefix>-secrets.yml'
 cat '/tmp/<name_prefix>-secrets.yml'
 ```
 
-作業用サーバが AAP サーバで、`ansible-vault` がホストに無く AAP のコンテナの中にだけある場合は、名前に `controller` を含むコンテナを選びます。`<コンテナ>` は `podman ps` に出た名前です。AAP のコンテナは、AAP のコンテナを動かしているユーザーの `podman` で動いています。`podman ps` に何も出ないときは、別のユーザーで SSH しています。事前準備で控えた、AAP サーバへ SSH するユーザーで入り直します。入力要求は、上の1から3と同じです。画面の `training_secret: !vault |` から、暗号の最後の行までをコピーします。`Encryption successful` は含めません。
+<details>
+<summary>AAP のコンテナで暗号化する場合</summary>
+
+作業用サーバが AAP サーバで、`ansible-vault` が AAP のコンテナの中にだけある場合の手順です。名前に `controller` を含むコンテナを使います。`<コンテナ>` は `podman ps` に出た名前です。AAP のコンテナは、AAP のコンテナを動かしているユーザーの `podman` で動いています。`podman ps` に何も出ないときは、別のユーザーで SSH しています。事前準備で控えた、AAP サーバへ SSH するユーザーで入り直します。入力要求は、上の1から3と同じです。画面の `training_secret: !vault |` から、暗号の最後の行までをコピーします。`Encryption successful` は含めません。
 
 ```bash
 cd /tmp
@@ -53,7 +58,10 @@ podman ps
 podman exec -it <コンテナ> ansible-vault encrypt_string --prompt
 ```
 
-SSH で作業用サーバに入れない、または `ansible-vault` も `podman` も使えない場合は、この演習を全部飛ばして [演習10](./ex10.md) へ進みます。`secret.txt` は作られません。サーバへ入れるようになったら、Section 1 から実施します。
+</details>
+
+> [!IMPORTANT]
+> **SSH で作業用サーバに入れない、または `ansible-vault` も `podman` も使えない場合は、この演習を全部飛ばして [演習10](./ex10.md) へ進みます。** `secret.txt` は作られません。サーバへ入れるようになったら、Section 1 から実施します。
 
 ## Section 2: Web IDEに貼る
 
