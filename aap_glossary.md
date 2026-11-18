@@ -2,124 +2,130 @@
 
 [READMEへ](./README.md)
 
-最初に読む説明は [AAPのしくみ](./aap_overview.md) です。このページは、用語を引くための一覧です。
+最初に読む説明は [AAPのしくみ](./aap_overview.md) です。このページは、用語を引くための一覧です。画面での名前は、AAP 2.7 の日本語 UI の表示です。英語のまま表示される名前は、そのまま書いています。
 
 ---
 
-## 1. 基本概念
+## 1. 基本
 
-| 用語 | 説明 |
-|---|---|
-| **Ansible Automation Platform (AAP)** | Red Hatが提供する自動化の統合プラットフォーム。Ansibleの実行エンジンに、Web UI・RBAC・API・スケジューリング・イベント駆動自動化（EDA）などのエンタープライズ機能を加えたもの。 |
-| **Automation Controller** | AAPの中核コンポーネント。Playbookの実行管理（Job Template、Workflow、Inventory、Credential等）を担う。旧称 Ansible Tower。2.5以降のUIでは「**Automation Execution**」メニュー配下に相当する機能が集約されている。 |
-| **Event-Driven Ansible (EDA)** | イベント（監視アラート、Webhook等）を検知し、条件に応じて自動的にアクション（Job Template起動等）を実行する仕組み。2.5以降のUIでは「**Automation Decisions**」メニュー配下に相当する。 |
-| **統合UI** | AAP 2.5以降で採用された、Controller・EDAを1つのナビゲーションに統合したWeb UI。大きく **Automation Execution**（ジョブ / テンプレート / プロジェクト / Infrastructure 配下のインベントリー・認証情報・実行環境）、**Automation Decisions**（ルールブックのアクティベーション / 決定環境 / Event Streams）、**Access Management**（組織 / チーム / ユーザー）に分かれる。日本語UIでの項目名は [画面ラベル対応表](./ui-labels.md) を参照。 |
-| **Automation Hub** | Red Hat が提供する Collection の配布基盤。 |
-| **Automation Mesh** | 複数の Execution Node を束ねて Job を実行するネットワーク構成。 |
+| 用語 | 画面での名前 | 説明 |
+|---|---|---|
+| **Ansible Automation Platform (AAP)** | — | Red Hat が提供する自動化の基盤。Ansible の実行に、Web の画面、権限の管理、API、スケジュール、イベント駆動の自動化（EDA）などを加えたもの。 |
+| **Automation Controller** | **Automation Execution** | Playbook の実行を管理する部分。ジョブテンプレート、ワークフロー、インベントリー、認証情報などを扱う。旧称 Ansible Tower。 |
+| **Event-Driven Ansible (EDA)** | **Automation Decisions** | 届いたイベント（監視のアラート、Webhook など）の内容を見て、ジョブテンプレートの起動などを行う仕組み。[応用演習7](./advanced/ex7.md) から使う。 |
+| **Platform Gateway** | **Access Management** ほか | AAP 2.5 以降で、ログイン、ユーザー、チーム、組織をまとめて管理する部分。API の入り口も兼ね、controller の API は `/api/controller/v2/` になる。 |
 
 ---
 
-## 2. Controller中心オブジェクト
+## 2. Automation Execution のオブジェクト
 
-| 用語 | 説明 |
-|---|---|
-| **Organization** | AAPにおける最上位の管理区分。User/Team/Project/Inventory/Credential等はいずれかのOrganizationに属する。マルチテナント運用の基本単位。 |
-| **User** | AAPにログインする個々のアカウント。System Administrator等のシステムロールと、Organization/Team配下のロールを持つ。 |
-| **Team** | 複数のUserをまとめるグループ。Teamに対してロールを付与することで、所属User全員に同じ権限を一括付与できる。 |
-| **Credential** | 接続先ホストへのSSH認証情報や、SCM（GitLab等）、Vault、クラウドAPIキーなど、Job実行に必要な認証情報を保存・管理するオブジェクト。**Credential Type**ごとに入力項目が異なる。 |
-| **Credential Type** | Credentialの種類を定義するテンプレート（例: Machine、Source Control、Vault、Container Registry）。CredentialはいずれかのCredential Typeに基づいて作成される。 |
-| **Project** | 実行対象のPlaybook/Role一式を管理する単位。多くの場合GitLab等のSCMリポジトリと連携（**SCM Project**）し、Sync操作でリポジトリの最新内容を取得する。 |
-| **SCM Sync** | Projectに紐付いたSCMリポジトリの内容を、AAP側に取得・反映する操作。画面の同期で実行します。プロジェクトの「起動時のリビジョン更新」が有効なら、ジョブの起動時にも同期します。GitLab の Webhook そのものは同期しません（[応用演習6](./advanced/ex6.md)）。 |
-| **Revision** | SCM Sync時に取得したリポジトリのコミットハッシュ。Job実行時にどのリビジョンのPlaybookが使われたかを追跡できる。 |
-| **Inventory** | Job実行対象のホストとグループを定義する単位。手動でHost/Groupを登録する方法と、**Inventory Source**を使って外部（SCM上のYAMLファイル、クラウドAPI等）から取り込む方法がある。 |
-| **Inventory Source** | Inventoryにホスト情報を取り込む方法を定義する設定。本資料では GitLab 上の `inventory.yml` を読む「Sourced from a Project」を使います（[演習6](./basic-controller/ex6.md)）。 |
-| **Smart Inventory** | 既存Inventoryのホストを、検索条件（ホスト変数など）に基づいて動的にグルーピングした仮想的なInventory。 |
-| **Job Template** | 「どのProjectのどのPlaybookを」「どのInventoryに対して」「どのCredentialを使って」実行するかを定義した、実行可能なテンプレート。AAPにおける最も基本的な実行単位。 |
-| **Job** | Job Templateを実際に実行した1回分の記録。実行ログ・PLAY RECAP・ステータス（successful/failed等）を持つ。 |
-| **Workflow Job Template** | 複数のJob Template（またはWorkflow内のApproval等）をノードとして繋ぎ、成功/失敗に応じて分岐させながら実行する仕組み。 |
-| **Workflow Approval** | Workflow内に設置できる「人による承認」ノード。承認されるまで後続ノードの実行を保留する。 |
-| **Ad Hoc Command** | Playbookを介さず、Inventory上のホストに対してモジュールを1回限り直接実行する機能（ `ansible <host> -m <module>` に相当）。 |
-
----
-
-## 3. 実行管理・実行制御
-
-| 用語 | 説明 |
-|---|---|
-| **Extra Variables (Extra Vars)** | Job Template実行時に渡す追加変数。CLIでの `-e` オプションに相当し、優先順位は非常に高い。 |
-| **Limit** | 実行対象をInventory内の特定ホスト/グループに絞り込む指定。CLIでの `--limit` に相当。 |
-| **Verbosity** | 実行ログの詳細度。CLIでの `-v`〜`-vvvv` に相当するレベルをUI上で選択する。 |
-| **Forks** | 並列実行するホスト数の上限。 |
-| **Job Type** | Job Templateの実行種別。「Run」（実際に変更を適用）と「Check」（CLIでの `--check` に相当するドライラン）がある。 |
-| **Prompt on Launch** | Job Template起動時に、Inventory/Credential/Extra Vars/Limit等の値をオペレーターに入力・選択させる設定。Job Template自体には固定値を持たせず、実行時に都度指定したい場合に使う。 |
-| **Survey** | Job Template起動時に、あらかじめ定義した質問フォームを通じて変数値を入力させる機能。入力値はExtra Varsとして渡される。 |
-| **Schedule** | Job Template/Workflow Job TemplateをiCal の RRULE 形式（例: `RRULE:FREQ=DAILY`）の設定で定期実行するための機能。 |
-| **Notification Template** | Jobの開始/成功/失敗等のタイミングで、Email・Slack・Webhook等に通知を送る設定。Organization/Project/Job Template等の単位で割り当てる。 |
-| **Instance Group** | Jobを実行するExecution Nodeの集合。実行負荷の分散や特定ネットワークへの到達性に応じてJobの実行先を制御する際に使う。 |
-| **Job Slicing** | 1つのJob Templateの実行を、Inventory内のホストを分割して複数Jobに並列展開する機能。大規模Inventory向け。 |
-| **PLAY RECAP** | Job詳細画面に表示される、CLIでのAnsibleと同じ形式の実行結果サマリー（ok/changed/failed等）。 |
+| 用語 | 画面での名前 | 説明 |
+|---|---|---|
+| **Organization** | **組織** | AAP の中の管理の単位。作るオブジェクトは、いずれかの組織に属する。この資料では [演習1](./basic-intro/ex1.md) で控えた組織を選ぶ。 |
+| **User** | **ユーザー** | AAP にログインするアカウント。ユーザータイプ（システム管理者、標準ユーザーなど）と、オブジェクトごとのロールを持つ。 |
+| **Team** | **チーム** | 複数のユーザーをまとめたもの。チームにロールを付けると、所属するユーザー全員に同じ権限が付く（[応用演習1](./advanced/ex1.md)）。 |
+| **Credential** | **認証情報** | サーバへのログイン、GitLab の読み取り、Vault の復号、クラウドの API キーなど、ジョブに必要な秘密の値を保存するオブジェクト。種類（認証情報タイプ）ごとに入力欄が違う。 |
+| **Credential Type** | **認証情報タイプ** | 認証情報の種類。この資料では Machine、Source Control、Vault、Amazon Web Services、Red Hat Ansible Automation Platform などを使う。 |
+| **Project** | **プロジェクト** | Playbook 一式の置き場所。この資料では GitLab のリポジトリと結び付け、同期で最新の内容を取ってくる。 |
+| **Project Sync** | 同期 | プロジェクトに結び付けたリポジトリの内容を、AAP に取ってくる操作。プロジェクトの **起動時のリビジョン更新** が有効なら、ジョブの起動時にも同期する。GitLab の Webhook そのものは同期しない（[応用演習6](./advanced/ex6.md)）。 |
+| **Revision** | **リビジョン** | 同期で取ってきたリポジトリのコミット。ジョブの **詳細** で、どのコミットの Playbook を使ったかが分かる。 |
+| **Inventory** | **インベントリー** | ジョブの対象のホストとグループの一覧。画面で登録する方法と、インベントリソースで取り込む方法がある。 |
+| **Inventory Source** | **ソース**（インベントリーのタブ） | インベントリーにホストを取り込む方法の設定。この資料では、GitLab の `inventory.yml` を読む **Sourced from a Project** を使う（[演習6](./basic-controller/ex6.md)）。 |
+| **Job Template** | **テンプレート**（ジョブテンプレート） | どのプロジェクトの Playbook を、どのインベントリーに、どの認証情報で実行するかをまとめた定義。起動するとジョブが1件できる。 |
+| **Job** | **ジョブ** | ジョブテンプレートを1回起動した記録。出力、ステータス、使った Extra variables などが残る。 |
+| **Workflow Job Template** | **ワークフロージョブテンプレート** | 複数のジョブテンプレートや承認をノードとしてつなぎ、成功や失敗に応じて次へ進める定義（[演習11](./basic-controller/ex11.md)）。 |
+| **Workflow Approval** | **Workflow Approvals** | ワークフローの途中に置く、人による承認。承認されるまで、後ろのノードは動かない。 |
+| **Ad Hoc Command** | **Run command** | Playbook を書かずに、インベントリーのホストにモジュールを1回だけ実行する機能。`ansible <ホスト> -m <モジュール>` に当たる（[演習3](./basic-intro/ex3.md)）。 |
 
 ---
 
-## 4. Execution Environment関連
+## 3. 実行の設定
 
-| 用語 | 説明 |
-|---|---|
-| **Execution Environment (EE)** | Job実行時に使用される、Ansible本体・Python依存パッケージ・Collectionなどを含んだコンテナイメージ。従来の「コントローラーへの直接インストール」に代わり、実行環境をコンテナとして分離・バージョン管理する仕組み。 |
-| **Default Execution Environment** | AAPにあらかじめ組み込まれている標準のEE。多くのJob Templateはこれを使って動作確認できる。 |
-| **ansible-builder** | `execution-environment.yml` の定義に基づいて、カスタムEEのコンテナイメージをビルドするCLIツール。 |
-| **execution-environment.yml** | カスタムEEに含めるCollection（`requirements.yml`）・Pythonパッケージ（`requirements.txt`）・OSパッケージ（`bindep.txt`）などを定義するansible-builderの設定ファイル。 |
-| **Container Registry Credential** | ビルドしたEEイメージをpush/pullするコンテナレジストリの認証情報を保持するCredential Type。 |
-| **ansible-navigator** | EEを使ってPlaybookをローカル/CLIから実行・デバッグするためのツール。AAPに登録する前のEE動作確認にも使える。 |
-| **Decision Environment (DE)** | EDAのRulebook実行に使われるコンテナイメージ。EEと似た位置づけだが、EDA（`ansible-rulebook`等）の実行に必要なコンポーネントを含む。 |
-
----
-
-## 5. RBAC・セキュリティ
-
-| 用語 | 説明 |
-|---|---|
-| **RBAC (Role-Based Access Control)** | User/Teamに対してロールを割り当てることで、Organization/Project/Inventory/Job Template等のオブジェクトへの操作権限を制御する仕組み。 |
-| **ビルトインロール** | AAPが標準で用意しているロール。画面では `JobTemplate Execute` や `Project Read Compat` のように、オブジェクト名が前に付く。付ける手順は[応用演習1](./advanced/ex1.md)。 |
-| **オブジェクト単位の権限** | 特定のProject・Inventory・Job Template等、個別のオブジェクトに対して直接ロールを付与する方式。Organization全体への権限付与より細かい制御が可能。 |
-| **System Administrator** | AAP全体に対する最上位権限を持つシステムロール。 |
-| **ansible-vault** | 機密の値を暗号化するコマンド。この資料では `ansible-vault encrypt_string` で値だけを暗号化し、ファイル自体は YAML のまま GitLab に置きます。復号はジョブに付けた Vault 認証情報で行います。 |
-| **Vault Credential** | `ansible-vault encrypt_string` で暗号化した値を復号するためのパスワードを保持する認証情報。Job Template に付けると、ジョブの中で値が復号されます。 |
-| **Vault ID** | 複数のVaultパスワードを使い分ける際に使う識別子。Credential側・暗号化ファイル側の双方で指定する。 |
+| 用語 | 画面での名前 | 説明 |
+|---|---|---|
+| **Extra Variables** | **Extra variables** | ジョブに渡す追加の変数。`ansible-playbook` の `-e` に当たり、Ansible の変数の中で最も優先される。優先順位は [演習8](./basic-controller/ex8.md) の表にある。 |
+| **Limit** | **制限** | 実行の対象を、インベントリーの中の特定のホストやグループに絞る指定。`--limit` に当たる。 |
+| **Verbosity** | **詳細** | 出力の詳しさ。`0 (正常)` から選び、`1 (詳細)` は `-v` に当たる。 |
+| **Job Type** | **ジョブタイプ** | ジョブの種類。**実行**（変更する）と **チェック**（`--check` に当たる。変更しない）がある。 |
+| **Prompt on Launch** | **起動プロンプト**（チェック）／ **Prompt on Launch**（起動時の画面） | 欄の横の **起動プロンプト** にチェックを入れると、その値を起動のたびに入力できる。入力する画面の名前が **Prompt on Launch**。 |
+| **Survey** | **Survey** | 起動のたびに質問を出し、答えを変数としてジョブに渡す機能（[演習8](./basic-controller/ex8.md)）。 |
+| **Schedule** | **スケジュール** | ジョブテンプレートやワークフローを、決めた時刻に起動する設定。繰り返しは iCal の RRULE 形式（例: `RRULE:FREQ=DAILY`）で保存される（[演習10](./basic-controller/ex10.md)）。 |
+| **Notification Template** | **Notifiers** | ジョブの開始、成功、失敗などを、メールなどで知らせる設定。ジョブテンプレートの **通知** タブで付ける（[応用演習2](./advanced/ex2.md)）。 |
+| **Privilege Escalation** | **Privilege Escalation Method**（認証情報） | sudo などで root の権限に切り替えてタスクを実行すること。Playbook の `become: true` と、認証情報の方式を組み合わせて使う（[演習7](./basic-controller/ex7.md)）。 |
+| **PLAY RECAP** | 出力の最後 | ジョブの出力の最後に出る、ホストごとの結果のまとめ（ok、changed、failed など）。 |
 
 ---
 
-## 6. API・CLI
+## 4. 実行環境
 
-| 用語 | 説明 |
-|---|---|
-| **Controller REST API** | AAPのほぼ全機能をHTTP経由で操作できるAPI。UIで行える操作の大部分はAPI経由でも実行可能。 |
-| **APIトークン (OAuth2 Token)** | REST APIを呼び出す際の認証に使うトークン。UIまたはAPI経由で発行し、`Authorization: Bearer <token>` ヘッダーで利用する。 |
-| **ansible.controller collection** | Playbook から Controller API を操作するモジュール群（例: `ansible.controller.job_launch`）。既定の実行環境に入っています。応用演習5では、このコレクションを使う Playbook をジョブとして実行します。 |
-| **CI/CDパイプライン連携** | GitLab CI等から、Controller REST APIやansible.controller collectionを介してJob Templateを起動するなど、外部の自動化パイプラインとAAPを連携させる構成。 |
-
----
-
-## 7. Event-Driven Ansible (EDA) 用語
-
-| 用語 | 説明 |
-|---|---|
-| **Rulebook** | EDAにおける「どのイベントを」「どんな条件で」「どのアクションに繋げるか」をYAML形式で定義したファイル。 |
-| **Source** | Rulebookがイベントを受け取る入力元（例: Webhookの受信、ファイルの変更監視、Kafka等）を定義する部分。 |
-| **Rule** | Sourceから受け取ったイベントに対する条件（condition）と、条件成立時に実行するアクション（action）の組。 |
-| **Condition** | ルールの発火条件。イベントのペイロード内容に対する比較式などで記述する。 |
-| **Action** | 条件成立時に実行する処理。Job Templateの起動（`run_job_template`）やデバッグ出力（`debug`）などがある。 |
-| **Event Stream** | 外部システム（監視ツール等）からのWebhookイベントをEDAに受け渡すための受信エンドポイント設定。 |
-| **Rulebook Activation** | Rulebookを実際に稼働状態にする（イベント待受を開始する）ためのオブジェクト。使用するDecision Environment・Rulebook・関連Credential等を指定する。 |
-| **ansible-rulebook** | Rulebookを実行するCLIエンジン。Rulebook ActivationはAAP内部でこれを使ってRulebookを稼働させる。 |
+| 用語 | 画面での名前 | 説明 |
+|---|---|---|
+| **Execution Environment (EE)** | **実行環境** | ジョブの中で Ansible を動かすコンテナイメージ。Ansible 本体、Python のライブラリ、コレクションが入っている。以前の版で使っていた Python の仮想環境（venv）に代わるもの。 |
+| **Default Execution Environment** | `Default execution environment` | 実行環境の欄を空欄にしたジョブが使う、既定の実行環境。この資料の既定には `ansible.controller` と `amazon.aws` が入っていて、`community.general` は入っていない。 |
+| **ansible-builder** | — | `execution-environment.yml` の定義から、実行環境のイメージを作るコマンド（[応用演習3](./advanced/ex3.md)）。 |
+| **execution-environment.yml** | — | 実行環境に入れるコレクション、Python のライブラリ、OS のパッケージなどを書く、ansible-builder の定義ファイル。 |
+| **Container Registry Credential** | 認証情報タイプ `Container Registry` | 実行環境のイメージを置くコンテナレジストリへの認証情報。 |
+| **Decision Environment (DE)** | **決定環境** | EDA のルールブックを動かすコンテナイメージ。ジョブの実行環境とは別のもの。 |
 
 ---
 
-## 8. SCM・GitLab連携
+## 5. 権限と秘密の値
+
+| 用語 | 画面での名前 | 説明 |
+|---|---|---|
+| **RBAC (Role-Based Access Control)** | **Team Access**、**User Access** | ユーザーやチームにロールを付けて、オブジェクトごとに操作できる範囲を決める仕組み（[応用演習1](./advanced/ex1.md)）。 |
+| **Role** | `JobTemplate Execute` など | 付けられる権限のまとまり。画面では、`JobTemplate Execute`、`Project Read Compat` のように、オブジェクトの種類が前に付く。`Compat` が付くロールは、以前の版のロールに合わせて用意された組み込みのロール。 |
+| **System Administrator** | ユーザータイプ **システム管理者** | AAP 全体を操作できるユーザー。ロールに関係なく、すべてを見て、変えられる。 |
+| **ansible-vault** | — | 秘密の値を暗号化するコマンド。この資料では `ansible-vault encrypt_string` で値だけを暗号化し、ファイルは YAML のまま GitLab に置く（[演習9](./basic-controller/ex9.md)）。 |
+| **Vault Credential** | 認証情報タイプ `Vault` | 暗号化した値を復号するパスワードを保存する認証情報。ジョブテンプレートに付けると、ジョブの中で値が復号される。 |
+| **no_log** | — | タスクの結果をジョブの出力に出さない指定。秘密の値を扱うタスクに付ける（[演習9](./basic-controller/ex9.md)）。 |
+
+---
+
+## 6. API
+
+| 用語 | 画面での名前 | 説明 |
+|---|---|---|
+| **Controller REST API** | — | 画面でできる操作の大部分を、HTTP で行える API。AAP 2.5 以降は Platform Gateway を通り、`https://<AAPのURL>/api/controller/v2/` になる（[応用演習4](./advanced/ex4.md)）。 |
+| **API Token** | **API Tokens** | API を呼ぶときの認証に使うトークン。**Access Management > API Tokens** で発行し、`Authorization: Bearer <トークン>` で送る。発行時に1度だけ表示され、使い終わったら削除する。 |
+| **ansible.controller** | — | Playbook から AAP の API を操作するコレクション（例: `ansible.controller.job_launch`）。既定の実行環境に入っている（[応用演習5](./advanced/ex5.md)）。 |
+| **Webhook**（ジョブテンプレート） | **Webhook の有効化** | GitLab などからの HTTP リクエストを受けて、ジョブテンプレートを起動する仕組み（[応用演習6](./advanced/ex6.md)）。 |
+
+---
+
+## 7. EDA
+
+| 用語 | 画面での名前 | 説明 |
+|---|---|---|
+| **Rulebook** | **ルールブック** | どのイベントを、どんな条件で、どの処理につなげるかを書いた YAML ファイル。 |
+| **Source** | ルールブックの `sources` | ルールブックがイベントを受け取る入り口の定義。この資料では `ansible.eda.webhook` を Event Stream に置き換えて使う。 |
+| **Rule / Condition / Action** | ルールブックの `rules` | イベントに対する条件（condition）と、条件に合ったときの処理（action）の組。処理には、ジョブテンプレートの起動（`run_job_template`）や、ログへの出力（`debug`）がある。 |
+| **Event Stream** | **Event Streams** | 外からのイベントを HTTP で受け取る、EDA の受け口。URL と、送る側が付けるトークンを持つ（[応用演習7](./advanced/ex7.md)）。 |
+| **Rulebook Activation** | **ルールブックのアクティベーション** | ルールブックを動かし続けて、イベントを待ち受ける設定。決定環境、ルールブック、認証情報、Event Stream を選ぶ。 |
+| **Rule Audit** | **ルール監査** | ルールが条件に合って処理を行った記録。 |
+
+---
+
+## 8. GitLab
+
+| 用語 | 画面での名前 | 説明 |
+|---|---|---|
+| **Web IDE** | **Web IDE**（GitLab） | ブラウザでファイルを作り、コミットできる GitLab のエディター。この資料のファイル作成は、すべて Web IDE で行う。 |
+| **Source Control 認証情報** | 認証情報タイプ `Source Control` | AAP が GitLab のリポジトリを読むときの認証情報。この資料では、GitLab のログインのユーザー名とパスワードを入れる。 |
+| **Merge Request** | **Merge requests**（GitLab） | ブランチの変更を、別のブランチに取り込む依頼。[応用演習6](./advanced/ex6.md) では、これを合図にジョブを起動する。 |
+
+---
+
+## 9. 参考（この資料の演習では使わない用語）
 
 | 用語 | 説明 |
 |---|---|
-| **SCM (Source Control Management)** | Gitなどのバージョン管理システムの総称。AAPのProjectはSCMリポジトリと連携して最新のPlaybook/Role/Inventoryファイルを取得する。 |
-| **Source Control認証** | AAPがGitLabを読むときに使う認証情報。GitLabのログインユーザー名とパスワードを登録する。 |
-| **Webhook** | 外部の出来事を HTTP で受けてジョブを起動する仕組み。応用演習6では、ジョブテンプレートの Webhook で GitLab のマージリクエストを受けます。Webhook そのものはプロジェクトを同期しません。起動したジョブは、プロジェクトの「起動時のリビジョン更新」が有効なら同期してから動きます。EDA の受け口は Event Stream で、応用演習7以降です。 |
-| **.gitlab-ci.yml** | GitLab CI/CD パイプラインの定義ファイル。 |
+| **Automation Hub** | Red Hat 認定のコレクションと実行環境の配布元。社内に置く private automation hub もあり、カスタム実行環境の置き場所としても使える。 |
+| **Automation Mesh** | 複数の実行ノードをつないでジョブを動かす、AAP のネットワーク構成。 |
+| **Instance Group** | ジョブを動かすノードの集まり。負荷の分散や、特定のネットワークに届くノードでジョブを動かすときに使う。 |
+| **Job Slicing** | 1つのジョブを、ホストを分けた複数のジョブに分けて並列に動かす機能。ホストが多いときに使う。 |
+| **Forks** | 1つのジョブの中で、同時に処理するホストの数の上限。 |
+| **Constructed Inventory** | 既存のインベントリーから、条件で絞ったホストを集めたインベントリー。以前の Smart Inventory に代わるもの。画面では **構築済みインベントリー**。 |
+| **ansible-navigator** | 実行環境を使って、手元で Playbook を実行・確認するコマンド。 |
+| **Vault ID** | 複数の Vault のパスワードを使い分けるときの識別子。認証情報と暗号化した値の両方で指定する。 |
+| **CI/CD との連携** | GitLab CI などから、API や `ansible.controller` でジョブテンプレートを起動する構成。 |

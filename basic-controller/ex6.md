@@ -1,10 +1,10 @@
-# 演習 6 - Inventory Source
+# 演習 6 - インベントリソース
 
 [演習5](./ex5.md) | [演習7へ](./ex7.md)
 
 > **前提:** [演習3](../basic-intro/ex3.md) のインベントリー、[演習5](./ex5.md) のプロジェクト
 
-演習3では画面からホストを登録しました。ここでは、GitLab の `inventory.yml` を正とし、同期するたびに AAP のホスト一覧をそのファイルへ合わせます。
+演習3では画面からホストを登録しました。ここでは、GitLab の `inventory.yml` を元にして、同期するたびに AAP のホスト一覧をそのファイルへ合わせます。
 
 ## Section 1: ソースを作る
 
@@ -32,8 +32,8 @@ Overwrite を有効にすると、このソースが前回の同期で取り込�
 
 ソースの同期を実行します。成功すると、グループ `linux` と `windows`、ホスト `lin1` と `win1` が表示されます。`inventory.yml` で2つのグループをまとめている親グループ `targets` も表示されます。`lin1` と `win1` を開き、次がファイルに書いた値になっていることを確認します。
 
-* `ansible_host` が、自分のアドレスである。Kerberos の Windows は、演習3で保存した FQDN である
-* Windows の `ansible_psrp_auth`、`ansible_psrp_protocol`、`ansible_psrp_port` が、演習3で保存した3つと一致している。NTLM のままなら `ntlm`、`http`、`5985` です。Kerberos に置き換えた人は `kerberos`、`https`、`5986` です
+* `ansible_host` が、自分のアドレスになっていること。Kerberos の Windows は、演習3で保存した FQDN になっていること
+* Windows の `ansible_psrp_auth`、`ansible_psrp_protocol`、`ansible_psrp_port` が、演習3で保存した3つと一致していること。NTLM のままなら `ntlm`、`http`、`5985`、Kerberos に置き換えた人は `kerberos`、`https`、`5986`
 
 まだ `203.0.113.10` のまま、または Windows の3つのどれかが演習3と違うときは、Web IDE で `inventory.yml` を直し、コミットしてから、もう一度同期します。
 

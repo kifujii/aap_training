@@ -1,4 +1,4 @@
-# 演習 7 - Job Templateを実行する
+# 演習 7 - ジョブテンプレートを実行する
 
 [演習6](./ex6.md) | [演習8へ](./ex8.md)
 
@@ -45,7 +45,7 @@ note.txt の note は managed by AAP です
 
 `Load secrets.yml when vault is enabled`、`Write secret.txt`、`Read secret.txt`、`Show the secret written to secret.txt` は `skipping` です。この演習では Vault をまだ使いません。
 
-先頭の `SSH password:` は、認証情報を渡したときの表示です。演習9で Vault 認証情報を付けると、`Vault password:` も出ます。パスワードそのものは出ません。その下に Python の WARNING が出ても、この演習では無視して構いません。
+先頭の `SSH password:` は、認証情報を渡したときの表示です。演習9で Vault 認証情報を付けると、`Vault password:` も出ます。パスワードそのものは出ません。その下に `[WARNING]: Platform linux on host lin1 is using the discovered Python interpreter` で始まる WARNING が出ても、この演習では無視して構いません。
 
 同じテンプレートをもう一度、**テンプレートの起動** から起動します。2回目は、出力の `Write note.txt` の行が `ok` になり、上部の Changed は 0 です。内容が同じなら書き直しません。
 

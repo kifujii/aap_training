@@ -26,7 +26,7 @@ GitLab にログインし、**Create new…** > **New project/repository** > **C
 | Initialize repository with a README | 付けたまま |
 | SAST / Secret Detection | オフのまま |
 
-**Create project** のあと、プロジェクトの画面の右上にある **Code** を開き、**Clone with HTTPS** の URL を控えます。Section 3 で使います。SSH キーの案内が出ても、この演習では使いません。
+**Create project** のあと、プロジェクトの画面の右上にある **Code** を開き、**Clone with HTTPS** の URL を控えます。Section 3 で使います。
 
 ## Section 2: Web IDEでファイルを置く
 
@@ -103,7 +103,7 @@ git push
 * URL が HTTPS で、プロジェクトのパスまで含んでいるか
 * `<name_prefix>-gitlab-scm` のユーザー名とパスワードが、GitLab のログインと同じか
 * ブランチ名が `main` か
-* サーバがある環境なのに `requirements.yml` を置いていないか（置くと、外への取得に失敗します）
+* サーバがある環境なのに `requirements.yml` を置いていないか（置くと、同期のときにインターネットからコレクションを取りに行き、失敗します）
 
 ## 次
 

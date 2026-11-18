@@ -1,10 +1,10 @@
-# 応用演習 5 - PlaybookからJobを起動する
+# 応用演習 5 - Playbook からジョブを起動する
 
 [応用演習4](./ex4.md) | [応用演習6へ](./ex6.md)
 
 > **前提:** [応用演習4](./ex4.md) の API トークン、[演習8](../basic-controller/ex8.md) の制限の起動プロンプトと Survey
 
-応用演習4の API 呼び出しを、Playbook のジョブとして実行します。既定の実行環境には `ansible.controller` が入っているので、その中から `<name_prefix>-write-note-linux` を起動します。実行環境の欄は空欄のまま、システムの既定を使います。
+応用演習4の API 呼び出しを、Playbook のジョブとして実行します。既定の実行環境に入っている `ansible.controller` コレクションを使って、`<name_prefix>-write-note-linux` を起動します。実行環境の欄は空欄のまま、システムの既定を使います。
 
 ## Section 1: 起動用のインベントリー
 
@@ -66,7 +66,7 @@ Web IDE で `launch_note.yml` を開き、次の内容にします。ファイ�
         msg: "job {{ launch_result.id }} finished"
 ```
 
-`CONTROLLER_OPTIONAL_API_URLPATTERN_PREFIX` は、ゲートウェイ構成の API が `/api/controller/v2/` にあるための指定です。認証情報の URL には、このパスを書きません。認証情報のタイムアウト欄は空欄のままにします。空欄の値は文字列として渡され、モジュールが秒数に変換できず失敗するため、`CONTROLLER_REQUEST_TIMEOUT` で秒数を指定します。`{{ name_prefix }}` は、このファイルでは書き換えません。
+`CONTROLLER_OPTIONAL_API_URLPATTERN_PREFIX` は、ゲートウェイ構成の API が `/api/controller/v2/` にあるための指定です。認証情報の URL には、このパスを書きません。認証情報のタイムアウト欄は空欄のままにし、秒数は Playbook の `CONTROLLER_REQUEST_TIMEOUT` で指定します（欄を空欄にすると空の文字列が渡り、`ansible.controller` のモジュールが秒数として読めずに失敗するためです）。`{{ name_prefix }}` は、このファイルでは書き換えません。
 
 **Commit to main** でコミットし、プロジェクト `<name_prefix>-aap-training-content` を同期します。
 
@@ -99,7 +99,7 @@ name_prefix: tanaka01
 
 `tanaka01` は演習1で決めた接頭辞にします。起動画面には Extra variables は出ないので、編集画面で保存してから起動します。
 
-認証情報は `<name_prefix>-aap-api` だけにします。`localhost` はローカル接続です。
+認証情報は `<name_prefix>-aap-api` だけにします。`localhost` には SSH でログインしないので、Machine 認証情報は付けません。
 
 **テンプレートの起動** で実行します。出力の最後に `job <番号> finished` と出れば、待ちまで終わっています。ジョブ一覧には、この `<name_prefix>-launch-note` と、その中から起動された `<name_prefix>-write-note-linux` の両方が増えます。起動されたジョブの `Show the note written to note.txt` に `note.txt の note は from controller collection です` と出れば完了です。
 

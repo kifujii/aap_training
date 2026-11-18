@@ -50,7 +50,7 @@ git push
 
 ## Section 2: 決定環境
 
-**Automation Decisions > 決定環境** を開き、一覧にある既定の Decision Environment の名前を控えます。この演習では新しくは作りません。
+**Automation Decisions > 決定環境** を開き、一覧にある既定の Decision Environment の名前を控えます。Section 6 で選びます。
 
 ## Section 3: Event Stream
 
@@ -79,9 +79,9 @@ Token は再表示されないので、入力した文字列を控えます。
 
 ## Section 4: Decisionsのプロジェクト
 
-Decisions 側に `<name_prefix>-aap-training-content` が無い場合は、先にプロジェクトを作ります。URL とブランチは Controller のプロジェクトと同じです。ソースコントロール認証情報は、一覧に `<name_prefix>-gitlab-scm` がすでにある場合はそれを使います。無い場合は **Automation Decisions > Infrastructure > 認証情報** でタイプ `Source Control`、名前 `<name_prefix>-gitlab-scm` を作り、ユーザー名とパスワードは Controller の同じ認証情報と同じにします。その認証情報を、Decisions のプロジェクトに付けます。作ったあとは、そのプロジェクトを同期します。
+Decisions 側に `<name_prefix>-aap-training-content` が無い場合は、先にプロジェクトを作ります。URL とブランチは Automation Execution のプロジェクトと同じです。ソースコントロール認証情報は、一覧に `<name_prefix>-gitlab-scm` がすでにある場合はそれを使います。無い場合は **Automation Decisions > Infrastructure > 認証情報** でタイプ `Source Control`、名前 `<name_prefix>-gitlab-scm` を作り、ユーザー名とパスワードは Controller の同じ認証情報と同じにします。その認証情報を、Decisions のプロジェクトに付けます。作ったあとは、そのプロジェクトを同期します。
 
-## Section 5: Controllerへ接続する認証情報
+## Section 5: Automation Execution へ接続する認証情報
 
 **Automation Decisions > Infrastructure > 認証情報** で、タイプ `Red Hat Ansible Automation Platform` を作ります。
 

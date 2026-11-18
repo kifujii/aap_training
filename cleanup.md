@@ -80,11 +80,11 @@ name_prefix: tanaka01
 
 成功すると、出力の最後に2つの一覧が出ます。`Show the names that were deleted` は削除できた名前、`Show the names that remain` は見つかったのに削除できなかった名前です。作っていない名前は、どちらにも出ません。このジョブは、実行中の自分自身が使っているプロジェクト、インベントリー `<name_prefix>-aap-runner`、テンプレート `<name_prefix>-remove-lab` を消せません。この3つは「残った名前」に出ます。残った名前は Section 4 で、画面から消します。ジョブが失敗した場合も、Section 4 の検索で残っている行を消します。
 
-このジョブは、もう一度起動しても動きません。1回目で GitLab の認証情報 `<name_prefix>-gitlab-scm` を消すので、2回目は起動時のプロジェクトの同期で失敗します。残ったものは、Section 4 の画面で消します。
+このジョブをもう一度起動すると、起動時のプロジェクトの同期で失敗します。1回目で GitLab の認証情報 `<name_prefix>-gitlab-scm` を消しているためです。残ったものは、Section 4 の画面で消します。
 
-使った API トークンは、**Access Management > API Tokens** で削除します。応用演習4で発行し、`<name_prefix>-aap-api` と `<name_prefix>-eda-controller` に入れたトークンと、このページで発行したトークンの両方です。他の人のトークンは、この一覧には出ません。
+使った API トークンは、**Access Management > API Tokens** で削除します。トークンは、削除するまで API を呼べる鍵として使えてしまいます。応用演習4で発行し、`<name_prefix>-aap-api` と `<name_prefix>-eda-controller` に入れたトークンと、このページで発行したトークンの両方です。他の人のトークンは、この一覧には出ません。
 
-Activation を消したあとの Event Stream と EDA のプロジェクトは、Activation の削除が終わるまで「使用中」になります。ジョブは数回待ってからやり直します。それでも残ったときは、Section 4 の表の **Automation Decisions** の行で消します。
+Activation を消したあとの Event Stream と EDA のプロジェクトは、Activation の削除が終わるまで「使用中」になります。`<name_prefix>-remove-lab` は、数回待ってから削除をやり直します。それでも残ったときは、Section 4 の表の **Automation Decisions** の行で消します。
 
 ## Section 4: 画面で残りを確認する
 
@@ -92,7 +92,7 @@ Activation を消したあとの Event Stream と EDA のプロジェクトは�
 
 | 画面 | 残っていたら |
 |---|---|
-| Automation Execution > ジョブ | 演習4の `<name_prefix>-create-aws-servers` のジョブには、Extra variables にパスワードが残っています。行にチェックを入れ、一覧の上の点が3つのボタン（**toolbar actions**）から **Delete jobs** で削除する。ほかの自分のジョブも、同じ方法で消せる |
+| Automation Execution > ジョブ | 演習4の `<name_prefix>-create-aws-servers` のジョブを削除する（表の下を参照） |
 | Automation Execution > テンプレート | その行を削除する |
 | Automation Execution > スケジュール | その行を削除する |
 | Automation Execution > プロジェクト | その行を削除する |
@@ -106,6 +106,8 @@ Activation を消したあとの Event Stream と EDA のプロジェクトは�
 | Automation Decisions > Event Streams | その行を削除する |
 | Automation Decisions > プロジェクト | その行を削除する |
 | Automation Decisions > Infrastructure > 認証情報 | その行を削除する |
+
+演習4の `<name_prefix>-create-aws-servers` のジョブには、Extra variables にパスワードが残っています。**ジョブ** の一覧で行にチェックを入れ、一覧の上の点が3つのボタン（**toolbar actions**）から **Delete jobs** を選んで削除します。ほかの自分のジョブも、同じ方法で消せます。
 
 検索が空なら、AAP 上の自分の演習オブジェクトは残っていません。
 
@@ -130,4 +132,4 @@ export CONTAINERS_STORAGE_CONF=<storage.conf>
 podman rmi 'localhost/<name_prefix>-custom-ee:1.0'
 ```
 
-イメージが無い（`image not known`）、という表示なら、そのコマンドはそこまでです。AAP は、Section 3 で実行環境 `<name_prefix>-custom-ee` を削除したときに、そのイメージも片付けます。`Default execution environment` のイメージは消しません。
+`image not known` と出たときは、イメージはすでに消えています。このページの Section 3 で実行環境 `<name_prefix>-custom-ee` を削除したときに、AAP がそのイメージも片付けています。`Default execution environment` のイメージは消しません。
