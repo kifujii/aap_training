@@ -77,6 +77,16 @@ Answer type の Password は、入れた値をジョブの詳細に平文で残�
 
 終わったら、もう一度起動します。**制限** は空欄、**Survey** は既定の `managed by AAP` のまま **Finish** まで進みます。`Show the note written to note.txt` が `note.txt の note は managed by AAP です` に戻ることを確認します。
 
+値の優先順位は次のとおりです。下ほど強く、同じ変数名があると下の値が使われます。
+
+| 順位 | どこで入れた値か | この演習での例 |
+|---|---|---|
+| 弱い | `group_vars/all.yml` | `training_note: managed by AAP` |
+| ↓ | ジョブテンプレートの Extra variables | Section 1 の `training_note: hello from extra vars` |
+| 強い | 起動時の入力（Survey の答え、起動画面の値） | Section 3 の `second note` |
+
+Section 1 の行を残したまま Survey に答えても、メモは Survey の答えになります。この演習では、どこで入れた値か分かりやすいように、Section 1 の行を消しています。
+
 この起動画面は、`<name_prefix>-write-note-linux` を起動するたびに出ます。以降の演習でも、制限と Survey は、その演習に書いてある値にします。
 
 `<name_prefix>-write-note-windows` の Extra variables にも、演習7で入れた `name_prefix` の行が残っています。同じ質問を1つ作り、同じ2回の起動をします。Windows のテンプレートには制限の起動プロンプトを付けていないので、**Prompts** は出ません。最初の手順は **Survey** です。1回目の `Show the note written to note.txt` は `note.txt の note は second note です`、2回目は `note.txt の note は managed by AAP です` です。

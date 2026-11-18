@@ -1,0 +1,23 @@
+---
+- name: Check privilege escalation on Linux
+  hosts: linux
+  gather_facts: false
+  become: true
+
+  tasks:
+    - name: Run whoami with sudo
+      ansible.builtin.command: whoami
+      register: who
+      changed_when: false
+
+    - name: The command ran as root
+      ansible.builtin.assert:
+        that:
+          - who.stdout == 'root'
+        fail_msg: >-
+          sudo のあとのユーザーが root ではありません（{{ who.stdout }}）。
+          認証情報の権限昇格の方式が sudo になっているかを確認してください。
+
+    - name: Show the user after sudo
+      ansible.builtin.debug:
+        msg: "sudo のあとのユーザーは {{ who.stdout }} です"
