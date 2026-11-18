@@ -24,14 +24,14 @@
 |---|---|
 | 認証情報を作る | Automation Execution > Infrastructure > **認証情報** |
 | インベントリーを作る | Automation Execution > Infrastructure > **インベントリー** |
-| Projectを作る | Automation Execution > **プロジェクト** |
-| Job Templateを作る | Automation Execution > **テンプレート** |
+| プロジェクトを作る | Automation Execution > **プロジェクト** |
+| ジョブテンプレートを作る | Automation Execution > **テンプレート** |
 | 実行履歴を見る | Automation Execution > **ジョブ** |
 | 組織・チーム・ユーザー | Access Management > **組織** / **チーム** / **ユーザー** |
 | APIトークン | Access Management > **API Tokens** |
 | 通知の定義 | Automation Execution > 管理 > **Notifiers** |
-| Execution Environment | Automation Execution > Infrastructure > **実行環境** |
-| Rulebook Activation | Automation Decisions > **ルールブックのアクティベーション** |
+| 実行環境 | Automation Execution > Infrastructure > **実行環境** |
+| ルールブックのアクティベーション | Automation Decisions > **ルールブックのアクティベーション** |
 
 ## ボタン名
 
@@ -68,7 +68,7 @@
 
 ## GitLab
 
-この確認環境のログイン後画面は英語です。言語設定が日本語の場合は、同じ位置の日本語ラベルに読み替えてください。
+この資料の GitLab の画面は、ログイン後が英語表示です。言語設定が日本語の場合は、同じ位置の日本語ラベルに読み替えてください。
 
 | 操作 | 手順 |
 |---|---|
@@ -76,4 +76,4 @@
 | Web IDE | リポジトリ右上の **Code** を開き、**Web IDE**。メニューが **Edit** の環境ではその中 |
 | AAPがGitLabを読む認証 | 認証情報タイプ **Source Control**。ユーザー名とパスワードは GitLab のログインと同じものを入れる |
 
-この資料のファイル作成は Web IDE で行います。**Initialize repository with a README** は付けたままで進められます。SAST と Secret Detection はオフのままで構いません。git CLI の手順も、そのリポジトリを clone してから push します。
+この資料のファイル作成は Web IDE で行います。**Initialize repository with a README** は付けたままで進められます。SAST と Secret Detection はオフのままで構いません。git CLI で行う場合も、このプロジェクトを clone してからファイルを足し、push します。

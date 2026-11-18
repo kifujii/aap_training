@@ -30,13 +30,13 @@ AAP から Linux と Windows へ接続するための一覧を作ります。
 
 ![グループの作成。名前だけ入れて、下の変数は空のまま保存する](../images/aap/group-create.png)
 
-名前に `linux` と入力し、変数は空のまま **グループの作成** を押します。同じ手順で `windows` も作ります。ホストはこの画面では入れません。ホストの作成画面にも、グループを選ぶ欄はありません。入れ方は Section 4 で行います。
+名前に `linux` と入力し、変数は空のまま **グループの作成** を押します。同じ手順で `windows` も作ります。ホストはこの画面では入れません。ホストの作成画面にも、グループを選ぶ欄はありません。グループへ入れるのは Section 4 です。
 
 ## Section 3: AWS用の実行場所（サーバが無い場合だけ）
 
 既存サーバを使用する場合は、この Section を飛ばして Section 4 へ進みます。
 
-[演習4](./ex4.md) の作成ジョブは、これから作るサーバの中ではなく、AAP の実行環境の中で動きます。実行環境が何かは [AAPのしくみ](../aap_overview.md) に書いてあります。そのための一覧を、ここで先に作ります。Linux と Windows は入れません。ソースも追加しません。
+[演習4](./ex4.md) の作成ジョブは、これから作るサーバの中ではなく、AAP の実行環境の中で動きます。実行環境が何かは [AAPのしくみ](../aap_overview.md) に書いてあります。そのための一覧を、ここで先に作ります。入れるホストは `localhost` の1つだけです。
 
 1. **インベントリーの作成** で、名前 `<name_prefix>-aws-runner`、組織は演習1と同じ、で保存する
 2. **ホスト** タブの **ホストの作成** で、名前 `localhost` のホストを作る
@@ -138,7 +138,7 @@ ansible_psrp_cert_validation: ignore
 3. **認証情報** で **認証情報の選択** を開き、Linux は `<name_prefix>-linux-ssh`、Windows は `<name_prefix>-windows-psrp` を選んで **Next** を押します
 4. **Review** で、Module、制限、認証情報を確かめて **Finish** を押します
 
-写真の `tanaka01` は例です。ジョブの出力に `lin1 | SUCCESS` と出ることを確認します。Windows は、`lin1` のチェックを外し、`win1` だけを選んでから同じ手順で実行します。1つの実行に付けられる Machine 認証情報は1つなので、Linux と Windows は別々に確認します。NTLM でも Kerberos でも、ここで `win_ping` を実行します。
+ジョブの出力に `lin1 | SUCCESS` と出ることを確認します。Windows は、`lin1` のチェックを外し、`win1` だけを選んでから同じ手順で実行します。1つの実行に付けられる Machine 認証情報は1つなので、Linux と Windows は別々に確認します。NTLM でも Kerberos でも、ここで `win_ping` を実行します。
 
 `ping` が `SUCCESS` なら、SSH のユーザー名とパスワード、アドレスが合っています。`win_ping` が `SUCCESS` なら、PSRP の認証とポートが合っています。
 

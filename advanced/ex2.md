@@ -4,7 +4,7 @@
 
 > **前提:** [演習8](../basic-controller/ex8.md) の制限の起動プロンプトと Survey。AWS で作った場合は [演習4](../basic-intro/ex4.md)
 
-ジョブが失敗したときに、メールで知らせる Notifier を作ります。送り先のメールサーバは、サーバの用意の仕方で違います。
+ジョブが失敗したときに、メールで知らせる Notifier を作ります。通知の送信に使う SMTP サーバは、対象サーバの用意の仕方で違います。
 
 | 自分の状況 | メールを送るサーバ | 確認方法 |
 |---|---|---|
@@ -41,7 +41,7 @@ Port: 1025
 
 ## Section 2: Notifierを作る
 
-**Automation Execution > 管理 > Notifiers** を開きます。一覧が空のときは **Create notifier** をクリックします。
+**Automation Execution > 管理 > Notifiers** を開き、**Create notifier** をクリックします。
 
 ![メール通知の作成。タイプはメール。ホスト、宛先、差出人、ポートの位置](../images/aap/notifier-email.png)
 

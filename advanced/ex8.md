@@ -1,4 +1,4 @@
-# 応用演習 8 - EDAからJobを起動する
+# 応用演習 8 - EDA からジョブを起動する
 
 [応用演習7](./ex7.md) | [削除手順へ](../cleanup.md)
 
@@ -8,7 +8,7 @@
 
 ## Section 1: Rulebookを書き換える
 
-Web IDE で `rulebooks/notify_on_webhook.yml` を、次の内容に置き換えます。`<name_prefix>` は演習1の接頭辞に、`<組織名>` は演習1で控えた組織名に置き換えます。組織が `Default` のときは、`<組織名>` を `Default` にします。`sources` の名前は、Event Stream `<name_prefix>-check-webhook-stream` と同じです。`ansible.eda.webhook: {}` の行は、応用演習7で書いたものを残します。
+Web IDE で `rulebooks/notify_on_webhook.yml` を、次の内容に置き換えます。`<name_prefix>` は演習1の接頭辞に、`<組織名>` は演習1で控えた組織名に置き換えます。`sources` の名前は、Event Stream `<name_prefix>-check-webhook-stream` と同じです。`ansible.eda.webhook: {}` の行は、応用演習7で書いたものを残します。
 
 ```yaml
 ---
@@ -32,7 +32,7 @@ Web IDE で `rulebooks/notify_on_webhook.yml` を、次の内容に置き換え�
 
 `condition` は、`status` が `success` で、かつ `host` があるイベントだけに合います。`host` が無いイベントでは、ジョブは起動しません。
 
-コミットします。Controller のプロジェクトと、Decisions のプロジェクトの両方を同期します。
+コミットします。Automation Execution のプロジェクトと、Automation Decisions のプロジェクトの両方を同期します。
 
 <details>
 <summary>git CLIで行う場合</summary>

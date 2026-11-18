@@ -41,7 +41,7 @@ name_prefix: tanaka01
 
 ![制限の右の起動プロンプトにチェックが入っている。ジョブタイプの横は外したまま](../images/aap/job-limit-prompt.png)
 
-保存して起動すると、**Prompt on Launch** が開きます。この時点の手順は **Prompts** と **Review** だけです。Survey は、次の節で作ります。**制限** に `lin1` と入力して **Next** を押し、**Review** で **Finish** を押します。
+保存して起動すると、**Prompt on Launch** が開きます。左に出る段階は、この時点では **Prompts** と **Review** の2つです。Survey は、次の節で作ります。**制限** に `lin1` と入力して **Next** を押し、**Review** で **Finish** を押します。
 
 ![Prompt on Launch の Review。制限は lin1。最後のボタンは Finish。手順は Prompts と Review だけ](../images/aap/launch-finish.png)
 
@@ -67,7 +67,7 @@ Answer type の Password は、入れた値をジョブの詳細に平文で残�
 
 ![Survey enabled がオンで、質問が1件ある状態](../images/aap/survey-enabled.png)
 
-起動すると **Prompt on Launch** が開きます。手順は **Prompts**、**Survey**、**Review** です。**Prompts** の **制限** は空欄のまま **Next** を押します。空欄のときは、Playbook の `hosts: linux` が対象です。
+起動すると **Prompt on Launch** が開きます。左に出る段階は **Prompts**、**Survey**、**Review** です。**Prompts** の **制限** は空欄のまま **Next** を押します。空欄のときは、Playbook の `hosts: linux` が対象です。
 
 ![Prompt on Launch の Prompts。制限は空欄](../images/aap/launch-limit.png)
 

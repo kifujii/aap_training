@@ -20,7 +20,7 @@
 
 ブラウザでログインし、左メニューに **Automation Execution**、**Automation Decisions**、**Access Management** があることを確認してください。Demo で始まるサンプルがあっても、演習では別名で新規作成します。
 
-AAP のコンテナを動かしているユーザーは、AAP 全体を操作できます。応用演習3でこのユーザーを使うときは、講師に指定された作業だけを行います。
+AAP のコンテナを動かしているユーザーは、AAP 全体を操作できます。応用演習3でこのユーザーを使うときは、応用演習3と削除手順に書いてあるコマンドだけを実行します。`podman stop` や `podman rm` で AAP のコンテナを止めたり消したりすると、AAP 全体が止まります。
 
 AAP のインストールとユーザー作成は、この資料の範囲外です。
 
@@ -45,7 +45,7 @@ Linux と Windows の両方を行います。既存サーバを使用するか�
 
 Windows の接続は次のとおりです。
 
-| Windows の状態 | 認証 | インベントリに書く変数 |
+| Windows の状態 | 認証 | インベントリーに書く変数 |
 |---|---|---|
 | ドメインに参加していない（AWS で作るサーバを含む） | NTLM | `ansible_connection: psrp` と `ansible_psrp_auth: ntlm` |
 | ドメインに参加している | Kerberos | `ansible_host` に FQDN、`ansible_connection: psrp`、`ansible_psrp_auth: kerberos`、`ansible_psrp_protocol: https`、`ansible_psrp_port: 5986` |
