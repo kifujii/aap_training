@@ -44,16 +44,16 @@ GitLab にログインし、**Create new…** > **New project/repository** > **C
 | `write_note_windows.yml` | 置く | 置く |
 | `verify_note_linux.yml` | 置く | 置く |
 | `verify_note_windows.yml` | 置く | 置く |
-| `notify_aws.yml` | 置かない | 置く |
 | `create_aws_servers.yml` / `remove_aws_servers.yml` | 置かない | 演習4で置いていればそのままでよい |
 | `requirements.yml` | **置かない** | 演習4で置いたものを残す |
 
 `inventory.yml` の `203.0.113.10` と `203.0.113.11` は、保存前に必ず自分のアドレスへ変えます。
 
-Windows の接続は、サンプルが NTLM です。演習3で NTLM を選んだ人は、`ansible_psrp_auth`、`ansible_psrp_protocol`、`ansible_psrp_port` をサンプルのままにします。ドメインに参加している Windows は、この3つを下の Kerberos の列に置き換えます。どれか1つだけ変えると、演習6の同期で演習3の変数が上書きされ、`win_ping` が失敗します。
+Windows の接続は、サンプルが NTLM です。演習3で NTLM を選んだ人は、`ansible_psrp_auth`、`ansible_psrp_protocol`、`ansible_psrp_port` をサンプルのままにします。ドメインに参加している Windows は、`ansible_host` を演習3で保存した FQDN にし、この3つを下の Kerberos の列に置き換えます。どれか1つだけ変えると、演習6の同期で演習3の変数が上書きされ、`win_ping` が失敗します。
 
-| 項目 | NTLM（サンプルのまま） | Kerberos（3つとも置き換える） |
+| 項目 | NTLM（サンプルのまま） | Kerberos（すべて置き換える） |
 |---|---|---|
+| `ansible_host` | 自分の Windows のアドレス | 演習3で保存した FQDN |
 | `ansible_psrp_auth` | `ntlm` | `kerberos` |
 | `ansible_psrp_protocol` | `http` | `https` |
 | `ansible_psrp_port` | `5985` | `5986` |

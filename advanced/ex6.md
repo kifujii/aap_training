@@ -31,7 +31,7 @@ GitLab のプロジェクト `<name_prefix>-aap-training-content` で **Settings
 | Secret token | Section 1 の Webhook key |
 | Trigger | **Merge request events** だけオン |
 
-Push events が最初からオンなら外します。**Add webhook** をクリックします。
+Push events が最初からオンなら外します。**Add webhook** をクリックします。`Requests to the local network are not allowed` と出て追加できないときは、GitLab の管理者設定でローカルネットワークへの Webhook が許可されていません。講師に連絡し、この演習は飛ばして [応用演習7](./ex7.md) へ進みます。
 
 追加された webhook の Recent Deliveries は、この時点では空で構いません。
 

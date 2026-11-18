@@ -88,14 +88,3 @@
         region: "{{ ec2_region }}"
         state: absent
       when: vpc_id is defined
-
-    - name: Read the AWS account id
-      amazon.aws.aws_caller_info:
-      register: caller
-
-    - name: Remove the notification bucket
-      amazon.aws.s3_bucket:
-        name: "{{ resource_prefix }}-aap-notify-{{ caller.account }}"
-        state: absent
-        force: true
-        region: "{{ ec2_region }}"

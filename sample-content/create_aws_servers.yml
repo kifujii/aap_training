@@ -87,7 +87,7 @@
             gateway_id: "{{ igw.gateway_id }}"
       register: route_table
 
-    - name: Allow SSH and PSRP
+    - name: Allow SSH, PSRP and test SMTP
       amazon.aws.ec2_security_group:
         name: "{{ resource_prefix }}-aap"
         description: "{{ resource_prefix }} ssh and psrp"
@@ -104,6 +104,11 @@
               - 5985
             cidr_ip: "{{ allow_cidr }}"
             rule_desc: psrp
+          - proto: tcp
+            ports:
+              - 1025
+            cidr_ip: "{{ allow_cidr }}"
+            rule_desc: mailpit smtp for the notification exercise
         rules_egress:
           - proto: all
             cidr_ip: 0.0.0.0/0

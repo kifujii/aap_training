@@ -15,8 +15,9 @@
 | `verify_note_linux.yml` | Linux の note.txt を読む |
 | `verify_note_windows.yml` | Windows の note.txt を読む |
 | `create_aws_servers.yml` | サーバが無いときだけ実行する。VPC、サブネット、Linux、Windows を作る |
+| `setup_mailpit.yml` | 応用演習2（AWS で作った場合）。`lin1` に検証用のメールサーバ Mailpit を入れる |
+| `show_mailpit_messages.yml` | 応用演習2（AWS で作った場合）。Mailpit が受け取ったメールの件名と宛先を表示する |
 | `remove_aws_servers.yml` | 上記のリソースを削除する |
-| `notify_aws.yml` | AWS で作った場合の通知確認。S3 に書いて読み戻す |
 | `launch_note.yml` | 応用演習5。既定の実行環境から、Extra variables の `name_prefix` を付けた `write-note-linux` を起動する |
 | `use_ini_file.yml` | 応用演習3。`community.general.ini_file` で値を書き、カスタム実行環境の前後を比べる |
 | `check_become.yml` | 演習7。sudo で `whoami` を実行し、`root` になることを確かめる |

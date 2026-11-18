@@ -5,7 +5,7 @@
 > **前提:** [演習8](./ex8.md) の制限の起動プロンプトと Survey。暗号化に使うサーバ（この研修では AAP サーバ）へ SSH できること
 
 この演習では文字列の暗号化を取り扱います。
-`training_secret` の値だけを暗号化して GitLab に置き、ジョブの中で復号してファイルへ書きます。暗号化は、`ansible-vault` コマンドが使えるサーバで行います。この研修では AAP サーバを使います。作業ディレクトリは、そのサーバの `/tmp` です。Web IDE には、`ansible-vault encrypt_string` が表示した文字列を貼ります。Web IDE では `ansible-vault` を実行できません。
+`training_secret` の値だけを暗号化して GitLab に置き、ジョブの中で復号してファイルへ書きます。暗号化は、`ansible-vault` コマンドが使えるサーバで行います。この研修では、[事前準備](../prepare_training_environment.md) で控えた作業用サーバを使います。作業ディレクトリは、そのサーバの `/tmp` です。Web IDE には、`ansible-vault encrypt_string` が表示した文字列を貼ります。Web IDE では `ansible-vault` を実行できません。
 
 書かれるファイル:
 
@@ -18,10 +18,10 @@ Windows の `secret.txt` は、`C:\temp` の権限をそのまま引き継ぎま
 
 ## Section 1: ansible-vault が使えるサーバで値を暗号化する
 
-この研修では AAP サーバへ SSH します。
+事前準備で控えた作業用サーバへ SSH します。
 
 ```bash
-ssh <ユーザー>@<AAPサーバ>
+ssh <ユーザー>@<作業用サーバ>
 cd /tmp
 command -v ansible-vault
 ```
@@ -39,9 +39,13 @@ ansible-vault encrypt_string --prompt --output '/tmp/<name_prefix>-secrets.yml'
 2. `Variable name (enter for no name):` には `training_secret` と入れます。
 3. `String to encrypt (hidden):` には `TrainingSecret1` と入れます。別の英数字にしてもよいです。入力した文字は画面に出ません。
 
-`Encryption successful` と出て、`/tmp/<name_prefix>-secrets.yml` の先頭が `training_secret: !vault |`、次の行が `$ANSIBLE_VAULT;1.1;AES256` なら、値だけが暗号化されています。このファイルの全文をコピーします。
+`Encryption successful` と出て、`/tmp/<name_prefix>-secrets.yml` の先頭が `training_secret: !vault |`、次の行が `$ANSIBLE_VAULT;1.1;AES256` なら、値だけが暗号化されています。次のコマンドでファイルの中身を表示し、全文をコピーします。
 
-`ansible-vault` がこのサーバに無く、コンテナで動いている場合は、名前に `controller` を含むコンテナを選びます。`<コンテナ>` は `podman ps` に出た名前です。入力要求は、上の1から3と同じです。画面の `training_secret: !vault |` から、暗号の最後の行までをコピーします。`Encryption successful` は含めません。
+```bash
+cat '/tmp/<name_prefix>-secrets.yml'
+```
+
+作業用サーバが AAP サーバで、`ansible-vault` がホストに無く AAP のコンテナの中にだけある場合は、名前に `controller` を含むコンテナを選びます。`<コンテナ>` は `podman ps` に出た名前です。AAP のコンテナは、AAP をインストールしたユーザーの `podman` で動いています。`podman ps` に何も出ないときは、そのユーザーで SSH しているかを講師に確認します。入力要求は、上の1から3と同じです。画面の `training_secret: !vault |` から、暗号の最後の行までをコピーします。`Encryption successful` は含めません。
 
 ```bash
 cd /tmp
@@ -49,7 +53,7 @@ podman ps
 podman exec -it <コンテナ> ansible-vault encrypt_string --prompt
 ```
 
-SSH でこのサーバに入れない、または `ansible-vault` も `podman` も使えない場合は、この演習を全部飛ばして [演習10](./ex10.md) へ進みます。`secret.txt` は作られません。サーバへ入れるようになったら、Section 1 から実施します。
+SSH で作業用サーバに入れない、または `ansible-vault` も `podman` も使えない場合は、この演習を全部飛ばして [演習10](./ex10.md) へ進みます。`secret.txt` は作られません。サーバへ入れるようになったら、Section 1 から実施します。
 
 ## Section 2: Web IDEに貼る
 

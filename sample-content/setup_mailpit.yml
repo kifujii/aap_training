@@ -1,0 +1,57 @@
+---
+# 応用演習2（AWS でサーバを作った場合）。
+# lin1 に、届いたメールを保存して見せるだけの SMTP サーバ Mailpit を入れる。
+# 宛先は架空のアドレスでよい。メールは Mailpit を止めるか、サーバを消すと消える。
+- name: Install Mailpit on Linux
+  hosts: linux
+  gather_facts: false
+  become: true
+  vars:
+    mailpit_version: v1.34.0
+
+  tasks:
+    - name: Download Mailpit
+      ansible.builtin.unarchive:
+        src: "https://github.com/axllent/mailpit/releases/download/{{ mailpit_version }}/mailpit-linux-amd64.tar.gz"
+        dest: /usr/local/bin
+        remote_src: true
+        include:
+          - mailpit
+        mode: "0755"
+        creates: /usr/local/bin/mailpit
+
+    - name: Write the Mailpit service
+      ansible.builtin.copy:
+        dest: /etc/systemd/system/mailpit.service
+        mode: "0644"
+        content: |
+          [Unit]
+          Description=Mailpit for the AAP training
+          After=network-online.target
+
+          [Service]
+          # SMTP は TCP 1025 で受ける。画面と API はサーバの中からだけ開く。
+          ExecStart=/usr/local/bin/mailpit --smtp 0.0.0.0:1025 --listen 127.0.0.1:8025 --max 100
+          DynamicUser=yes
+          Restart=on-failure
+
+          [Install]
+          WantedBy=multi-user.target
+
+    - name: Start Mailpit
+      ansible.builtin.systemd_service:
+        name: mailpit
+        state: started
+        enabled: true
+        daemon_reload: true
+
+    - name: Wait until Mailpit accepts SMTP
+      ansible.builtin.wait_for:
+        port: 1025
+        timeout: 60
+
+    - name: Show the values for the notifier
+      ansible.builtin.debug:
+        msg:
+          - "ホスト: {{ ansible_host }}"
+          - "Port: 1025"

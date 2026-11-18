@@ -109,7 +109,7 @@ ansible_psrp_cert_validation: ignore
 上の変数の代わりに、次を使います。認証は Kerberos です。ユーザー名は演習2の `<name_prefix>-windows-psrp` に入れた `ユーザー@レルム` です。AWS で作った Windows は、この節ではなく NTLM の変数を使います。
 
 ```yaml
-ansible_host: 203.0.113.11
+ansible_host: win1.example.com
 ansible_connection: psrp
 ansible_psrp_auth: kerberos
 ansible_psrp_protocol: https
@@ -117,9 +117,11 @@ ansible_psrp_port: 5986
 ansible_psrp_cert_validation: ignore
 ```
 
+`win1.example.com` は例です。Kerberos は IP アドレスでは認証できないので、`ansible_host` には、その Windows のドメイン上のホスト名（FQDN）を入れます。事前準備で控えた FQDN にします。
+
 この変数で保存します。`win1` をグループ `windows` に入れる手順は、上の「ホストをグループに入れる」と同じです。NTLM の変数で保存済みの場合は、ホストを開いて変数を置き換えてからグループへ入れます。
 
-演習5で置く `inventory.yml` のサンプルは NTLM です。Kerberos のときは、`ansible_psrp_auth`、`ansible_psrp_protocol`、`ansible_psrp_port` の3つを、ここで保存した `kerberos`、`https`、`5986` に置き換えます。
+演習5で置く `inventory.yml` のサンプルは NTLM です。Kerberos のときは、`ansible_host` をここで保存した FQDN にし、`ansible_psrp_auth`、`ansible_psrp_protocol`、`ansible_psrp_port` の3つを `kerberos`、`https`、`5986` に置き換えます。
 
 ## Section 5: 疎通確認
 
@@ -142,7 +144,7 @@ ansible_psrp_cert_validation: ignore
 
 失敗したときの確認箇所:
 
-* `ansible_host` が、控えたアドレスと一致しているか
+* `ansible_host` が、控えたアドレスと一致しているか。Kerberos のときは IP アドレスではなく FQDN か
 * 認証情報のユーザー名とパスワード
 * Windows の `ansible_psrp_auth` が、参加状況（NTLM か Kerberos か）と一致しているか
 * ファイアウォールが、AAP から TCP 22（Linux）または 5985（NTLM）または 5986（Kerberos）を許可しているか
