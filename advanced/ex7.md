@@ -116,7 +116,7 @@ URL の末尾は `/api/controller/` です。このパスが無い URL だと、
 
 **Event streams** の欄の右にあるボタンを押すと、**Event streams** の画面が開きます。**Mapping 1** の **Rulebook source** には、ルールブックのソース名 `<name_prefix>-check-webhook-stream` が入っています。**Event stream** で同じ名前の `<name_prefix>-check-webhook-stream` を選び、**Save** を押します。他の人の Event Stream も一覧に出るので、自分の接頭辞のものを選びます。
 
-状態が Running になることを確認します。すぐに失敗して `/api/v2/config/` と出ている場合は、Section 5 の URL を見直してから再起動します。
+状態が Running になることを確認します。すぐに失敗して `/api/v2/config/` と出ている場合は、Section 5 の URL を見直してから再起動します。既存サーバを使用する環境で、Running にならずにイメージの取得で失敗している場合は、[事前準備](../prepare_training_environment.md) の「5. インターネットに出られない環境で確認すること」の決定環境を確認します。
 
 ## Section 7: イベントを送る
 
