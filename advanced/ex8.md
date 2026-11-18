@@ -4,11 +4,11 @@
 
 > **前提:** [応用演習7](./ex7.md) の Event Stream と Activation、[演習7](../basic-controller/ex7.md) Section 3 の `<name_prefix>-verify-note-linux`
 
-`status` が `success` のイベントを受けたら、`<name_prefix>-verify-note-linux` を起動します。受け口は、応用演習7で作った Event Stream のままです。
+この演習では、`status` が `success` のイベントを受け取ったときに、`<name_prefix>-verify-note-linux` を起動するようにします。イベントの受け口には、応用演習7で作った Event Stream をそのまま使います。
 
 ## Section 1: Rulebookを書き換える
 
-Web IDE で `rulebooks/notify_on_webhook.yml` を、次の内容に置き換えます。`<name_prefix>` は演習1の接頭辞に、`<組織名>` は演習1で控えた組織名に置き換えます。`sources` の名前は、Event Stream `<name_prefix>-check-webhook-stream` と同じです。`ansible.eda.webhook: {}` の行は、応用演習7で書いたものを残します。
+Web IDE で `rulebooks/notify_on_webhook.yml` を、次の内容に置き換えます。`<name_prefix>` は演習1の接頭辞に、`<組織名>` は演習1で控えた組織名に置き換えます。`sources` の名前は、Event Stream `<name_prefix>-check-webhook-stream` と同じにします。`ansible.eda.webhook: {}` の行も、応用演習7で書いたとおりに残します。
 
 ```yaml
 ---
@@ -32,7 +32,7 @@ Web IDE で `rulebooks/notify_on_webhook.yml` を、次の内容に置き換え�
 
 `condition` は、`status` が `success` で、かつ `host` があるイベントだけに合います。`host` が無いイベントでは、ジョブは起動しません。
 
-コミットします。Automation Execution のプロジェクトと、Automation Decisions のプロジェクトの両方を同期します。
+コミットしたら、Automation Execution と Automation Decisions の両方のプロジェクトを同期します。
 
 <details>
 <summary>git CLIで行う場合</summary>
@@ -47,15 +47,15 @@ git push
 
 ## Section 2: Activationを更新する
 
-`<name_prefix>-eda-controller` は応用演習7で作ってあります。URL が `https://<AAPのURL>/api/controller/` であることを確認します。
+Activation で使う認証情報 `<name_prefix>-eda-controller` は、応用演習7で作ってあります。その URL が `https://<AAPのURL>/api/controller/` であることを確認します。
 
-`<name_prefix>-note-webhook-activation` を一度無効にし、再び有効にします。ルールブックを書き換えたあとに再起動すると、同期した内容で待ち受けます。状態が Running になることを確認します。すぐに失敗して `/api/v2/config/` と出ている場合は、`<name_prefix>-eda-controller` の URL を見直してから再起動します。
+ルールブックを書き換えたあとは、Activation を再起動すると、同期した内容で待ち受けるようになります。`<name_prefix>-note-webhook-activation` を一度無効にし、再び有効にします。状態が Running になることを確認します。すぐに失敗して `/api/v2/config/` と出ている場合は、`<name_prefix>-eda-controller` の URL を見直してから再起動します。
 
 ## Section 3: イベントを送る
 
-`<name_prefix>-verify-note-linux` の編集画面を開き、**起動プロンプト** の制限にチェックを入れて保存します。このチェックが無いと、Rulebook が渡した制限は無視され、ジョブの制限は空のままです。
+`<name_prefix>-verify-note-linux` の編集画面を開き、**起動プロンプト** の制限にチェックを入れて保存します。このチェックを入れないと、Rulebook から渡した制限が無視され、ジョブの制限は空のままになります。
 
-応用演習7と同じく、Token は入力待ちで入れます。
+応用演習7と同じように、次のコマンドを実行し、入力待ちになったら Token を入れます。
 
 ```bash
 read -rsp 'Event stream token: ' EVENT_TOKEN; echo

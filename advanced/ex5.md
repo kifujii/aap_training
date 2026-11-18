@@ -4,11 +4,11 @@
 
 > **前提:** [応用演習4](./ex4.md) の API トークン、[演習8](../basic-controller/ex8.md) の制限の起動プロンプトと Survey
 
-応用演習4の API 呼び出しを、Playbook のジョブとして実行します。既定の実行環境に入っている `ansible.controller` コレクションを使って、`<name_prefix>-write-note-linux` を起動します。実行環境の欄は空欄のまま、システムの既定を使います。
+この演習では、応用演習4で行った API の呼び出しを、Playbook を実行するジョブから行います。既定の実行環境に入っている `ansible.controller` コレクションを使って `<name_prefix>-write-note-linux` を起動するので、実行環境の欄は空欄のまま、システムの既定の実行環境を使います。
 
 ## Section 1: 起動用のインベントリー
 
-Playbook は `localhost` で動き、AAP の API を呼びます。接続先の変数は `ansible_connection: local` です。
+この Playbook は `localhost` で動き、そこから AAP の API を呼び出します。そのため、起動用のインベントリーに `localhost` を登録し、変数に `ansible_connection: local` を設定します。
 
 **インベントリーの作成** で `<name_prefix>-aap-runner` を作ります。保存したあと、**ホスト** タブの **ホストの作成** で次を追加します。
 
@@ -21,11 +21,11 @@ Playbook は `localhost` で動き、AAP の API を呼びます。接続先の�
 ansible_connection: local
 ```
 
-ホストの欄名は **変数** です。ジョブテンプレートの Extra variables とは別の欄です。
+ホストの作成画面の欄名は **変数** で、ジョブテンプレートの Extra variables とは別の欄です。
 
 ## Section 2: AAPの認証情報
 
-**認証情報の作成** を開きます。タイプは `Red Hat Ansible Automation Platform` です。
+**認証情報の作成** を開き、認証情報タイプ `Red Hat Ansible Automation Platform` の認証情報を作ります。
 
 | 項目 | 入力値 |
 |---|---|
@@ -34,11 +34,11 @@ ansible_connection: local
 | OAuth Token | [応用演習4](./ex4.md) で控えた API トークン |
 | Verify SSL | チェックを外す |
 
-URL は、ブラウザで開いている AAP のアドレスです。末尾に `/api/controller/` は付けません。Username と Password は空欄にします。Verify SSL を外すのは、自己証明書などで、演習環境の証明書を実行環境が信頼していない場合に接続できるようにするためです。
+URL には、ブラウザで開いている AAP のアドレスを入れます。末尾に `/api/controller/` は付けません。Username と Password は空欄にします。Verify SSL を外すのは、自己証明書などで、演習環境の証明書を実行環境が信頼していない場合に接続できるようにするためです。
 
 ## Section 3: Playbookとジョブテンプレート
 
-Web IDE で `launch_note.yml` を開き、次の内容にします。ファイルが無い場合は作ります。トークンはファイルに書きません。ジョブに付けた `<name_prefix>-aap-api` が渡します。
+Web IDE で `launch_note.yml` を開き、次の内容にします。ファイルが無い場合は作ります。トークンはファイルに書かず、ジョブテンプレートに付けた認証情報 `<name_prefix>-aap-api` から渡します。
 
 ```yaml
 ---
@@ -66,7 +66,7 @@ Web IDE で `launch_note.yml` を開き、次の内容にします。ファイ�
         msg: "job {{ launch_result.id }} finished"
 ```
 
-`CONTROLLER_OPTIONAL_API_URLPATTERN_PREFIX` は、ゲートウェイ構成の API が `/api/controller/v2/` にあるための指定です。認証情報の URL には、このパスを書きません。認証情報のタイムアウト欄は空欄のままにし、秒数は Playbook の `CONTROLLER_REQUEST_TIMEOUT` で指定します（欄を空欄にすると空の文字列が渡り、`ansible.controller` のモジュールが秒数として読めずに失敗するためです）。`{{ name_prefix }}` は、このファイルでは書き換えません。
+ゲートウェイ構成では API が `/api/controller/v2/` にあるため、`CONTROLLER_OPTIONAL_API_URLPATTERN_PREFIX` でそのパスを指定しています。このパスは認証情報の URL には書きません。認証情報のタイムアウト欄は空欄のままにします。欄が空欄だと空の文字列が渡り、`ansible.controller` のモジュールが秒数として読めずに失敗するため、秒数は Playbook の `CONTROLLER_REQUEST_TIMEOUT` で指定します。`{{ name_prefix }}` は、このファイルでは書き換えません。
 
 **Commit to main** でコミットし、プロジェクト `<name_prefix>-aap-training-content` を同期します。
 
@@ -81,7 +81,7 @@ git push
 
 </details>
 
-**ジョブテンプレートの作成** で次を作ります。表に無い欄は空欄です。
+**ジョブテンプレートの作成** で次を作ります。表に無い欄は空欄のままにします。
 
 | 項目 | 入力値 |
 |---|---|
@@ -97,11 +97,11 @@ git push
 name_prefix: sample01
 ```
 
-`sample01` は演習1で決めた接頭辞にします。起動画面には Extra variables は出ないので、編集画面で保存してから起動します。
+`sample01` は演習1で決めた接頭辞に置き換えます。起動画面には Extra variables が表示されないため、値は編集画面で入れて保存してから起動します。
 
 認証情報は `<name_prefix>-aap-api` だけにします。`localhost` には SSH でログインしないので、Machine 認証情報は付けません。
 
-**テンプレートの起動** で実行します。出力の最後に `job <番号> finished` と出れば、待ちまで終わっています。ジョブ一覧には、この `<name_prefix>-launch-note` と、その中から起動された `<name_prefix>-write-note-linux` の両方が増えます。起動されたジョブの `Show the note written to note.txt` に `note.txt の note は from controller collection です` と出れば完了です。
+**テンプレートの起動** で実行します。出力の最後に `job <番号> finished` と表示されれば、起動したジョブの終了を待つところまで終わっています。ジョブ一覧には、`<name_prefix>-launch-note` のジョブと、そこから起動された `<name_prefix>-write-note-linux` のジョブの両方が追加されます。起動されたジョブの `Show the note written to note.txt` に `note.txt の note は from controller collection です` と出れば完了です。
 
 終わったら、`<name_prefix>-write-note-linux` を起動してメモを `managed by AAP` に戻します。**Prompts** の **制限** は空欄のまま **Next** を押し、**Survey** は `managed by AAP` のまま **Finish** を押します。
 

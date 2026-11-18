@@ -2,7 +2,7 @@
 
 [READMEへ](../README.md)
 
-演習で GitLab に置くファイルです。編集は GitLab の Web IDE を使います。
+このディレクトリには、演習で GitLab に置くファイルが入っています。ファイルの作成と編集には、GitLab の Web IDE を使います。
 
 ## ファイル
 
@@ -28,14 +28,14 @@
 
 `requirements.yml` を置いたプロジェクトを、インターネットへ出られない環境で同期すると失敗します。既存サーバを使用する場合は、このファイルを GitLab に置かないでください。
 
-パスワードと `resource_prefix` はファイルに書きません。Job 起動時の Extra variables で渡します。
+パスワードと `resource_prefix` は、ファイルには書かず、ジョブの起動時に Extra variables で渡します。
 
 ## Web IDEで置く
 
 1. GitLab のプロジェクトを開く
 2. 右上の **Code** を開き、**Web IDE** をクリックする。**Edit** の中にある環境では、そちらから開く
 3. 左のファイル一覧からファイルを作り、このディレクトリの内容を貼り付ける
-4. **Source Control** を開き、メッセージを書いて **Commit to main** をクリックする
+4. **Source Control** を開き、コミットメッセージを入力して **Commit to main** をクリックする
 
 どのファイルをいつ置くかは、各演習に書いてあります。既存サーバを使用する場合は、`requirements.yml` を置きません。`inventory.yml` の `ansible_host` は、コミット前に自分のサーバのアドレスへ書き換えます。
 

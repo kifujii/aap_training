@@ -4,9 +4,9 @@
 
 > **前提:** [演習3](../basic-intro/ex3.md) のインベントリー、[演習5](../basic-controller/ex5.md) のプロジェクト。[事前準備](../prepare_training_environment.md) で控えた、AAP のコンテナを動かしているユーザーで AAP サーバへ SSH できること
 
-実行環境が何かは [AAPのしくみ](../aap_overview.md) に書いてあります。欄が空欄のジョブは、システムの既定の実行環境で動きます。使った名前は、ジョブ詳細に出ます。ここでは、その既定にコレクションを足したイメージを1つ作り、テンプレートに付けて、ジョブ詳細の名前が変わることを確認します。確認が終わったら、実行環境は空欄に戻します。
+実行環境については [AAPのしくみ](../aap_overview.md) で説明しています。ジョブテンプレートの実行環境の欄が空欄のときは、システムの既定の実行環境でジョブが動き、使われた実行環境の名前がジョブの詳細画面に表示されます。この演習では、既定の実行環境にコレクションを足したイメージを1つ作ってジョブテンプレートに付け、ジョブの詳細画面に表示される名前が変わることを確認します。確認が終わったら、実行環境の欄は空欄に戻します。
 
-AAP はジョブを起動するたびに、ジョブを動かすサーバの `podman` で、実行環境のイメージからコンテナを起動します。この演習では、AAP サーバに、AAP のコンテナを動かしているユーザーで SSH してビルドします。できたイメージはそのサーバの `podman` に入るので、AAP はそのまま使えます。定義ファイルは、そのサーバの `/tmp/<name_prefix>-custom-ee` に置きます。実際の運用では、ビルドしたイメージをコンテナレジストリに置き、AAP はそこから取ります。
+AAP は、ジョブを起動するたびに、ジョブを動かすサーバの `podman` を使って、実行環境のイメージからコンテナを起動します。この演習では、AAP のコンテナを動かしているユーザーで AAP サーバに SSH し、そのサーバ上でイメージをビルドします。ビルドしたイメージはそのサーバの `podman` に保存されるため、AAP からそのまま使えます。定義ファイルは、そのサーバの `/tmp/<name_prefix>-custom-ee` に置きます。なお、実際の運用では、ビルドしたイメージをコンテナレジストリに置き、AAP はそこからイメージを取得します。
 
 > [!IMPORTANT]
 > **次のどれかに当てはまる場合は、この演習を飛ばして [応用演習4](./ex4.md) へ進みます。** 実行環境は既定のままで、以降の演習を進められます。
@@ -28,11 +28,11 @@ podman --version
 ansible-builder --version
 ```
 
-`podman ps` の一覧に、名前に `controller` を含むコンテナが出ることを確認します。出ないときは、AAP のコンテナを動かしているユーザーではありません。事前準備で控えたユーザーで入り直します。そのユーザーでも出ないときは、この演習を飛ばして [応用演習4](./ex4.md) へ進みます。
+`podman ps` の一覧に、名前に `controller` を含むコンテナが出ることを確認します。出ないときは、AAP のコンテナを動かしているユーザーでログインしていないので、事前準備で控えたユーザーで入り直します。そのユーザーでも出ないときは、この演習を飛ばして [応用演習4](./ex4.md) へ進みます。
 
 `podman --version` が失敗したときは、この演習を飛ばして [応用演習4](./ex4.md) へ進みます。
 
-`ansible-builder --version` が失敗したときは、ホストに入れます。ビルドはこのホストで行うので、controller のコンテナの中だけにあっても、ここから先には進めません。
+`ansible-builder --version` が失敗したときは、次のコマンドで AAP サーバ（ホスト）に `ansible-builder` を入れます。ビルドはこのホスト上で行うため、controller のコンテナの中に `ansible-builder` があっても使えません。
 
 ```bash
 python3 -m pip install --user 'ansible-builder>=3,<4'
@@ -42,7 +42,7 @@ ansible-builder --version
 
 このインストールが失敗したときも、この演習を飛ばして [応用演習4](./ex4.md) へ進みます。
 
-## Section 2: 定義ファイル
+## Section 2: 定義ファイルを作る
 
 `/tmp/<name_prefix>-custom-ee` を作り、その中に定義ファイルを置きます。
 
@@ -123,20 +123,20 @@ options:
   skip_pip_install: true
 ```
 
-`base_image` は、AAP 2.7 の既定の実行環境と同じイメージです。**Automation Execution > Infrastructure > 実行環境** で `Default execution environment` を開き、**イメージ** の値が違うときは、その値に置き換えます。既定と同じイメージにすると、Ansible と、既定に入っているコレクションの版がそろいます。
+`base_image` には、AAP 2.7 の既定の実行環境と同じイメージを指定しています。**Automation Execution > Infrastructure > 実行環境** で `Default execution environment` を開き、**イメージ** の値がこれと違うときは、その値に置き換えます。既定と同じイメージをベースにすると、Ansible と、既定の実行環境に入っているコレクションの版が、既定とそろいます。
 
 <details>
 <summary>pkgmgr が要る理由</summary>
 
-ベースは `ee-supported` にします。このイメージのパッケージ管理は `microdnf` で、Python は 3.12 です。`ansible-builder` は既定で `/usr/bin/dnf` を呼びます。`dnf` のパッケージを入れると、この Python が置き換わり、ビルドは `pip` のところで止まります。`pkgmgr` は `microdnf` を呼び、`python` と `dnf` のパッケージ名は渡しません。`pip` はベースイメージに入っているので、入れ直しません。`ee-minimal` から作ると、既定のイメージに入っている `ansible.windows` や `amazon.aws` が欠けることがあります。`amazon.aws` をこのファイルへ足す場合も、版は `10.3.0` です。
+ベースイメージには `ee-supported` を使います。このイメージは、パッケージ管理に `microdnf` を使い、Python は 3.12 です。一方、`ansible-builder` は既定で `/usr/bin/dnf` を呼び出します。`dnf` のパッケージを入れるとこの Python が置き換わり、ビルドが `pip` の段階で止まってしまいます。そこで `pkgmgr` は、`microdnf` を呼び出し、`python` と `dnf` のパッケージ名は渡さないようにしています。`pip` はベースイメージに入っているので、入れ直しません。なお、`ee-minimal` をベースにすると、既定のイメージに入っている `ansible.windows` や `amazon.aws` が欠けることがあります。`amazon.aws` をこのファイルに足す場合も、版は `10.3.0` にします。
 
 </details>
 
-実際の運用では、`base_image` の `latest` のタグを、版を表すタグに固定します。`latest` のままだと、ビルドのたびに中身が変わることがあります。
+`latest` のタグのままだと、ビルドのたびにイメージの中身が変わることがあります。そのため、実際の運用では、`base_image` のタグを版を表すタグに固定します。
 
 ## Section 3: ビルドする
 
-ベースイメージを取るため、`registry.redhat.io` にログインします。ユーザー名とパスワードは、事前準備で控えたものです。パスワードは画面に出ない入力欄に入れます。コマンドの引数には書きません。
+ベースイメージを取得するため、`registry.redhat.io` にログインします。ユーザー名とパスワードは、事前準備で控えたものを使います。パスワードはコマンドの引数には書かず、入力しても画面に表示されない入力欄に入れます。
 
 ```bash
 podman login registry.redhat.io
@@ -150,7 +150,7 @@ export PATH="$HOME/.local/bin:$PATH"
 systemctl --user show podman.service -p Environment
 ```
 
-`CONTAINERS_STORAGE_CONF=` のあとにパスが出ているときは、そのパスを `<storage.conf>` に入れて、ビルドの前に実行します。出ていないときは、このコマンドは実行しません。保存先が違うと、イメージはできてもジョブが `image not known` になります。
+`CONTAINERS_STORAGE_CONF=` のあとにパスが表示されたときは、そのパスを `<storage.conf>` に入れて、次のコマンドをビルドの前に実行します。パスが表示されないときは、このコマンドは実行しません。AAP とイメージの保存先が違うと、イメージはできてもジョブが `image not known` で失敗します。
 
 ```bash
 export CONTAINERS_STORAGE_CONF=<storage.conf>
@@ -184,15 +184,15 @@ podman images | grep '<name_prefix>-custom-ee'
 
 `localhost/` で始まるイメージ名は、レジストリではなく、そのサーバの `podman` にあるイメージを指します。Pull を `Never pull container before running` にすると、AAP はレジストリへ取りに行かず、手元のイメージをそのまま使います。
 
-イメージをレジストリに置く場合は、`podman push` でレジストリへ置き、認証情報タイプ `Container Registry` の認証情報を作ります。実行環境の **イメージ** はレジストリのイメージ名、Pull は `Always pull container before running`、**Registry credential** はその認証情報にします。
+イメージをレジストリに置く場合は、`podman push` でイメージをレジストリに送り、認証情報タイプ `Container Registry` の認証情報を作ります。実行環境の **イメージ** はレジストリのイメージ名、Pull は `Always pull container before running`、**Registry credential** はその認証情報にします。
 
 ## Section 5: 既定の実行環境で失敗し、カスタム実行環境で成功する
 
-`community.general` は、既定の実行環境にはありません。先にその状態で失敗することを見てから、Section 4 で登録した実行環境に切り替えます。
+既定の実行環境には `community.general` が入っていません。まず既定の実行環境のままジョブが失敗することを確認し、そのあと Section 4 で登録した実行環境に切り替えます。
 
 Web IDE で `use_ini_file.yml` をプロジェクトの直下に作り、[sample-content/use_ini_file.yml](../sample-content/use_ini_file.yml) の内容を貼ります。**Commit to main** のあと、AAP のプロジェクトを同期します。
 
-**ジョブテンプレートの作成** で、次を作ります。表に無い欄は空欄です。実行環境も空欄です。
+**ジョブテンプレートの作成** で、次を作ります。表に無い欄は空欄のままにします。実行環境も空欄にします。
 
 | 項目 | 入力値 |
 |---|---|
@@ -208,7 +208,7 @@ Web IDE で `use_ini_file.yml` をプロジェクトの直下に作り、[sample
 name_prefix: sample01
 ```
 
-`sample01` は、自分の接頭辞にします。この Playbook は `hosts: localhost` で、実行環境の中だけで動きます。サーバへログインしないので、認証情報は付けません。**テンプレートの起動** を押します。Survey も制限も出ません。
+`sample01` は自分の接頭辞に置き換えます。この Playbook は `hosts: localhost` を対象にしていて、実行環境の中だけで動きます。サーバにはログインしないため、認証情報は付けません。**テンプレートの起動** を押します。Survey や制限の入力画面は出ません。
 
 1回目は失敗します。出力に `community.general.ini_file` があり、`couldn't resolve module` または `was not found` と出ていれば、既定の実行環境にこのコレクションが無いことを確認できています。
 

@@ -4,7 +4,7 @@
 
 > **前提:** [演習5](../basic-controller/ex5.md) の GitLab のプロジェクト、[応用演習4](./ex4.md) の API トークン
 
-これまでのジョブは、人が起動するか、スケジュールで起動するか、ジョブテンプレートの Webhook で起動するものでした。EDA は、受け取ったイベントの内容に応じて処理を始めます。AAP 2.5 以降の受け口は Event Stream です。Rulebook の `sources` には、Event Stream と同じ名前と、ソースの種類 `ansible.eda.webhook` を書きます。値は `{}` のままにします。Activation で Event Stream を割り当てると、AAP はこのソースを Event Stream に置き換えて動かします。
+これまでのジョブは、人が起動するか、スケジュールで起動するか、ジョブテンプレートの Webhook で起動するものでした。EDA を使うと、受け取ったイベントの内容に応じて処理を始められます。AAP 2.5 以降では、イベントの受け口として Event Stream を使います。Rulebook の `sources` には、Event Stream と同じ名前と、ソースの種類 `ansible.eda.webhook` を書き、値は `{}` のままにします。Activation で Event Stream を割り当てると、AAP はこのソースを Event Stream に置き換えて動かします。
 
 | 用語 | 役割 |
 |---|---|
@@ -15,7 +15,7 @@
 
 ## Section 1: RulebookをWeb IDEで置く
 
-`<name_prefix>-aap-training-content` の Web IDE で `rulebooks/notify_on_webhook.yml` を作り、次を貼ります。貼る前に `<name_prefix>` を演習1の接頭辞に置き換えます。`sources` の `name` は、このあと作る Event Stream の名前と同じにします。`ansible.eda.webhook` の値 `{}` は空のままにします。この行が無いと、AAP はソースを読み取れず、Activation は起動しません。
+`<name_prefix>-aap-training-content` の Web IDE で `rulebooks/notify_on_webhook.yml` を作り、次の内容を貼り付けます。貼り付ける前に、`<name_prefix>` を演習1の接頭辞に置き換えます。`sources` の `name` は、このあと作る Event Stream の名前と同じにします。`ansible.eda.webhook` の値 `{}` は空のままにします。この行が無いと、AAP はソースを読み取れず、Activation は起動しません。
 
 ```yaml
 ---
@@ -48,13 +48,13 @@ git push
 
 </details>
 
-## Section 2: 決定環境
+## Section 2: 決定環境の名前を控える
 
-**Automation Decisions > 決定環境** を開き、一覧にある既定の Decision Environment の名前を控えます。Section 6 で選びます。
+**Automation Decisions > 決定環境** を開き、一覧にある既定の Decision Environment の名前を控えます。この名前は、Section 6 で Activation を作るときに選びます。
 
-## Section 3: Event Stream
+## Section 3: Event Streamを作る
 
-**Automation Decisions > Infrastructure > 認証情報** で、受け口用の認証情報を作ります。タイプは `Token Event Stream` です。一覧の先頭に無いときは、検索欄に `Token Event` と入れます。
+**Automation Decisions > Infrastructure > 認証情報** で、Event Stream で使う認証情報を、認証情報タイプ `Token Event Stream` で作ります。タイプの一覧の先頭に無いときは、検索欄に `Token Event` と入れます。
 
 | 項目 | 入力値 |
 |---|---|
@@ -64,7 +64,7 @@ git push
 
 Token は再表示されないので、入力した文字列を控えます。
 
-**Automation Decisions > Event Streams** の **Create event stream** で追加します。**Event stream type** を開き、検索欄に `Token` と入れます。先頭の一覧には Token Event Stream がありません。タイプを選ぶと、**認証情報** の欄が出ます。
+**Automation Decisions > Event Streams** の **Create event stream** で Event Stream を追加します。Token Event Stream は **Event stream type** の一覧の先頭には無いため、一覧を開いて検索欄に `Token` と入れます。タイプを選ぶと、**認証情報** の欄が表示されます。
 
 ![Event stream type の検索。Token で Token Event Stream が出る](../images/aap/event-stream-create.png)
 
@@ -75,15 +75,15 @@ Token は再表示されないので、入力した文字列を控えます。
 | Event stream type | `Token Event Stream` |
 | 認証情報 | `<name_prefix>-check-webhook-token` |
 
-保存後の詳細に URL が出ます。控えます。詳細を開けば、URL はあとからでも見られます。
+保存すると詳細画面に URL が表示されるので、控えます。URL は、あとから詳細画面を開いても確認できます。
 
-## Section 4: Decisionsのプロジェクト
+## Section 4: Decisionsのプロジェクトを用意する
 
-Decisions 側に `<name_prefix>-aap-training-content` が無い場合は、先にプロジェクトを作ります。URL とブランチは Automation Execution のプロジェクトと同じです。ソースコントロール認証情報は、一覧に `<name_prefix>-gitlab-scm` がすでにある場合はそれを使います。無い場合は **Automation Decisions > Infrastructure > 認証情報** でタイプ `Source Control`、名前 `<name_prefix>-gitlab-scm` を作り、ユーザー名とパスワードは Controller の同じ認証情報と同じにします。その認証情報を、Decisions のプロジェクトに付けます。作ったあとは、そのプロジェクトを同期します。
+Automation Decisions 側にプロジェクト `<name_prefix>-aap-training-content` が無い場合は、先に作ります。URL とブランチは、Automation Execution のプロジェクトと同じにします。ソースコントロール認証情報は、一覧に `<name_prefix>-gitlab-scm` がすでにあればそれを使います。無い場合は、**Automation Decisions > Infrastructure > 認証情報** で認証情報タイプ `Source Control`、名前 `<name_prefix>-gitlab-scm` の認証情報を作り、ユーザー名とパスワードは Automation Execution の同名の認証情報と同じにします。その認証情報を Decisions のプロジェクトに付け、プロジェクトを作ったら同期します。
 
 ## Section 5: Automation Execution へ接続する認証情報
 
-**Automation Decisions > Infrastructure > 認証情報** で、タイプ `Red Hat Ansible Automation Platform` を作ります。
+**Automation Decisions > Infrastructure > 認証情報** で、認証情報タイプ `Red Hat Ansible Automation Platform` の認証情報を作ります。
 
 | 項目 | 入力値 |
 |---|---|
@@ -91,7 +91,7 @@ Decisions 側に `<name_prefix>-aap-training-content` が無い場合は、先�
 | Red Hat Ansible Automation Platform | `https://<AAPのURL>/api/controller/` |
 | OAuth Token | [応用演習4](./ex4.md) で発行した API トークン |
 
-URL の末尾は `/api/controller/` です。このパスが無い URL だと、Activation は `/api/v2/config/` を呼び、ゲートウェイ構成では 404 になって起動直後に止まります。Username と Password は空欄で構いません。
+URL の末尾には `/api/controller/` を付けます。このパスが無いと、Activation は `/api/v2/config/` を呼び出し、ゲートウェイ構成では 404 になって起動直後に止まります。Username と Password は空欄で構いません。
 
 同じタイプ `Red Hat Ansible Automation Platform` の認証情報でも、使う側によって URL の書き方が違います。
 
@@ -100,7 +100,7 @@ URL の末尾は `/api/controller/` です。このパスが無い URL だと、
 | `<name_prefix>-aap-api`（応用演習5） | Playbook の `ansible.controller` | `https://<AAPのURL>` | Playbook の `CONTROLLER_OPTIONAL_API_URLPATTERN_PREFIX` |
 | `<name_prefix>-eda-controller`（この演習） | Rulebook Activation | `https://<AAPのURL>/api/controller/` | 認証情報の URL。Activation はこのうしろに `api/v2/` を足す |
 
-## Section 6: Activation
+## Section 6: Activationを作る
 
 **Automation Decisions > ルールブックのアクティベーション** で追加します。
 
@@ -120,7 +120,7 @@ URL の末尾は `/api/controller/` です。このパスが無い URL だと、
 
 ## Section 7: イベントを送る
 
-コマンドは、[事前準備](../prepare_training_environment.md) で控えた作業用サーバで実行します。Token はコマンドの引数に書かずに入力します。1行目を実行すると入力待ちになるので、Section 3 で決めた Token を入れて Enter を押します。
+次のコマンドは、[事前準備](../prepare_training_environment.md) で控えた作業用サーバで実行します。Token はコマンドの引数に書かずに入力します。1行目を実行すると入力待ちになるので、Section 3 で決めた Token を入れて Enter を押します。
 
 ```bash
 read -rsp 'Event stream token: ' EVENT_TOKEN; echo
@@ -132,7 +132,7 @@ curl -sk -o /dev/null -w 'HTTP %{http_code}\n' -X POST "<Event StreamのURL>" \
 
 `HTTP 200` と出れば、Event Stream が受け付けています。`HTTP 403` のときは Token が違います。`-k` は、AAP の証明書を作業用サーバが信頼していない環境（自己証明書など）でも送れるようにする指定です。
 
-ログは、**Automation Decisions > ルールブックのアクティベーション** で `<name_prefix>-note-webhook-activation` を開き、**履歴** タブの一番上の行（`<番号> - <name_prefix>-note-webhook-activation`）を開くと出ます。次のような行があれば、Event Stream から Rulebook へ届いています。行が多いときは、画面の検索欄に `lin1` と入れます。
+Rulebook のログは、**Automation Decisions > ルールブックのアクティベーション** で `<name_prefix>-note-webhook-activation` を開き、**履歴** タブの一番上の行（`<番号> - <name_prefix>-note-webhook-activation`）を開くと表示されます。次のような行があれば、Event Stream から Rulebook へ届いています。行が多いときは、画面の検索欄に `lin1` と入れます。
 
 ```
 イベントを受信しました: {'status': 'success', 'host': 'lin1'}

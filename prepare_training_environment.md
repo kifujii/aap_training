@@ -15,7 +15,7 @@
 
 既存サーバを使用する環境では、演習中にインターネットへ出ません。コレクションとコンテナイメージは、AAP に入っているものを使います。[応用演習3](./advanced/ex3.md) だけは、ベースイメージ（`registry.redhat.io`）とコレクション（Ansible Galaxy）を取得するため、AAP サーバからインターネットへ出られる必要があります。出られない場合、応用演習3は飛ばします。
 
-以降の表の「対象」の列で、その行が必要かを判断します。
+以降の表では、「対象」の列を見て、その行の項目が自分に必要かどうかを判断します。
 
 | 対象 | 意味 |
 |---|---|
@@ -40,7 +40,7 @@
 
 AWS で作る場合、応用演習2では `lin1` に検証用のメールサーバを入れるので、SMTP サーバは要りません。
 
-ブラウザでログインし、左メニューに **Automation Execution**、**Automation Decisions**、**Access Management** があることを確認してください。Demo で始まるサンプルがあっても、演習では別名で新規作成します。
+ブラウザでログインし、左メニューに **Automation Execution**、**Automation Decisions**、**Access Management** があることを確認してください。Demo で始まる名前のサンプルがあっても、演習で使うものは別の名前で新しく作ります。
 
 AAP のコンテナを動かしているユーザーは、AAP 全体を操作できます。このユーザーで SSH したときは、演習と削除手順に書いてあるコマンドだけを実行します。`podman stop` や `podman rm` で AAP のコンテナを止めたり消したりすると、AAP 全体が止まります。
 
@@ -75,11 +75,11 @@ AAP のコンテナを動かしているユーザーは、AAP 全体を操作で
 | プロジェクトを作る Namespace | グループ名、またはユーザー名 | 全員 |
 | デフォルトブランチ | この資料では `main` | 全員 |
 
-ファイルの作成は、GitLab の Web IDE で行います。AAP がリポジトリを読むときの認証は、GitLab のログインユーザー名とパスワードです。
+ファイルの作成は、GitLab の Web IDE で行います。AAP がリポジトリを読むときは、GitLab のログインユーザー名とパスワードで認証します。
 
 二要素認証が有効なユーザーは、Git のパスワード認証が拒否されることがあります。その場合は、二要素認証を使っていないユーザーで進めてください。
 
-[応用演習6](./advanced/ex6.md) では、GitLab から AAP へ Webhook を送ります。AAP が社内のアドレスにある場合は、GitLab の管理者設定 **Admin area > Settings > Network > Outbound requests** で、**Allow requests to the local network from webhooks and integrations** にチェックが入っていることを確認します。AAP のアドレスを **Local IP addresses and domain names that hooks and integrations can access** に書く方法でも構いません。
+[応用演習6](./advanced/ex6.md) では、GitLab から AAP へ Webhook を送ります。AAP が社内のアドレスにある場合は、GitLab の管理者設定 **Admin area > Settings > Network > Outbound requests** で、**Allow requests to the local network from webhooks and integrations** にチェックが入っていることを確認します。チェックを入れる代わりに、AAP のアドレスを **Local IP addresses and domain names that hooks and integrations can access** に登録する方法でも構いません。
 
 ## 5. インターネットに出られない環境で確認すること
 
@@ -90,7 +90,7 @@ AAP のコンテナを動かしているユーザーは、AAP 全体を操作で
 | GitLab の **Admin area > Settings > General > Web IDE** | **Enable single origin fallback** にチェックが入っていること（初期値は有効）。Web IDE は、通常は外部のドメイン `*.cdn.web-ide.gitlab-static.net` から画面の部品を読み込みます。このチェックがあると、そのドメインに届かないときに GitLab 自身から読み込みます | Web IDE を使うすべての演習 |
 | AAP の **Automation Decisions > 決定環境** の既定の決定環境 | **Pull policy** が `Always pull container before running` 以外であること。`Always` のままだと、Rulebook Activation がイメージを `registry.redhat.io` へ取りに行き、起動しません | 応用演習7、応用演習8 |
 
-Web IDE は、プロジェクトの **Code** > **Web IDE** で開き、左にファイルの一覧が出れば使えます。開かない場合は、各演習の「git CLIで行う場合」の手順で、作業用サーバからファイルを置きます。
+Web IDE は、プロジェクトの **Code** > **Web IDE** で開きます。左にファイルの一覧が出れば使える状態です。開かない場合は、各演習の「git CLIで行う場合」の手順で、作業用サーバからファイルを置きます。
 
 ## 次
 
