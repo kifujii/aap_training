@@ -14,16 +14,16 @@
 
 演習7で保存した `name_prefix` の行は残します。この行が無いと、ファイルを書く前に失敗します。
 
-欄の中を、次の2行にします。`tanaka01` は、演習7で保存してある自分の接頭辞のままにします。
+欄の中を、次の2行にします。`sample01` は、演習7で保存してある自分の接頭辞のままにします。
 
 ```yaml
-name_prefix: tanaka01
+name_prefix: sample01
 training_note: hello from extra vars
 ```
 
 **ジョブテンプレートの保存** を押し、起動します。出力の `Write note.txt` が `changed` になり、`Show the note written to note.txt` に `note.txt の note は hello from extra vars です` と出ます。
 
-これは `ansible-playbook write_note_linux.yml -e "name_prefix=tanaka01 training_note='hello from extra vars'"` と同じです。`name_prefix` は、ファイルの置き場所に使われます。
+これは `ansible-playbook write_note_linux.yml -e "name_prefix=sample01 training_note='hello from extra vars'"` と同じです。`name_prefix` は、ファイルの置き場所に使われます。
 
 確認が終わったら、`training_note` の行だけを消して保存します。`name_prefix` の行は残します。Section 3 では、同じ `training_note` を Survey で聞きます。
 
@@ -34,7 +34,7 @@ training_note: hello from extra vars
 もう一度 **テンプレートの編集** を開きます。Extra variables は、次の1行のままです。
 
 ```yaml
-name_prefix: tanaka01
+name_prefix: sample01
 ```
 
 **制限** の右にある **起動プロンプト** にチェックを入れます。ジョブタイプの横の起動プロンプトは外したままです。
@@ -45,7 +45,7 @@ name_prefix: tanaka01
 
 ![Prompt on Launch の Review。制限は lin1。最後のボタンは Finish。手順は Prompts と Review だけ](../images/aap/launch-finish.png)
 
-写真の `tanaka01` は例です。自分の接頭辞に読み替えます。出力の対象が `lin1` だけであることを確認します。`Show the note written to note.txt` は `note.txt の note は managed by AAP です` のままです。この演習の認証情報は `<name_prefix>-linux-ssh` だけです。
+写真の `sample01` は例です。自分の接頭辞に読み替えます。出力の対象が `lin1` だけであることを確認します。`Show the note written to note.txt` は `note.txt の note は managed by AAP です` のままです。この演習の認証情報は `<name_prefix>-linux-ssh` だけです。
 
 ## Section 3: Survey
 

@@ -95,17 +95,17 @@ git push
 `<name_prefix>-write-note-linux` の編集で、認証情報に `<name_prefix>-vault-training` を追加します。`<name_prefix>-linux-ssh` も付けたままにします。**Extra variables** は、演習8で残した `name_prefix` の行を残したまま、次の行を足します。起動画面にはこの欄は出ないので、編集画面で保存します。
 
 ```yaml
-name_prefix: tanaka01
+name_prefix: sample01
 training_use_vault: true
 ```
 
-`tanaka01` は、演習7で保存してある自分の接頭辞のままにします。
+`sample01` は、演習7で保存してある自分の接頭辞のままにします。
 
-![詳細画面。認証情報は linux-ssh と vault-training、Extra variables は training_use_vault: true。実行環境に既定の名前が見えても、編集画面では空欄のままにする](../images/aap/template-launch.png)
+![詳細画面。認証情報は linux-ssh と vault-training、Extra variables は name_prefix と training_use_vault: true の2行。実行環境に既定の名前が見えても、編集画面では空欄のままにする](../images/aap/template-launch.png)
 
-![編集画面の Extra variables](../images/aap/extra-variables.png)
+![編集画面の Extra variables。name_prefix と training_use_vault の2行。制限の起動プロンプトにはチェックが入ったまま](../images/aap/extra-variables.png)
 
-写真の Extra variables は `training_use_vault` だけです。自分の画面では、その上に `name_prefix` の行もあります。制限の起動プロンプトは、演習8で入れたままにします。
+制限の起動プロンプトは、演習8で入れたままにします。
 
 起動すると、演習8と同じ **Prompt on Launch** が開きます。**制限** は空欄のまま **Next** を押します。**Survey** は `managed by AAP` のまま **Next** を押し、**Review** で **Finish** を押します。メモの文面は変えません。`Show the note written to note.txt` は `note.txt の note は managed by AAP です` のままです。成功すると、`Show the secret written to secret.txt` に `secret.txt を書きました。権限は 0600 です` と出ます。ログに出るのは、ファイルを書いたことと権限です。復号した値は出ません。
 

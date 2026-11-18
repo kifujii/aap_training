@@ -31,9 +31,9 @@ Web IDE で、プロジェクト `<name_prefix>-aap-training-content` に [sampl
 | 実行環境 | 空欄 | 空欄 |
 | 認証情報 | `<name_prefix>-linux-ssh` | `<name_prefix>-windows-psrp` |
 | 制限 | `linux` | `windows` |
-| Extra variables | `name_prefix: tanaka01` | `name_prefix: tanaka01` |
+| Extra variables | `name_prefix: sample01` | `name_prefix: sample01` |
 
-`tanaka01` は自分の接頭辞にします。認証情報が OS ごとに違うので、制限で片方のグループだけを対象にします。
+`sample01` は自分の接頭辞にします。認証情報が OS ごとに違うので、制限で片方のグループだけを対象にします。
 
 両方を起動します。Linux 用は `Remove /tmp/<name_prefix>-aap-training` が `changed`、Windows 用は `Remove C:\temp\<name_prefix>-aap-training` が `changed` になれば消えています。もう一方の OS の play は、対象ホストが無いので `skipping` です。2回目に起動すると、どちらも `ok` になります。
 
@@ -73,10 +73,10 @@ ansible_connection: local
 | Extra variables | 下の1行 |
 
 ```yaml
-name_prefix: tanaka01
+name_prefix: sample01
 ```
 
-`tanaka01` は自分の接頭辞にします。起動画面には Extra variables は出ないので、編集画面で保存してから **テンプレートの起動** を押します。
+`sample01` は自分の接頭辞にします。起動画面には Extra variables は出ないので、編集画面で保存してから **テンプレートの起動** を押します。
 
 成功すると、出力の最後に2つの一覧が出ます。`Show the names that were deleted` は削除できた名前、`Show the names that remain` は見つかったのに削除できなかった名前です。作っていない名前は、どちらにも出ません。このジョブは、実行中の自分自身が使っているプロジェクト、インベントリー `<name_prefix>-aap-runner`、テンプレート `<name_prefix>-remove-lab` を消せません。この3つは「残った名前」に出ます。残った名前は Section 4 で、画面から消します。ジョブが失敗した場合も、Section 4 の検索で残っている行を消します。
 

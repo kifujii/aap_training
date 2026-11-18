@@ -74,10 +74,10 @@ Port: 1025
 * AWS でサーバを作った: `<name_prefix>-show-mailpit` を起動します。出力の `Show the received messages` に、次のような行が出ます。
 
 ```
-件名: Job #545 'tanaka01-write-note-linux' failed: https://... / 宛先: tanaka01@verify.test
+件名: Job #545 'sample01-write-note-linux' failed: https://... / 宛先: sample01@verify.test
 ```
 
-`545` と `tanaka01` は例です。失敗したジョブの番号と、自分の接頭辞が出ます。`At least one message has arrived` で失敗したときは、まだメールが届いていません。
+`545` と `sample01` は例です。失敗したジョブの番号と、自分の接頭辞が出ます。`At least one message has arrived` で失敗したときは、まだメールが届いていません。
 
 メールが届かないときは、**Notifiers** の一覧で `<name_prefix>-note-mail` を開き、ホスト、ポート、差出人アドレスを見直します。`<name_prefix>-write-note-linux` の **通知** タブで、**失敗時** が付いているかも確認します。
 
