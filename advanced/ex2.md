@@ -61,6 +61,11 @@ Port: 1025
 
 `verify.test` の `.test` はテスト用に予約されたドメインで、実在しません。**Save notifier** で保存します。
 
+<a id="caution-mailpit-tls"></a>
+
+> [!CAUTION]
+> **研修だけの設定です。** AWS でサーバを作った場合は、Mailpit へ TLS も認証も使わずにメールを送ります。メールの中身は暗号化されずにネットワークを流れ、TCP 1025 に届く人なら誰でも Mailpit にメールを送れます。研修では、外へメールを出さない検証用のサーバで、学習後にサーバごと消すため、この形にしています。実際の運用では、TLS と SMTP 認証を使えるメールサーバを使い、**Use TLS** にチェックを入れます。
+
 ## Section 3: 失敗させて、メールを受け取る
 
 `<name_prefix>-write-note-linux` の **通知** タブで、`<name_prefix>-note-mail` を **失敗時** に付けます。

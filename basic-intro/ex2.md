@@ -57,6 +57,11 @@ GitLab 用は、どちらの場合も作ります。ユーザー名とパスワ�
 | ユーザ名 | GitLab のログインユーザー名 |
 | パスワード | GitLab のログインパスワード |
 
+<a id="caution-gitlab-password"></a>
+
+> [!CAUTION]
+> **研修だけの設定です。** 研修では手順を短くするため、GitLab のログインパスワードをそのまま AAP に保存します。実際の運用では、個人のパスワードを保存しません。GitLab で、リポジトリの読み取りだけを許可したトークン（Deploy token や Project access token など）を発行し、それを **パスワード** に入れます。
+
 
 ## Section 5: AWS用（サーバをこれから作る場合だけ）
 

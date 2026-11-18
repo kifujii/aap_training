@@ -7,6 +7,7 @@
 * **前提:** Playbook の `hosts`、`tasks`、モジュール、変数の読み方が分かること。AAP の用語と操作はこの資料だけで進めます
 * **前提環境:** AAP 2.5 以降（画面確認は 2.7 の日本語UI）、GitLab（画面確認は 19 の英語UI）。いずれも構築済みで、ユーザーも作成済み
 * **進め方:** 頭から順に進める場合は [進め方](#進め方)、使いたい機能や困りごとから章を選ぶ場合は [やりたいことから探す](#やりたいことから探す) を見てください
+* **研修だけの設定:** 実際の運用では真似しないでほしい設定を、[研修だけの設定](#研修だけの設定) にまとめています
 * **共有:** 1つの AAP と GitLab、同じ Linux と Windows を複数人で同時に使います。作る認証情報、ジョブテンプレート、サーバ上のディレクトリには [演習1](./basic-intro/ex1.md) の接頭辞 `<name_prefix>` を付け、名前が重ならないようにします。終わったら [削除手順](./cleanup.md) でその接頭辞のついたリソースをまとめて消します
 
 ## 進め方
@@ -63,6 +64,22 @@
 | Windows | `C:\temp\<name_prefix>-aap-training\note.txt` |
 
 Windows への接続方式は PSRP です。ドメインに参加していない Windows（AWS で作るサーバを含む）は NTLM、ドメインに参加している Windows は Kerberos を使います。
+
+## 研修だけの設定
+
+この資料では、手順を短くしたり、研修の環境で確実に動かしたりするため、実際の運用では使わない設定をしている箇所があります。どれもセキュリティ事故につながるおそれがあるので、実際の運用では真似しないでください。各箇所には、実際の運用でどうするかを **研修だけの設定です** の囲みで書いてあります。
+
+| 研修での設定 | 起きうること | 箇所 |
+|---|---|---|
+| 全員がシステム管理者のユーザーで進める | 他の人のオブジェクトも含めて、AAP のすべてを変更できる | [事前準備](./prepare_training_environment.md#caution-admin) |
+| GitLab のログインパスワードを AAP に保存する | 個人のパスワードが AAP に保存される | [演習2](./basic-intro/ex2.md#caution-gitlab-password) |
+| Windows の証明書を検証しない（`ansible_psrp_cert_validation: ignore`） | なりすました相手に接続しても気づけない | [演習3](./basic-intro/ex3.md#caution-psrp-cert) |
+| サーバのパスワードを Extra variables で渡す | ジョブの詳細とジョブテンプレートに平文で残る | [演習4](./basic-intro/ex4.md#caution-password) |
+| AWS のサーバへの接続を、どこからでも許可する（`allow_cidr: 0.0.0.0/0`） | サーバの SSH と PSRP がインターネットに公開される | [演習4](./basic-intro/ex4.md#caution-allow-cidr) |
+| 検証用のメールサーバに、TLS も認証も使わずに送る | メールが暗号化されずに流れ、誰でも送信できる | [応用演習2](./advanced/ex2.md#caution-mailpit-tls) |
+| `curl -k` で AAP の証明書を検証しない | なりすました相手に API トークンを送っても気づけない | [応用演習4](./advanced/ex4.md#caution-curl-k) |
+| AAP の認証情報で Verify SSL を外す | 証明書を検証せずに API トークンを送る | [応用演習5](./advanced/ex5.md#caution-verify-ssl) |
+| GitLab の Webhook で SSL の検証を外す（証明書のエラーが出たときだけ） | 送り先がなりすまされると、Secret token が漏れる | [応用演習6](./advanced/ex6.md#caution-webhook-ssl) |
 
 ## やりたいことから探す
 

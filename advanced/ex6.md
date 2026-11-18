@@ -48,7 +48,12 @@ Web IDE を開きます。
 
 AAP の **ジョブ** を開きます。自分で起動ボタンを押していない `<name_prefix>-verify-note-linux` のジョブが増えていれば、Webhook で起動しています。マージリクエストを作ったときの `open` と、そのあと GitLab が送る `update` のイベントで、ジョブが2件増えることがあります。そのジョブの詳細を開き、Extra variables に `awx_webhook_payload` があること、その中の `object_kind` が `merge_request` であることを確認します。
 
-ジョブが増えない場合は、GitLab の Webhook の **Recent Deliveries** を見ます。失敗しているときは、URL と Secret token を、AAP の Webhook URL、Webhook key と見比べます。証明書のエラーの場合は、GitLab 側の **Enable SSL verification** を外して保存します（実際の運用では、AAP の証明書を GitLab に信頼させ、検証は有効のままにします）。そのあと、マージリクエストの説明に1文字足して保存すると、Merge request events がもう一度送られます。
+ジョブが増えない場合は、GitLab の Webhook の **Recent Deliveries** を見ます。失敗しているときは、URL と Secret token を、AAP の Webhook URL、Webhook key と見比べます。証明書のエラーの場合は、GitLab 側の **Enable SSL verification** を外して保存します（下の注意を参照）。そのあと、マージリクエストの説明に1文字足して保存すると、Merge request events がもう一度送られます。
+
+<a id="caution-webhook-ssl"></a>
+
+> [!CAUTION]
+> **研修だけの設定です。** **Enable SSL verification** を外すと、GitLab は AAP の証明書を検証せずに Webhook を送ります。送り先がなりすまされても気づけず、Secret token が漏れるおそれがあります。外すのは、研修の環境で証明書のエラーが出たときだけにします。実際の運用では、AAP の証明書を GitLab に信頼させ、検証は有効のままにします。
 
 確認が終わったら、`<name_prefix>-verify-note-linux` の **Webhook の有効化** を外して保存します。外したあとは、同じ URL へ送ってもジョブは起動しません。
 
