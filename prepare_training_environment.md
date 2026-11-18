@@ -2,81 +2,95 @@
 
 [READMEへ](./README.md)
 
-この文書は構築手順ではありません。演習の前に、使う値を控えるための一覧です。
+この文書は構築手順ではありません。演習を始める前に、使う値を控え、環境が整っているかを確かめるための一覧です。AAP と GitLab のインストールと、ユーザーの作成は、この資料では扱いません。
 
-## 1. AAPの情報
+## 1. 対象サーバの用意の仕方
 
-| 確認項目 | 控える値 |
+最初に、演習でファイルを書く Linux と Windows をどう用意するかを確かめます。用意の仕方によって、進める演習と、控える値が変わります。
+
+| 用意の仕方 | インターネットへの接続 | 演習の進み方 |
+|---|---|---|
+| 既存サーバを使用 | 出られない前提で進める | [演習4](./basic-intro/ex4.md) は飛ばす |
+| AWS で作る | AAP からインターネットへ出られること | [演習3](./basic-intro/ex3.md) の Section 3 のあと、[演習4](./basic-intro/ex4.md) で作る |
+
+既存サーバを使用する環境では、演習中にインターネットへ出ません。コレクションとコンテナイメージは、AAP に入っているものを使います。[応用演習3](./advanced/ex3.md) だけは、ベースイメージ（`registry.redhat.io`）とコレクション（Ansible Galaxy）を取得するため、AAP サーバからインターネットへ出られる必要があります。出られない場合、応用演習3は飛ばします。
+
+以降の表の「対象」の列で、その行が必要かを判断します。
+
+| 対象 | 意味 |
 |---|---|
-| AAPのURL | `aap.example.local`（`https://` は付けずに控える。資料では `https://<AAPのURL>/` の形で使う） |
-| ログインユーザー名 / パスワード | 配布されたもの。応用演習1のユーザーとチームの作成、応用演習3の実行環境の作成のため、システム管理者のユーザーであること |
-| バージョン | 2.5 以降。画面手順は 2.7 の日本語UIで確認 |
-| 組織名 | 多くの環境では `Default` |
-| 名前の接頭辞 | ログイン名から候補を控える。整え方は [演習1](./basic-intro/ex1.md) |
-| 作業用サーバと SSH ユーザー | [演習9](./basic-controller/ex9.md) の `ansible-vault`、応用演習4・7・8 の `curl` と `python3` を実行するサーバ。講師が案内する。AAP の URL へ HTTPS で接続できること |
-| AAP サーバへ SSH するユーザー（応用演習3） | AAP のコンテナを動かしているユーザー。カスタム実行環境を AAP サーバでビルドするときに使う |
-| `registry.redhat.io` のアカウント（応用演習3） | ベースイメージを取るときのユーザー名とパスワード |
-| SMTP サーバ（既存サーバを使用する場合の応用演習2） | ホスト名、ポート、差出人アドレス。認証が必要ならユーザー名とパスワード。環境内に無い場合は、応用演習2を飛ばす。AWS でサーバを作る場合は、応用演習2で `lin1` に検証用のメールサーバを入れるので不要 |
+| 全員 | 用意の仕方に関係なく必要 |
+| 既存サーバ | 既存サーバを使用する場合だけ必要 |
+| AWS | AWS で作る場合だけ必要 |
+| 応用演習3 | 応用演習3を行う場合（AAP サーバからインターネットへ出られる場合）だけ必要 |
+
+## 2. AAP の情報
+
+| 確認項目 | 控える値 | 対象 |
+|---|---|---|
+| AAP の URL | `aap.example.local`（`https://` は付けずに控える。資料では `https://<AAPのURL>/` の形で使う） | 全員 |
+| ログインユーザー名 / パスワード | 配布されたもの。応用演習1でユーザーとチームを作るため、システム管理者のユーザーであること | 全員 |
+| バージョン | 2.5 以降。画面の手順は 2.7 の日本語 UI で確認している | 全員 |
+| 組織名 | 多くの環境では `Default` | 全員 |
+| 名前の接頭辞 | ログイン名から候補を控える。決め方は [演習1](./basic-intro/ex1.md) | 全員 |
+| 作業用サーバと SSH ユーザー | [演習9](./basic-controller/ex9.md) の `ansible-vault`、応用演習4・7・8 の `curl` と `python3` を実行するサーバ。講師が案内する。AAP の URL へ HTTPS で接続できること | 全員 |
+| AAP サーバへ SSH するユーザー | AAP のコンテナを動かしているユーザー。応用演習3のビルドと、演習9で作業用サーバに `ansible-vault` が無いときに使う | 全員 |
+| SMTP サーバ | 応用演習2で使う。ホスト名、ポート、差出人アドレス。認証が必要ならユーザー名とパスワード。環境内に無い場合は、応用演習2を飛ばす | 既存サーバ |
+| `registry.redhat.io` のアカウント | ベースイメージを取得するときのユーザー名とパスワード | 応用演習3 |
+
+AWS で作る場合、応用演習2では `lin1` に検証用のメールサーバを入れるので、SMTP サーバは要りません。
 
 ブラウザでログインし、左メニューに **Automation Execution**、**Automation Decisions**、**Access Management** があることを確認してください。Demo で始まるサンプルがあっても、演習では別名で新規作成します。
 
-AAP のコンテナを動かしているユーザーは、AAP 全体を操作できます。応用演習3でこのユーザーを使うときは、応用演習3と削除手順に書いてあるコマンドだけを実行します。`podman stop` や `podman rm` で AAP のコンテナを止めたり消したりすると、AAP 全体が止まります。
+AAP のコンテナを動かしているユーザーは、AAP 全体を操作できます。このユーザーで SSH したときは、演習と削除手順に書いてあるコマンドだけを実行します。`podman stop` や `podman rm` で AAP のコンテナを止めたり消したりすると、AAP 全体が止まります。
 
-AAP のインストールとユーザー作成は、この資料の範囲外です。
+## 3. 対象サーバの情報
 
-## 2. 対象サーバの情報
+演習では、対象の Linux と Windows に、次のファイルを作ります。ディレクトリは Playbook が作ります。`<name_prefix>` は演習1で決める接頭辞です。
 
-演習では対象の Linux と Windows の、決まったディレクトリへファイルを作成します。
-既存サーバを使用する場合は、以下のパスにファイルを作成しても問題のないものを使用してください。また、以下の接続方法が許可されているかも確認してください。
-
-| OS | 書くファイル | 接続方法 |
+| OS | 作るファイル | 接続方法 |
 |---|---|---|
-| Linux | `/tmp/<name_prefix>-aap-training/note.txt` | SSH |
-| Windows | `C:\temp\<name_prefix>-aap-training\note.txt` | PSRP |
+| Linux | `/tmp/<name_prefix>-aap-training/note.txt` | SSH（TCP 22） |
+| Windows | `C:\temp\<name_prefix>-aap-training\note.txt` | PSRP（NTLM は TCP 5985、Kerberos は TCP 5986） |
 
-Linux と Windows の両方を行います。既存サーバを使用するか、AWSで新規作成するかで演習内容が変わります。
+既存サーバを使用する場合は、次の3点を確かめます。
 
-| 状況 | 演習の進み方 | 事前に控えるもの |
+* そのディレクトリにファイルを作ってよいサーバであること
+* ログインユーザーが、`/tmp` と `C:\temp` の下にディレクトリを作れること
+* AAP から、上の接続方法でつながること
+
+| 確認項目 | 控える値 | 対象 |
 |---|---|---|
-| Linux と Windows がすでにある | [演習4](./basic-intro/ex4.md) は飛ばす。インターネットへ出ない前提で進める | 各サーバのアドレス、ログインユーザー、パスワード。Windows がドメイン参加済みなら、レルム名と Windows の FQDN（AAP から名前解決できること） |
-| 対象サーバが無い | [演習3](./basic-intro/ex3.md) の Section 3 のあと、[演習4](./basic-intro/ex4.md) で AWS に作る。インターネットへ出られる前提 | AWS のアクセスキー、シークレットキー、リージョン。サーバのパスワードは演習4で自分で決める。1人で VPC を1つ使うので、受講者の人数分の VPC をリージョンの上限（初期値は5つ）の中で作れること |
+| Linux と Windows のアドレス、ログインユーザー、パスワード | 演習2と演習3で使う | 既存サーバ |
+| Windows がドメインに参加しているか | 参加していなければ認証は NTLM、参加していれば Kerberos。Kerberos の場合は、レルム名と Windows の FQDN（AAP から名前解決できること）も控える。インベントリーに書く変数は演習3にある | 既存サーバ |
+| AWS のアクセスキー、シークレットキー、リージョン | 演習4で使う。サーバのパスワードは演習4で自分で決める | AWS |
+| VPC の上限 | 1人で VPC を1つ使う。受講者の人数分の VPC を、リージョンの上限（初期値は5つ）の中で作れること | AWS |
 
-すでにサーバがある場合、ログインユーザーが `/tmp` と `C:\temp` の下に自分のディレクトリを作れることを確認します。Playbook が `/tmp/<name_prefix>-aap-training` と `C:\temp\<name_prefix>-aap-training` を作り、その中にファイルを書きます。`<name_prefix>` は、上で控える接頭辞です。
+## 4. GitLab の情報
 
-Windows の接続は次のとおりです。
-
-| Windows の状態 | 認証 | インベントリーに書く変数 |
+| 確認項目 | 控える値 | 対象 |
 |---|---|---|
-| ドメインに参加していない（AWS で作るサーバを含む） | NTLM | `ansible_connection: psrp` と `ansible_psrp_auth: ntlm` |
-| ドメインに参加している | Kerberos | `ansible_host` に FQDN、`ansible_connection: psrp`、`ansible_psrp_auth: kerberos`、`ansible_psrp_protocol: https`、`ansible_psrp_port: 5986` |
+| GitLab の URL | `https://gitlab.example.local/` | 全員 |
+| ログインユーザー名 / パスワード | AAP の Source Control 認証情報にも、同じユーザー名とパスワードを入れる | 全員 |
+| プロジェクトを作る Namespace | グループ名、またはユーザー名 | 全員 |
+| デフォルトブランチ | この資料では `main` | 全員 |
 
-サンプルのアドレス `203.0.113.10` と `203.0.113.11` は例です。実行前に実在のアドレスへ置き換えます。
-
-## 3. GitLab の接続情報
-
-| 確認項目 | 控える値 |
-|---|---|
-| GitLabのURL | `https://gitlab.example.local/` |
-| ログインユーザー名 / パスワード | AAP の Source Control 認証情報にも、同じユーザー名とパスワードを入れる |
-| プロジェクトを作る Namespace | グループ名、またはユーザー名 |
-| デフォルトブランチ | この資料では `main` |
-
-ファイルの作成は Web IDE で行います。AAP がリポジトリを読む認証は、GitLab のログインユーザー名とパスワードです。
+ファイルの作成は、GitLab の Web IDE で行います。AAP がリポジトリを読むときの認証は、GitLab のログインユーザー名とパスワードです。
 
 二要素認証が有効なユーザーは、Git のパスワード認証が拒否されることがあります。その場合は、二要素認証を使っていないユーザーで進めてください。
 
-[応用演習6](./advanced/ex6.md) では、GitLab から AAP へ Webhook を送ります。AAP が社内のアドレスにある場合、GitLab の管理者設定 **Admin area > Settings > Network > Outbound requests** で、**Allow requests to the local network from webhooks and integrations** にチェックが入っていることを確認します。AAP のアドレスを **Local IP addresses and domain names that hooks and integrations can access** に書く方法でも構いません。
+[応用演習6](./advanced/ex6.md) では、GitLab から AAP へ Webhook を送ります。AAP が社内のアドレスにある場合は、GitLab の管理者設定 **Admin area > Settings > Network > Outbound requests** で、**Allow requests to the local network from webhooks and integrations** にチェックが入っていることを確認します。AAP のアドレスを **Local IP addresses and domain names that hooks and integrations can access** に書く方法でも構いません。
 
-## 4. インターネット接続の有無（補足）
+## 5. インターネットに出られない環境で確認すること
 
-| サーバを用意する方法 | インターネット接続の必要性 |
-|---|---|
-| 既存サーバを使用 | インターネットへ接続せず演習可能。[応用演習3](./advanced/ex3.md) だけは、ベースイメージ（`registry.redhat.io`）とコレクション（Ansible Galaxy）の取得に接続が必要 |
-| AWS でサーバを作る | 演習環境・AAPからインターネットへの接続が必要 |
+既存サーバを使用する場合は、次の2点を演習の前に確かめます。どちらも、インターネットに出られないと演習の途中で止まる箇所です。設定を変えるには管理者の権限が必要なので、講師または環境の管理者に確認してもらいます。
 
-## 5. サンプルファイル
+| 確認する場所 | 確認すること | 止まる演習 |
+|---|---|---|
+| GitLab の **Admin area > Settings > General > Web IDE** | **Enable single origin fallback** にチェックが入っていること（初期値は有効）。Web IDE は、通常は外部のドメイン `*.cdn.web-ide.gitlab-static.net` から画面の部品を読み込みます。このチェックがあると、そのドメインに届かないときに GitLab 自身から読み込みます | Web IDE を使うすべての演習 |
+| AAP の **Automation Decisions > 決定環境** の既定の決定環境 | **Pull policy** が `Always pull container before running` 以外であること。`Always` のままだと、Rulebook Activation がイメージを `registry.redhat.io` へ取りに行き、起動しません | 応用演習7、応用演習8 |
 
-[sample-content/](./sample-content/) を、[演習5](./basic-controller/ex5.md) の Web IDE で GitLab に置きます。AWS で作る場合は、[演習4](./basic-intro/ex4.md) で先に一部のファイルだけ置きます。
+Web IDE は、プロジェクトの **Code** > **Web IDE** で開き、左にファイルの一覧が出れば使えます。開かない場合は、各演習の「git CLIで行う場合」の手順で、作業用サーバからファイルを置きます。
 
 ## 次
 
