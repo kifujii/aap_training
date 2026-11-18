@@ -92,6 +92,8 @@ Kerberos の場合は、ユーザー名が `ユーザー@レルム` になって
 
 ## Section 4: 権限昇格（sudo）
 
+<a id="become"></a>
+
 ここまでのジョブは、ログインしたユーザーのまま動いています。実際の運用では、パッケージやサービスの操作に root の権限が要ります。Playbook に `become: true` を書き、認証情報に sudo の方式を入れると、ジョブは sudo で動きます。
 
 この節は、Linux のログインユーザーが sudo を使えるときに行います。AWS で作った Linux のユーザー `ansible` は、パスワードなしで sudo を使えます。既存サーバで sudo を使えるか分からないときは、この節を飛ばして Section 5 へ進みます。
@@ -132,6 +134,8 @@ sudo のあとのユーザーは root です
 `The command ran as root` で失敗したときは、認証情報の **Privilege Escalation Method** が `sudo` かを確認します。`Missing sudo password` や `incorrect sudo password` と出たときは、**Privilege Escalation Password** を確認します。
 
 ## Section 5: ジョブの記録を見て、もう一度起動する
+
+<a id="relaunch"></a>
 
 ジョブが失敗したときは、まず記録を見て、直したあとに同じ条件でもう一度起動します。
 
