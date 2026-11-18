@@ -4,7 +4,8 @@
 
 > **前提:** [演習2](./ex2.md) の AWS 用と GitLab 用の認証情報、[演習3](./ex3.md) Section 3 の `<name_prefix>-aws-runner`
 
-対象の Linux と Windows がすでにある場合は、この演習を全部飛ばして [演習5](../basic-controller/ex5.md) へ進んでください。
+> [!IMPORTANT]
+> **対象の Linux と Windows がすでにある（既存サーバを使用する）場合は、この演習を全部飛ばして [演習5](../basic-controller/ex5.md) へ進みます。**
 
 この演習では、AWS に次を作ります。名前の先頭には、演習1で決めた接頭辞を `resource_prefix` として付けます。同じアカウントを複数人で使っても、接頭辞でリソースが分かれます。
 

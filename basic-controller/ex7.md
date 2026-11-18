@@ -96,7 +96,8 @@ Kerberos の場合は、ユーザー名が `ユーザー@レルム` になって
 
 ここまでのジョブは、ログインしたユーザーのまま動いています。実際の運用では、パッケージやサービスの操作に root の権限が要ります。Playbook に `become: true` を書き、認証情報に sudo の方式を入れると、ジョブは sudo で動きます。
 
-この節は、Linux のログインユーザーが sudo を使えるときに行います。AWS で作った Linux のユーザー `ansible` は、パスワードなしで sudo を使えます。既存サーバで sudo を使えるか分からないときは、この節を飛ばして Section 5 へ進みます。
+> [!IMPORTANT]
+> **この Section は、Linux のログインユーザーが sudo を使えるときに行います。既存サーバで sudo を使えるか分からないときは、この Section を飛ばして [Section 5](#relaunch) へ進みます。** AWS で作った Linux のユーザー `ansible` は、パスワードなしで sudo を使えます。
 
 Web IDE で、[sample-content/check_become.yml](../sample-content/check_become.yml) をプロジェクトの直下に置き、**Commit to main** のあと、AAP のプロジェクトを同期します。
 
@@ -112,7 +113,7 @@ Web IDE で、[sample-content/check_become.yml](../sample-content/check_become.y
 | Privilege Escalation Username | 空欄（空欄のときは `root`） |
 | Privilege Escalation Password | AWS で作った Linux は空欄。既存サーバで sudo にパスワードが要るときは、そのパスワード |
 
-方式を入れても、`become: true` が無い Playbook は sudo を使いません。書くジョブと確認ジョブの動きは変わりません。
+方式を入れても、`become: true` が無い Playbook は sudo を使いません。この演習で作った `write-note-linux` と `verify-note-linux` の動きは変わりません。
 
 次のジョブテンプレートを作ります。表に無い欄は空欄です。
 

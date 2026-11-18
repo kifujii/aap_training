@@ -13,7 +13,8 @@ Playbook は GitLab に置き、AAP のプロジェクトから読みます。�
 
 ## Section 1: プロジェクトを作る
 
-演習4で `<name_prefix>-aap-training-content` を作った場合は、Section 2 へ進んでください。
+> [!IMPORTANT]
+> **演習4で `<name_prefix>-aap-training-content` を作った場合は、この Section を飛ばして Section 2 へ進みます。**
 
 GitLab にログインし、**Create new…** > **New project/repository** > **Create blank project** を開きます。
 

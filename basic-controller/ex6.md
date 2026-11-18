@@ -37,7 +37,7 @@ Overwrite を有効にすると、このソースが前回の同期で取り込�
 
 まだ `203.0.113.10` のまま、または Windows の3つのどれかが演習3と違うときは、Web IDE で `inventory.yml` を直し、コミットしてから、もう一度同期します。
 
-演習3の `<name_prefix>-aws-runner` には、このソースを付けません。`localhost` が消えるためです。既存サーバを使用する場合、`<name_prefix>-aws-runner` は作っていないので、この注意は読み飛ばしてください。
+AWS でサーバを作った場合は、演習3で作った `<name_prefix>-aws-runner` には、このソースを付けません。付けると、同期で `localhost` が消えます。
 
 ## 次
 
