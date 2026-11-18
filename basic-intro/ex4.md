@@ -100,12 +100,12 @@ git push
 | Extra variables | 下の YAML |
 
 ```yaml
-resource_prefix: tanaka01
+resource_prefix: sample01
 linux_login_password: <Linuxのパスワード>
 windows_login_password: <Windowsのパスワード>
 ```
 
-`tanaka01` は例です。演習1で決めた接頭辞と同じ文字列にします。`<Linuxのパスワード>` と `<Windowsのパスワード>` は、自分で決めた値に置き換えます。`<` と `>` は残しません。パスワードの条件は次のとおりです。条件に合わないと、最初のタスク `Required variables are set` で止まります。
+`sample01` は例です。演習1で決めた接頭辞と同じ文字列にします。`<Linuxのパスワード>` と `<Windowsのパスワード>` は、自分で決めた値に置き換えます。`<` と `>` は残しません。パスワードの条件は次のとおりです。条件に合わないと、最初のタスク `Required variables are set` で止まります。
 
 * 英数字だけで、8文字以上32文字以内
 * 英大文字、英小文字、数字を、それぞれ1文字以上含む（Windows は、この3種類が無いパスワードを設定できません）
@@ -117,17 +117,17 @@ windows_login_password: <Windowsのパスワード>
 **テンプレートの起動** をクリックします。成功すると、最後のタスクに次のような行が出ます。
 
 ```
-resource_prefix: tanaka01
-Linuxの名前: tanaka01-linux
+resource_prefix: sample01
+Linuxの名前: sample01-linux
 Linuxの接続先: 203.0.113.10
 Linuxのユーザー: ansible
-Windowsの名前: tanaka01-windows
+Windowsの名前: sample01-windows
 Windowsの接続先: 203.0.113.11
 Windowsのユーザー: Administrator
 パスワードは、このジョブの Extra variables に入れた値です。
 ```
 
-`tanaka01`、`203.0.113.10`、`203.0.113.11` は例です。ログに出た2つのアドレスと、ユーザー名を控えます。パスワードは、Extra variables に入れた2つの値です。ジョブの詳細を開くと、その値が Extra variables に残っています。
+`sample01`、`203.0.113.10`、`203.0.113.11` は例です。ログに出た2つのアドレスと、ユーザー名を控えます。パスワードは、Extra variables に入れた2つの値です。ジョブの詳細を開くと、その値が Extra variables に残っています。
 
 値を控えたら、`<name_prefix>-create-aws-servers` の **テンプレートの編集** を開き、Extra variables から `linux_login_password` と `windows_login_password` の2行を消して保存します。`resource_prefix` の行は残します。テンプレートを開ける他の人に、パスワードが見えないようにするためです。もう一度このジョブを起動するときは、2行を入れ直します。
 

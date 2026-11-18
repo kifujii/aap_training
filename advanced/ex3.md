@@ -179,7 +179,7 @@ podman images | grep '<name_prefix>-custom-ee'
 
 ![実行環境の作成。イメージは localhost/ で始まる名前、Pull は Never pull container before running](../images/aap/ee-create-local.png)
 
-写真の `tanaka01` は例です。組織と Registry credential は空欄のまま **実行環境の作成** を押します。
+写真の `sample01` は例です。組織と Registry credential は空欄のまま **実行環境の作成** を押します。
 
 `localhost/` で始まるイメージ名は、レジストリではなく、そのサーバの `podman` にあるイメージを指します。Pull を `Never pull container before running` にすると、AAP はレジストリへ取りに行かず、手元のイメージをそのまま使います。
 
@@ -204,17 +204,17 @@ Web IDE で `use_ini_file.yml` をプロジェクトの直下に作り、[sample
 | Extra variables | 下の1行 |
 
 ```yaml
-name_prefix: tanaka01
+name_prefix: sample01
 ```
 
-`tanaka01` は、自分の接頭辞にします。この Playbook は `hosts: localhost` で、実行環境の中だけで動きます。サーバへログインしないので、認証情報は付けません。**テンプレートの起動** を押します。Survey も制限も出ません。
+`sample01` は、自分の接頭辞にします。この Playbook は `hosts: localhost` で、実行環境の中だけで動きます。サーバへログインしないので、認証情報は付けません。**テンプレートの起動** を押します。Survey も制限も出ません。
 
 1回目は失敗します。出力に `community.general.ini_file` があり、`couldn't resolve module` または `was not found` と出ていれば、既定の実行環境にこのコレクションが無いことを確認できています。
 
-失敗を確認したら、このテンプレートの **テンプレートの編集** で、実行環境に `<name_prefix>-custom-ee` を選んで保存します。もう一度起動します。成功すると、`Show the value written with community.general` に次の行が出ます。`tanaka01` の位置には、自分の接頭辞が出ます。
+失敗を確認したら、このテンプレートの **テンプレートの編集** で、実行環境に `<name_prefix>-custom-ee` を選んで保存します。もう一度起動します。成功すると、`Show the value written with community.general` に次の行が出ます。`sample01` の位置には、自分の接頭辞が出ます。
 
 ```
-tanaka01-use-ini.ini の source は custom ee です
+sample01-use-ini.ini の source は custom ee です
 ```
 
 ジョブ詳細の実行環境が `<name_prefix>-custom-ee` になっていることも確認します。ジョブが `image not known` で失敗したときは、Section 3 の `CONTAINERS_STORAGE_CONF` を設定して、ビルドからやり直します。

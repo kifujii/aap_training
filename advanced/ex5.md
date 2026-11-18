@@ -94,10 +94,10 @@ git push
 | Extra variables | 下の1行 |
 
 ```yaml
-name_prefix: tanaka01
+name_prefix: sample01
 ```
 
-`tanaka01` は演習1で決めた接頭辞にします。起動画面には Extra variables は出ないので、編集画面で保存してから起動します。
+`sample01` は演習1で決めた接頭辞にします。起動画面には Extra variables は出ないので、編集画面で保存してから起動します。
 
 認証情報は `<name_prefix>-aap-api` だけにします。`localhost` には SSH でログインしないので、Machine 認証情報は付けません。
 

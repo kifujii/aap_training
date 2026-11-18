@@ -30,7 +30,7 @@
 
 `<name_prefix>-write-note-linux` の **Team Access** を開きます。
 
-![Team Access。Assign teams からチームとロールを選ぶ](../images/aap/team-access.png)
+![Team Access。割り当てが終わると、チームとロール JobTemplate Execute が一覧に出る。最初は空で、Assign teams から割り当てる](../images/aap/team-access.png)
 
 **Assign teams** をクリックし、`<name_prefix>-ops-team` にチェックを入れて **Next** を押します。
 
