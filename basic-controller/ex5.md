@@ -52,12 +52,14 @@ GitLab にログインし、**Create new…** > **New project/repository** > **C
 
 サンプルの Windows の接続方式は NTLM です。演習3で NTLM を選んだ人は、`ansible_psrp_auth`、`ansible_psrp_protocol`、`ansible_psrp_port` をサンプルのままにします。ドメインに参加している Windows は、`ansible_host` を演習3で保存した FQDN にし、この3つを下の Kerberos の列に置き換えます。どれか1つだけ変えると、演習6の同期で演習3の変数が上書きされ、`win_ping` が失敗します。
 
-| 項目 | NTLM（サンプルのまま） | Kerberos（すべて置き換える） |
-|---|---|---|
-| `ansible_host` | 自分の Windows のアドレス | 演習3で保存した FQDN |
-| `ansible_psrp_auth` | `ntlm` | `kerberos` |
-| `ansible_psrp_protocol` | `http` | `https` |
-| `ansible_psrp_port` | `5985` | `5986` |
+| 項目 | NTLM（サンプルのまま） | Kerberos（すべて置き換える） | Kerberos で HTTP に切り替えた場合 |
+|---|---|---|---|
+| `ansible_host` | 自分の Windows のアドレス | 演習3で保存した FQDN | 演習3で保存した FQDN |
+| `ansible_psrp_auth` | `ntlm` | `kerberos` | `kerberos` |
+| `ansible_psrp_protocol` | `http` | `https` | `http` |
+| `ansible_psrp_port` | `5985` | `5986` | `5985` |
+
+右端の列は、演習3の「[HTTPS（5986）で接続できない場合](../basic-intro/ex3.md#psrp-http)」で HTTP に切り替えた場合に使います。ドメインに参加している Windows の `ansible_host` は、どの場合も IP アドレスではなく FQDN にします。
 
 `ansible_connection: psrp` と `ansible_psrp_cert_validation: ignore` は、どちらもサンプルのままにします。
 
