@@ -22,6 +22,7 @@
       - { base: "{{ api_host }}/api/controller/v2", path: job_templates, name: "{{ name_prefix }}-show-handed-note" }
       - { base: "{{ api_host }}/api/controller/v2", path: job_templates, name: "{{ name_prefix }}-use-ini" }
       - { base: "{{ api_host }}/api/controller/v2", path: job_templates, name: "{{ name_prefix }}-check-become" }
+      - { base: "{{ api_host }}/api/controller/v2", path: job_templates, name: "{{ name_prefix }}-encrypt-secret" }
       - { base: "{{ api_host }}/api/controller/v2", path: job_templates, name: "{{ name_prefix }}-setup-mailpit" }
       - { base: "{{ api_host }}/api/controller/v2", path: job_templates, name: "{{ name_prefix }}-show-mailpit" }
       - { base: "{{ api_host }}/api/controller/v2", path: job_templates, name: "{{ name_prefix }}-remove-notes-linux" }

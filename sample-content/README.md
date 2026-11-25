@@ -20,6 +20,7 @@
 | `remove_aws_servers.yml` | `create_aws_servers.yml` で作った AWS のリソースを削除する |
 | `launch_note.yml` | 応用演習5。既定の実行環境から、Extra variables の `name_prefix` を付けた `write-note-linux` を起動する |
 | `use_ini_file.yml` | 応用演習3。`community.general.ini_file` で値を書き、カスタム実行環境の前後を比べる |
+| `encrypt_secret.yml` | 演習9（`ansible-vault` を実行できるサーバが無いとき）。Survey の Password で受け取った値を、実行環境の `ansible-vault` で暗号化し、暗号文だけを出力する |
 | `check_become.yml` | 演習7。sudo で `whoami` を実行し、`root` になることを確かめる |
 | `show_handed_note.yml` | 演習11。前のジョブが `set_stats` で渡したメモを表示する |
 | `remove_my_notes.yml` | 学習後に、対象サーバの `/tmp/<name_prefix>-aap-training` と `C:\temp\<name_prefix>-aap-training` を消す |
