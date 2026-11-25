@@ -14,8 +14,8 @@
 |---|---|---|
 | JobTemplate Execute | `<name_prefix>-write-note-linux`、`<name_prefix>-write-note-windows` | 起動できる。編集はできない |
 | WorkflowJobTemplate Execute | `<name_prefix>-note-workflow` | ワークフローを起動できる。中のテンプレートは、その人の権限に関係なく動く。承認はできない |
-| Project Read Compat | `<name_prefix>-aap-training-content` | プロジェクトを見られる |
-| Inventory Read Compat | `<name_prefix>-training-inventory` | インベントリーを見られる |
+| Project Read Compat、または Project Use | `<name_prefix>-aap-training-content` | プロジェクトを見られる。同期と編集はできない |
+| Inventory Read Compat、または Inventory Use | `<name_prefix>-training-inventory` | インベントリーを見られる。ホストの追加や編集はできない |
 
 ## Section 2: チームを作る
 
@@ -42,9 +42,16 @@
 
 `<name_prefix>-write-note-windows` にも **JobTemplate Execute** を付けます。`<name_prefix>-note-workflow` の Team Access でも同じように付けますが、ロール名は **WorkflowJobTemplate Execute** です。
 
-プロジェクト `<name_prefix>-aap-training-content` の Team Access では **Project Read Compat** を、インベントリー `<name_prefix>-training-inventory` では **Inventory Read Compat** を付けます。
+プロジェクト `<name_prefix>-aap-training-content` とインベントリー `<name_prefix>-training-inventory` の Team Access でも、同じ手順でロールを付けます。付けるロールは、ロールを選ぶ画面の一覧に何が表示されるかで、次のように選びます。
 
-![プロジェクトのロール。付けるのは Project Read Compat](../images/aap/team-access-project-roles.png)
+| オブジェクト | 一覧に `Read Compat` のロールがある場合 | 一覧に `Read Compat` のロールが無い場合 |
+|---|---|---|
+| プロジェクト | **Project Read Compat** | **Project Use** |
+| インベントリー | **Inventory Read Compat** | **Inventory Use** |
+
+`Read Compat` のロールは、以前の版の形式の権限が使われたときに作られるロールで、AAP の版が同じでも、環境によって一覧に無いことがあります。**Project Use** と **Inventory Use** は、AAP 2.5 以降のどの環境にも最初からあるロールです。**Use** は、ジョブテンプレートでそのプロジェクトやインベントリーを選べる権限で、閲覧の権限も含みます。同期、編集、ホストの追加の権限は含まないので、どちらを付けても Section 5 の確認の結果は同じです。**Admin**、**Update**、**Adhoc** のロールにはチェックを入れません。
+
+![プロジェクトのロール。この環境では Project Read Compat がある。無い環境では Project Use を選ぶ](../images/aap/team-access-project-roles.png)
 
 JobTemplate Execute だけでは、Playbook や認証情報の変更はできません。
 
@@ -77,8 +84,8 @@ JobTemplate Execute だけでは、Playbook や認証情報の変更はできま
 * `<name_prefix>-write-note-linux` の **テンプレートの起動** を押します。演習8と同じ **Prompt on Launch** が開きます。**制限** は空欄、**Survey** は `managed by AAP` のまま **Finish** を押します。ジョブが成功すれば、JobTemplate Execute の権限で起動できています。一方、Execute には編集の権限が含まれないため、**テンプレートの編集** は開けません。
 * `<name_prefix>-verify-note-linux` には Execute を付けていないため、テンプレート一覧に表示されません。アドレスを直接開いても「このアクションを実行する権限がありません」と出て、ジョブは始まりません。
 * `<name_prefix>-note-workflow` の詳細画面では、起動はできますが、編集はできません。WorkflowJobTemplate Execute に含まれるのは起動の権限だけです。**テンプレートの起動** を押します。`note.txt` を書く2つのジョブが成功したあと、承認ノード `<name_prefix>-note-review` で止まります。WorkflowJobTemplate Execute には承認が含まれないので、`<name_prefix>-ops` では承認できません。承認には **WorkflowJobTemplate Approve** が必要です。承認は、このあと管理者に戻ってから行います。
-* プロジェクト `<name_prefix>-aap-training-content` は開けますが、Project Read Compat は閲覧の権限なので、同期ボタンは押せません。
-* インベントリー `<name_prefix>-training-inventory` も開けますが、Inventory Read Compat は閲覧の権限なので、ホストの追加や変数の保存はできません。
+* プロジェクト `<name_prefix>-aap-training-content` は開けますが、Project Read Compat にも Project Use にも同期の権限は含まれないので、同期ボタンは押せません。
+* インベントリー `<name_prefix>-training-inventory` も開けますが、Inventory Read Compat にも Inventory Use にも編集の権限は含まれないので、ホストの追加や変数の保存はできません。
 
 右上の `<name_prefix>-ops` をクリックし、**ログアウト** を押します。管理者でログインし直し、`<name_prefix>-write-note-linux` の **テンプレートの編集** が開くことを確認します。
 

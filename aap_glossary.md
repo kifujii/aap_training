@@ -74,7 +74,7 @@
 | 用語 | 画面での名前 | 説明 |
 |---|---|---|
 | **RBAC (Role-Based Access Control)** | **Team Access**、**User Access** | ユーザーやチームにロールを付けて、オブジェクトごとに操作できる範囲を決める仕組み（[応用演習1](./advanced/ex1.md)）。 |
-| **Role** | `JobTemplate Execute` など | 付けられる権限のまとまり。画面では、`JobTemplate Execute`、`Project Read Compat` のように、オブジェクトの種類が前に付く。`Compat` が付くロールは、以前の版のロールに合わせて用意された組み込みのロール。 |
+| **Role** | `JobTemplate Execute` など | 付けられる権限のまとまり。画面では、`JobTemplate Execute`、`Project Read Compat` のように、オブジェクトの種類が前に付く。`Compat` が付くロールは、以前の版の形式の権限が使われたときに作られるロールで、環境によっては無い。その場合は `Project Use` など、最初からあるロールを使う（[応用演習1](./advanced/ex1.md)）。 |
 | **System Administrator** | ユーザータイプ **システム管理者** | AAP 全体を操作できるユーザー。ロールに関係なく、すべてを見て、変えられる。 |
 | **ansible-vault** | — | 秘密の値を暗号化するコマンド。この資料では `ansible-vault encrypt_string` で値だけを暗号化し、ファイルは YAML のまま GitLab に置く（[演習9](./basic-controller/ex9.md)）。 |
 | **Vault Credential** | 認証情報タイプ `Vault` | 暗号化した値を復号するパスワードを保存する認証情報。ジョブテンプレートに付けると、ジョブの中で値が復号される。 |
